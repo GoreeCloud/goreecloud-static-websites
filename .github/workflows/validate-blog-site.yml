@@ -1,0 +1,35 @@
+name: Validate Blog static site
+
+on:
+  pull_request:
+    paths:
+      - 'sites/blog/**'
+      - 'scripts/validate_simple_static_site.py'
+      - '.github/workflows/validate-blog-site.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/blog/**'
+      - 'scripts/validate_simple_static_site.py'
+      - '.github/workflows/validate-blog-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact website candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Compile central validator
+        run: python -m py_compile scripts/validate_simple_static_site.py
+      - name: Validate Blog source contract
+        run: python scripts/validate_simple_static_site.py sites/blog --glaze 2.1.0
+      - name: Validate Blog JavaScript syntax
+        run: node --check sites/blog/site.js
