@@ -1,0 +1,67 @@
+/* GoreeCloud public website — custom not-found page. */
+
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.error-page main {
+  flex: 1;
+  display: grid;
+}
+
+.error-nav {
+  margin-left: auto;
+}
+
+.error-hero {
+  min-height: clamp(34rem, 70vh, 48rem);
+  display: grid;
+  align-items: center;
+}
+
+.error-copy {
+  max-width: 46rem;
+}
+
+.error-copy h1 {
+  max-width: 10ch;
+}
+
+.error-footer {
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 720px) {
+  .error-page .nav-wrap {
+    flex-wrap: nowrap;
+  }
+
+  .error-page .site-nav {
+    position: static;
+    display: flex;
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .error-hero {
+    min-height: 30rem;
+  }
+}
+
+@media print {
+  .error-page .site-header,
+  .error-page .error-footer {
+    display: none !important;
+  }
+
+  .error-hero {
+    min-height: 0;
+  }
+}

@@ -1,0 +1,54 @@
+/* GoreeCloud Family Services — Glaze UI service monograms.
+ *
+ * Service cards use GoreeCloud-owned presentation rather than redistributing
+ * third-party service logo artwork in the public website artifact. The text
+ * initials are descriptive identifiers only; product names remain the property
+ * of their respective owners.
+ */
+
+.service-card .service-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .018)),
+    var(--surface);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .08),
+    0 10px 26px rgba(0, 0, 0, .12);
+  color: var(--text);
+  font-size: .7rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.service-card[data-service="notes"] .service-icon,
+.service-card[data-service="memos"] .service-icon {
+  border-color: rgba(0, 194, 255, .28);
+  background:
+    linear-gradient(145deg, rgba(0, 194, 255, .12), rgba(22, 93, 255, .06)),
+    var(--surface);
+  color: var(--text);
+}
+
+@media (prefers-contrast: more) {
+  .service-card .service-icon {
+    border-color: currentColor;
+    box-shadow: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .service-card .service-icon {
+    border: 1px solid ButtonText;
+    background: Canvas;
+    color: CanvasText;
+    box-shadow: none;
+  }
+}

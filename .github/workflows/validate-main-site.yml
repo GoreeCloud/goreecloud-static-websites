@@ -1,0 +1,52 @@
+name: Validate main GoreeCloud static site
+
+on:
+  pull_request:
+    paths:
+      - 'sites/main/**'
+      - '.github/workflows/validate-main-site.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/main/**'
+      - '.github/workflows/validate-main-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Confirm generated artifact is not source authority
+        run: test ! -e sites/main/dist
+      - name: Compile main-site build and validation tools
+        run: |
+          python -m py_compile \
+            sites/main/scripts/build_public_site.py \
+            sites/main/scripts/validate_build_artifact.py \
+            sites/main/scripts/validate_site.py \
+            sites/main/scripts/validate_glaze_ui.py \
+            sites/main/scripts/validate_responsive_layout.py \
+            sites/main/scripts/validate_public_surface.py
+      - name: Validate main-site source contracts
+        run: |
+          python sites/main/scripts/validate_glaze_ui.py
+          python sites/main/scripts/validate_responsive_layout.py
+          python sites/main/scripts/validate_public_surface.py
+          python sites/main/scripts/validate_site.py
+      - name: Build isolated public artifact
+        run: python sites/main/scripts/build_public_site.py
+      - name: Validate isolated public artifact
+        run: python sites/main/scripts/validate_build_artifact.py
+      - name: Check JavaScript syntax
+        run: |
+          node --check sites/main/js/theme-init.js
+          node --check sites/main/js/main.js
