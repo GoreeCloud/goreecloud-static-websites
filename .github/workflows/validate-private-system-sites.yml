@@ -1,0 +1,132 @@
+name: Validate Privacy, Security, and Everkeep static sites
+
+on:
+  pull_request:
+    paths:
+      - 'sites/privacy/**'
+      - 'sites/security/**'
+      - 'sites/everkeep/**'
+      - '.github/workflows/validate-private-system-sites.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/privacy/**'
+      - 'sites/security/**'
+      - 'sites/everkeep/**'
+      - '.github/workflows/validate-private-system-sites.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  privacy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Validate source boundary
+        run: |
+          test ! -e sites/privacy/website/dist
+          python -m py_compile sites/privacy/website/build.py
+          node --check sites/privacy/website/site.js
+      - name: Build Privacy Center
+        run: python sites/privacy/website/build.py
+      - name: Validate isolated Privacy Center artifact
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root=Path('sites/privacy')
+          dist=root/'website'/'dist'
+          expected={'index.html','404.html','_headers','assets/site.css','assets/site-polish.css','assets/site.js','assets/glaze-ui-2.1.0.css','assets/privacy-shield-icon.svg'}
+          actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
+          assert actual==expected,(actual,expected)
+          assert (dist/'assets/privacy-shield-icon.svg').read_bytes()==(root/'branding/privacy-shield/privacy-shield-icon.svg').read_bytes()
+          html=(dist/'index.html').read_text()
+          nf=(dist/'404.html').read_text()
+          headers=(dist/'_headers').read_text()
+          assert 'content="2.1.0"' in html and 'data-glaze-ui="2.1.0"' in html
+          for stale in ('glaze-ui-1.5.0.css','glaze-ui-2.0.0.css','data-glaze-ui="2.0.0"'):
+              assert stale not in html+nf, stale
+          for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Permissions-Policy:'):
+              assert marker in headers,marker
+          print('Privacy Center central source/build validation passed')
+          PY
+
+  security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Validate source boundary
+        run: |
+          test ! -e sites/security/website/dist
+          python -m py_compile sites/security/website/build.py
+          node --check sites/security/website/site.js
+      - name: Build Security Center
+        run: python sites/security/website/build.py
+      - name: Validate isolated Security Center artifact
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root=Path('sites/security')
+          dist=root/'website'/'dist'
+          expected={'index.html','404.html','_headers','assets/site.css','assets/site.js','assets/glaze-ui-v1.1.0.css','assets/wardveil-security-icon.svg'}
+          actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
+          assert actual==expected,(actual,expected)
+          assert (dist/'assets/wardveil-security-icon.svg').read_bytes()==(root/'branding/wardveil-security-icon.svg').read_bytes()
+          html=(dist/'index.html').read_text()
+          nf=(dist/'404.html').read_text()
+          headers=(dist/'_headers').read_text()
+          assert 'content="1.1.0"' in html and 'data-glaze-ui="1.1.0"' in html
+          assert '/assets/glaze-ui-v1.1.0.css' in html+nf
+          for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Permissions-Policy:'):
+              assert marker in headers,marker
+          print('Security Center central source/build validation passed')
+          PY
+
+  everkeep:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Validate source boundary and responsive contract
+        run: |
+          test ! -e sites/everkeep/dist
+          python -m py_compile sites/everkeep/scripts/build_public_site.py sites/everkeep/scripts/validate_public_responsive.py
+          python sites/everkeep/scripts/validate_public_responsive.py
+      - name: Build Continuity Center
+        run: python sites/everkeep/scripts/build_public_site.py
+      - name: Validate isolated Continuity Center artifact
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root=Path('sites/everkeep')
+          dist=root/'dist'
+          expected={'index.html','style.css','glaze-ui-2.1.0.css','site-polish.css','_headers','robots.txt','sitemap.xml','assets/everkeep.svg'}
+          actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
+          assert actual==expected,(actual,expected)
+          assert (dist/'assets/everkeep.svg').read_bytes()==(root/'assets/everkeep.svg').read_bytes()
+          html=(dist/'index.html').read_text()
+          headers=(dist/'_headers').read_text()
+          robots=(dist/'robots.txt').read_text()
+          sitemap=(dist/'sitemap.xml').read_text()
+          assert 'content="2.1.0"' in html and 'data-glaze-ui="2.1.0"' in html
+          for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Strict-Transport-Security:'):
+              assert marker in headers,marker
+          assert 'https://everkeep.goreecloud.com/sitemap.xml' in robots
+          assert 'https://everkeep.goreecloud.com/' in sitemap
+          print('Continuity Center central source/build validation passed')
+          PY
