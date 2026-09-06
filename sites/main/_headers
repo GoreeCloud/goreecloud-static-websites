@@ -11,7 +11,7 @@
   Strict-Transport-Security: max-age=31536000
 
 /
-  Link: </css/style.css>; rel=preload; as=style, </css/glaze.css>; rel=preload; as=style
+  Link: </assets/glaze-v1/glaze-v1.1.0.css>; rel=preload; as=style, </css/site-v1.1.css>; rel=preload; as=style
 
 /.well-known/security.txt
   Cache-Control: public, max-age=3600
