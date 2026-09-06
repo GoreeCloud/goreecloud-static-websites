@@ -21,6 +21,28 @@
 .product-status { margin: 0 0 7px; color: var(--site-tertiary); font-size: .76rem; text-transform: uppercase; letter-spacing: .11em; font-weight: 800; }
 .product-card h3 { margin: 0; font-size: clamp(1.8rem,3vw,2.6rem); line-height: 1.06; letter-spacing: -.04em; }
 .text-mark { display: grid; place-items: center; min-width: 68px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--site-border); border-radius: 16px; color: var(--site-muted); font-size: .76rem; font-weight: 780; text-transform: uppercase; letter-spacing: .08em; }
+/* Approved artwork is exact-source only. Products without approved canonical artwork do not render surrogate badges. */
+#home .text-mark,
+#build .product-card:first-child .text-mark,
+#boot .text-mark { display: none; }
+#intelligence .text-mark,
+#build .product-card:nth-child(2) .text-mark {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  min-height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+}
+#intelligence .text-mark { background-image: url("/assets/products/ai.svg"); }
+#build .product-card:nth-child(2) .text-mark { background-image: url("/assets/products/code.svg"); }
 .product-summary { margin: 26px 0; max-width: 68ch; color: var(--site-muted); font-size: 1.05rem; }
 .product-evidence { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .product-evidence > div { padding: 18px; border-radius: 18px; border: 1px solid var(--site-border); background: color-mix(in srgb, var(--site-raised) 62%, transparent); }

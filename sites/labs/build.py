@@ -11,7 +11,14 @@ sys.path.insert(0, str(SITE / "scripts"))
 from glaze_v1 import FILES as GLAZE_FILES, install_glaze  # noqa: E402
 
 SITE_FILES = ("index.html", "404.html", "labs.css", "_headers", "robots.txt")
-SHARED_FILES = ("css/site-v1.1.css", "js/main.js", "js/theme-init.js", "assets/goreecloud-logo.svg")
+SHARED_FILES = (
+    "css/site-v1.1.css",
+    "js/main.js",
+    "js/theme-init.js",
+    "assets/goreecloud-logo.svg",
+    "assets/products/ai.svg",
+    "assets/products/code.svg",
+)
 
 
 def main() -> int:
