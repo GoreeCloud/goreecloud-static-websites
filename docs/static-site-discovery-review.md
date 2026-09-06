@@ -10,7 +10,7 @@ The current thirteen-site manifest is complete for GoreeCloud-controlled standal
 
 Evidence consists of:
 
-- an automated recursive-tree scan of **66 public, non-archived GoreeCloud repositories**, recorded in `docs/public-static-discovery.json` on the discovery evidence branch;
+- an automated recursive-tree scan of **66 public, non-archived GoreeCloud repositories**, preserved canonically as `docs/public-static-discovery.raw.json`;
 - manual review of every repository returned by that scan with static-site-like signatures;
 - an authenticated inventory of repositories available to the GoreeCloud GitHub connection, including the private repositories; and
 - direct inspection of ambiguous candidates whose file layout alone could be mistaken for a standalone public site.

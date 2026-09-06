@@ -1,0 +1,988 @@
+{
+  "candidate_repositories": [
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "app/public/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "app/public"
+        },
+        {
+          "evidence": [
+            "internal/server/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "internal/server"
+        },
+        {
+          "evidence": [
+            "site",
+            "site/.gitignore",
+            "site/.go-version",
+            "site/AGENTS.md",
+            "site/Makefile",
+            "site/archetypes",
+            "site/archetypes/default.md",
+            "site/assets",
+            "site/assets/icons",
+            "site/assets/icons/logo.svg",
+            "site/assets/scss",
+            "site/assets/scss/_variables_project.scss",
+            "site/content",
+            "site/content/CNAME",
+            "site/content/_index.html",
+            "site/content/docs",
+            "site/content/docs/Advanced",
+            "site/content/docs/Advanced/Actions",
+            "site/content/docs/Advanced/Actions/_index.md",
+            "site/content/docs/Advanced/Architecture",
+            "site/content/docs/Advanced/Architecture/_index.md",
+            "site/content/docs/Advanced/Architecture/architecture.png",
+            "site/content/docs/Advanced/Architecture/architecture.svg",
+            "site/content/docs/Advanced/Caching",
+            "site/content/docs/Advanced/Caching/_index.md",
+            "site/content/docs/Advanced/Compatibility",
+            "site/content/docs/Advanced/Compatibility/_index.md",
+            "site/content/docs/Advanced/Compression",
+            "site/content/docs/Advanced/Compression/_index.md",
+            "site/content/docs/Advanced/Compression/s2_vs_pgzip.svg"
+          ],
+          "reasons": [
+            "directory named site"
+          ],
+          "root": "site"
+        },
+        {
+          "evidence": [
+            "site/content/CNAME"
+          ],
+          "reasons": [
+            "contains CNAME"
+          ],
+          "root": "site/content"
+        },
+        {
+          "evidence": [
+            "site/static/favicons/site.webmanifest"
+          ],
+          "reasons": [
+            "contains site.webmanifest"
+          ],
+          "root": "site/static/favicons"
+        }
+      ],
+      "default_branch": "master",
+      "head_tree_sha": "82995f9beb903cc70d42db6df7ce66552ec3b983",
+      "repository": "GoreeCloud/goreecloud-backup",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "/"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "4b7432061ad7aa393ef3c1fa98311ce31756b355",
+      "repository": "GoreeCloud/goreecloud-bookmark-browser-extension",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "apps/web/public/site.webmanifest"
+          ],
+          "reasons": [
+            "contains site.webmanifest"
+          ],
+          "root": "apps/web/public"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "788a8a49497f27eb5f46d3266737dd0cb986bdf3",
+      "repository": "GoreeCloud/goreecloud-bookmarks",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "static/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "static"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "335035f6af8c2f46393f34d0a57f115f26e561b0",
+      "repository": "GoreeCloud/goreecloud-calendar",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "apps/web/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "apps/web"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "6f98476f585f09b99c8f0710d7c46d63380f1a10",
+      "repository": "GoreeCloud/goreecloud-code",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "frontend/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "frontend"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "80bddb6697d82049d3cf41fed7bf4938f5e7dd9b",
+      "repository": "GoreeCloud/goreecloud-contacts",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "client/public/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "client/public"
+        },
+        {
+          "evidence": [
+            "client_v2/public/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "client_v2/public"
+        },
+        {
+          "evidence": [
+            "openapi/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "openapi"
+        }
+      ],
+      "default_branch": "master",
+      "head_tree_sha": "6c466e322ebd0df400494bf918a738da315025ee",
+      "repository": "GoreeCloud/goreecloud-dns",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "web/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "web"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "13840eecea56352f01c8841a84a06c24fadc9978",
+      "repository": "GoreeCloud/goreecloud-drive",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "reference/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "reference"
+        },
+        {
+          "evidence": [
+            "website",
+            "website/404.html",
+            "website/404.html",
+            "website/README.md",
+            "website/_headers",
+            "website/_headers",
+            "website/build.py",
+            "website/identity.css",
+            "website/index.html",
+            "website/index.html",
+            "website/site.css",
+            "website/site.js",
+            "website/validate.py"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html",
+            "directory named website"
+          ],
+          "root": "website"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "6b17bec103e8a0dbdf0f16c625fbc2f1ad359e80",
+      "repository": "GoreeCloud/goreecloud-glaze-ui",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "identity-center-site",
+            "identity-center-site/_headers",
+            "identity-center-site/_headers",
+            "identity-center-site/app.js",
+            "identity-center-site/assets",
+            "identity-center-site/assets/identity.svg",
+            "identity-center-site/glaze-ui-2.1.0.css",
+            "identity-center-site/index.html",
+            "identity-center-site/index.html",
+            "identity-center-site/robots.txt",
+            "identity-center-site/sitemap.xml",
+            "identity-center-site/style.css"
+          ],
+          "reasons": [
+            "contains _headers",
+            "contains index.html",
+            "directory named identity-center-site"
+          ],
+          "root": "identity-center-site"
+        },
+        {
+          "evidence": [
+            "packages/theme/demo/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "packages/theme/demo"
+        },
+        {
+          "evidence": [
+            "website",
+            "website/.browserslistrc",
+            "website/.gitignore",
+            "website/.prettierignore",
+            "website/AGENTS.md",
+            "website/CLAUDE.md",
+            "website/Dockerfile",
+            "website/LICENSE",
+            "website/README.md",
+            "website/api",
+            "website/api/authentication.md",
+            "website/api/clients.mdx",
+            "website/api/docusaurus.config.cjs",
+            "website/api/docusaurus.config.esm.mjs",
+            "website/api/ensure-reference-sidebar.mjs",
+            "website/api/eslint.config.mjs",
+            "website/api/flow-executor.md",
+            "website/api/index.md",
+            "website/api/netlify.toml",
+            "website/api/package.json",
+            "website/api/sidebar.mjs",
+            "website/api/src",
+            "website/api/src/theme",
+            "website/api/src/theme/DocSidebarItem",
+            "website/api/src/theme/DocSidebarItem/Link",
+            "website/api/src/theme/DocSidebarItem/Link/index.tsx",
+            "website/api/src/theme/DocSidebarItem/Link/styles.css",
+            "website/api/static",
+            "website/api/static/_headers",
+            "website/api/static/_redirects"
+          ],
+          "reasons": [
+            "directory named website"
+          ],
+          "root": "website"
+        },
+        {
+          "evidence": [
+            "website/api/netlify.toml"
+          ],
+          "reasons": [
+            "contains netlify.toml"
+          ],
+          "root": "website/api"
+        },
+        {
+          "evidence": [
+            "website/api/static/_headers"
+          ],
+          "reasons": [
+            "contains _headers"
+          ],
+          "root": "website/api/static"
+        },
+        {
+          "evidence": [
+            "website/docs/netlify.toml"
+          ],
+          "reasons": [
+            "contains netlify.toml"
+          ],
+          "root": "website/docs"
+        },
+        {
+          "evidence": [
+            "website/docs/static/_headers"
+          ],
+          "reasons": [
+            "contains _headers"
+          ],
+          "root": "website/docs/static"
+        },
+        {
+          "evidence": [
+            "website/integrations/netlify.toml"
+          ],
+          "reasons": [
+            "contains netlify.toml"
+          ],
+          "root": "website/integrations"
+        },
+        {
+          "evidence": [
+            "website/integrations/static/_headers"
+          ],
+          "reasons": [
+            "contains _headers"
+          ],
+          "root": "website/integrations/static"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "7b0b8f2a391b795f6ddfbfcce006a7e83a414d72",
+      "repository": "GoreeCloud/goreecloud-identity",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "apps/web/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "apps/web"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "c2dfa5882dd1655d30894f0cb422781c6b668f49",
+      "repository": "GoreeCloud/goreecloud-location",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "web/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "web"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "5cd3a9fcc8da76b8703da08305c03abb2ae86737",
+      "repository": "GoreeCloud/goreecloud-mail",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "website",
+            "website/404.html",
+            "website/404.html",
+            "website/_headers",
+            "website/_headers",
+            "website/assets",
+            "website/assets/manager-mark.svg",
+            "website/glaze.lock.json",
+            "website/index.html",
+            "website/index.html",
+            "website/robots.txt",
+            "website/site.css",
+            "website/site.js"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html",
+            "directory named website"
+          ],
+          "root": "website"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "d624ce647bbe4fd618a4332f8dcf62930ad22972",
+      "repository": "GoreeCloud/goreecloud-manager",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "clients/goreecloud-memos/frontend/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "clients/goreecloud-memos/frontend"
+        },
+        {
+          "evidence": [
+            "server/router/frontend/dist/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "server/router/frontend/dist"
+        },
+        {
+          "evidence": [
+            "web/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "web"
+        },
+        {
+          "evidence": [
+            "web/public/site.webmanifest"
+          ],
+          "reasons": [
+            "contains site.webmanifest"
+          ],
+          "root": "web/public"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "02848800ee2e126618e11b0bcddfd052cc6194d4",
+      "repository": "GoreeCloud/goreecloud-memos",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "website",
+            "website/404.html",
+            "website/404.html",
+            "website/_headers",
+            "website/_headers",
+            "website/assets",
+            "website/assets/goreecloud-mesh-mark.svg",
+            "website/glaze.lock.json",
+            "website/index.html",
+            "website/index.html",
+            "website/robots.txt",
+            "website/site.css",
+            "website/site.js",
+            "website/sitemap.xml"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html",
+            "directory named website"
+          ],
+          "root": "website"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "1002c74a2f014b04719b6809da22b0026546f8f0",
+      "repository": "GoreeCloud/goreecloud-mesh",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "static/monitoring/site.webmanifest"
+          ],
+          "reasons": [
+            "contains site.webmanifest"
+          ],
+          "root": "static/monitoring"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "4e5509bb7b89009030794a13a80547a858927753",
+      "repository": "GoreeCloud/goreecloud-monitor",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "web/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "web"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "4d9d7fdb65ebd8224646e2f867dddc718bebcc3f",
+      "repository": "GoreeCloud/goreecloud-music",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "client/ui/frontend/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "client/ui/frontend"
+        },
+        {
+          "evidence": [
+            "proxy/internal/debug/templates/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "proxy/internal/debug/templates"
+        },
+        {
+          "evidence": [
+            "proxy/web/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "proxy/web"
+        },
+        {
+          "evidence": [
+            "proxy/web/dist/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "proxy/web/dist"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "3fca6c7def7c97015d36d2205000942545ac5f70",
+      "repository": "GoreeCloud/goreecloud-network",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "frontend/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "frontend"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "ade2996d2995ea6711d95e9058be9a2310cca057",
+      "repository": "GoreeCloud/goreecloud-notify",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "docs/static/CNAME"
+          ],
+          "reasons": [
+            "contains CNAME"
+          ],
+          "root": "docs/static"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "1203880d9485bfe47d1f01558c1d03a0bf894597",
+      "repository": "GoreeCloud/goreecloud-photos",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "/"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "0926fbd3dacdccac2b473e0ba2cee6769eca5269",
+      "repository": "GoreeCloud/goreecloud-rss",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "native/internal/webui/assets/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "native/internal/webui/assets"
+        },
+        {
+          "evidence": [
+            "searx/templates/simple/404.html",
+            "searx/templates/simple/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains index.html"
+          ],
+          "root": "searx/templates/simple"
+        }
+      ],
+      "default_branch": "master",
+      "head_tree_sha": "d8de49c0e4a510eb89dd3ee954ff4c440140b775",
+      "repository": "GoreeCloud/goreecloud-search",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "sites",
+            "sites/archive",
+            "sites/archive/404.html",
+            "sites/archive/README.md",
+            "sites/archive/_headers",
+            "sites/archive/glaze-ui-2.1.0.css",
+            "sites/archive/index.html",
+            "sites/archive/style.css",
+            "sites/blog",
+            "sites/blog/404.html",
+            "sites/blog/README.md",
+            "sites/blog/_headers",
+            "sites/blog/glaze-ui-2.1.0.css",
+            "sites/blog/index.html",
+            "sites/blog/site.js",
+            "sites/blog/style.css",
+            "sites/manager",
+            "sites/manager/404.html",
+            "sites/manager/README.md",
+            "sites/manager/_headers",
+            "sites/manager/assets",
+            "sites/manager/assets/manager-mark.svg",
+            "sites/manager/glaze.lock.json",
+            "sites/manager/index.html",
+            "sites/manager/robots.txt",
+            "sites/manager/scripts",
+            "sites/manager/scripts/build_public_site.py",
+            "sites/manager/scripts/validate_public_site.py",
+            "sites/manager/site.css",
+            "sites/manager/site.js"
+          ],
+          "reasons": [
+            "directory named sites"
+          ],
+          "root": "sites"
+        },
+        {
+          "evidence": [
+            "sites/archive/404.html",
+            "sites/archive/_headers",
+            "sites/archive/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/archive"
+        },
+        {
+          "evidence": [
+            "sites/blog/404.html",
+            "sites/blog/_headers",
+            "sites/blog/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/blog"
+        },
+        {
+          "evidence": [
+            "sites/manager/404.html",
+            "sites/manager/_headers",
+            "sites/manager/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/manager"
+        },
+        {
+          "evidence": [
+            "sites/projects/404.html",
+            "sites/projects/_headers",
+            "sites/projects/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/projects"
+        },
+        {
+          "evidence": [
+            "sites/roadmap/404.html",
+            "sites/roadmap/_headers",
+            "sites/roadmap/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/roadmap"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "075fa1817bd75b7cf1a9dc175c1b4524c745df77",
+      "repository": "GoreeCloud/goreecloud-static-websites",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "_headers",
+            "index.html",
+            "site.webmanifest"
+          ],
+          "reasons": [
+            "contains _headers",
+            "contains index.html",
+            "contains site.webmanifest"
+          ],
+          "root": "/"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "2cced628d07d2ec48bd838e665e29b9ecb0024a8",
+      "repository": "GoreeCloud/goreecloud-suite",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "templates/portability/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "templates/portability"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "732c95f6466bccc0c8cf64571a5c1ff070308216",
+      "repository": "GoreeCloud/goreecloud-tasks",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "web-client/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "web-client"
+        },
+        {
+          "evidence": [
+            "web-client/validation/argon2id-real-browser/index.html"
+          ],
+          "reasons": [
+            "contains index.html"
+          ],
+          "root": "web-client/validation/argon2id-real-browser"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "8e1d478d1e1e0a31a465808af86dee1d65d018fb",
+      "repository": "GoreeCloud/goreecloud-vault-server",
+      "tree_truncated": false
+    },
+    {
+      "candidates": [
+        {
+          "evidence": [
+            "404.html",
+            "_headers",
+            "index.html",
+            "site.webmanifest"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html",
+            "contains site.webmanifest"
+          ],
+          "root": "/"
+        },
+        {
+          "evidence": [
+            "sites",
+            "sites/archive",
+            "sites/archive/404.html",
+            "sites/archive/README.md",
+            "sites/archive/_headers",
+            "sites/archive/glaze-ui-1.5.0.css",
+            "sites/archive/glaze-ui-2.0.0.css",
+            "sites/archive/glaze-ui-2.1.0.css",
+            "sites/archive/index.html",
+            "sites/archive/style.css",
+            "sites/blog",
+            "sites/blog/404.html",
+            "sites/blog/README.md",
+            "sites/blog/_headers",
+            "sites/blog/glaze-ui-1.5.0.css",
+            "sites/blog/glaze-ui-2.0.0.css",
+            "sites/blog/glaze-ui-2.1.0.css",
+            "sites/blog/index.html",
+            "sites/blog/site.js",
+            "sites/blog/style.css",
+            "sites/projects",
+            "sites/projects/404.html",
+            "sites/projects/README.md",
+            "sites/projects/_headers",
+            "sites/projects/assets",
+            "sites/projects/assets/app.js",
+            "sites/projects/assets/everkeep.svg",
+            "sites/projects/assets/glaze-ui-1.5.0.css",
+            "sites/projects/assets/glaze-ui-2.0.0.css",
+            "sites/projects/assets/glaze-ui-2.1.0.css"
+          ],
+          "reasons": [
+            "directory named sites"
+          ],
+          "root": "sites"
+        },
+        {
+          "evidence": [
+            "sites/archive/404.html",
+            "sites/archive/_headers",
+            "sites/archive/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/archive"
+        },
+        {
+          "evidence": [
+            "sites/blog/404.html",
+            "sites/blog/_headers",
+            "sites/blog/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/blog"
+        },
+        {
+          "evidence": [
+            "sites/projects/404.html",
+            "sites/projects/_headers",
+            "sites/projects/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/projects"
+        },
+        {
+          "evidence": [
+            "sites/roadmap/404.html",
+            "sites/roadmap/_headers",
+            "sites/roadmap/index.html"
+          ],
+          "reasons": [
+            "contains 404.html",
+            "contains _headers",
+            "contains index.html"
+          ],
+          "root": "sites/roadmap"
+        }
+      ],
+      "default_branch": "main",
+      "head_tree_sha": "18f5276d21b8eb3b55adc18e00e88aa11b6edfd8",
+      "repository": "GoreeCloud/goreecloud-website",
+      "tree_truncated": false
+    }
+  ],
+  "errors": [],
+  "generated_from": "GitHub recursive trees",
+  "repositories_scanned": 66,
+  "schema_version": "1.0",
+  "scope": "public non-archived GoreeCloud repositories"
+}
