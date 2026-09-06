@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" data-glaze-clarity="balanced" data-glaze-expression="balanced">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="GoreeCloud Design Center documents the current Stable GLAZE UI V1.1 release, including System Shell hierarchy, components, adaptive interaction, accessibility, and exact-revision conformance boundaries.">
+  <title>GoreeCloud Design Center — GLAZE UI V1.1</title>
+  <link rel="icon" href="/assets/glaze-ui-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/glaze.css">
+  <link rel="stylesheet" href="/assets/glaze.controls.css">
+  <link rel="stylesheet" href="/assets/glaze.expressive.css">
+  <link rel="stylesheet" href="/assets/glaze.formfactors.css">
+  <link rel="stylesheet" href="/assets/glaze.accessibility.css">
+  <link rel="stylesheet" href="/assets/glaze.color.css">
+  <link rel="stylesheet" href="/assets/glaze.motion.css">
+  <link rel="stylesheet" href="/assets/glaze.materials.css">
+  <link rel="stylesheet" href="/assets/glaze.layout.css">
+  <link rel="stylesheet" href="/assets/glaze.states.css">
+  <link rel="stylesheet" href="/assets/glaze-v1.1.0.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/identity.css">
+</head>
+<body class="glaze-canvas">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header glaze-material-soft">
+    <div class="shell nav-wrap">
+      <a class="brand glaze-focusable" href="#top" aria-label="GoreeCloud Design Center home">
+        <img class="brand-mark" src="/assets/glaze-ui-mark.svg" alt="" width="34" height="34">
+        <span class="brand-label-long">GoreeCloud · Design Center · GLAZE UI</span>
+        <span class="brand-label-short" aria-hidden="true">GLAZE UI</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#shell">System Shell</a>
+        <a href="#components">Components</a>
+        <a href="#accessibility">Accessibility</a>
+        <a href="#conformance">Conformance</a>
+      </nav>
+      <div class="theme-group" role="group" aria-label="Appearance">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="shell" tabindex="-1">
+    <section id="top" class="hero glaze-surface-raised glaze-reach-layout">
+      <div class="hero-copy-block">
+        <span class="eyebrow">Current Stable · GLAZE UI V1.1</span>
+        <h1 class="glaze-hero-type">Solid where you read. Glazed where you interact.</h1>
+        <p class="glaze-supporting-type">GLAZE UI V1.1 is GoreeCloud's current Stable design system. Machine version <strong>1.1.0</strong> adds the approved Deep Teal + Soft Amber optical layer while preserving V1 semantics, accessibility, structure, and material limits.</p>
+      </div>
+      <div class="hero-identity" aria-label="Official GLAZE UI Facet identity">
+        <img src="/assets/glaze-ui-mark.svg" alt="Official GLAZE UI Facet mark" width="184" height="184">
+        <div><strong>Facet</strong><span>Official GLAZE UI identity</span></div>
+      </div>
+      <div class="actions glaze-reach-actions glaze-button-group">
+        <a class="glaze-button" data-variant="emphasis" href="#shell">Explore V1.1</a>
+        <a class="glaze-button" data-variant="soft" href="https://github.com/GoreeCloud/goreecloud-glaze-ui">View source</a>
+      </div>
+    </section>
+
+    <section id="shell" class="section-block">
+      <div class="section-heading">
+        <span class="eyebrow">System Shell</span>
+        <h2>Workspace → Application → System Overlay → System Panel → Critical System</h2>
+        <p>System priority becomes progressively more explicit and solid. Durable content stays readable; transient command, search, control, and feedback chrome may use Glaze. Universal Search and Control Center are bounded System Shell interaction references, not independent application authority. Ordinary composition permits one dominant Glaze panel plus one to three small floating Glaze controls.</p>
+      </div>
+      <div class="surface-grid">
+        <article class="surface-card canvas"><strong>Workspace</strong></article>
+        <article class="surface-card solid"><strong>Application</strong></article>
+        <article class="surface-card glaze glaze-material-soft"><strong>System Overlay</strong></article>
+        <article class="surface-card overlay glaze-material-deep"><strong>System Panel</strong></article>
+        <article class="surface-card solid"><strong>Critical System</strong></article>
+      </div>
+      <div class="actions" style="margin-top:18px">
+        <a class="glaze-button" data-variant="soft" href="/reference/v1-system-shell.html">Open V1 System Shell reference</a>
+      </div>
+    </section>
+
+    <section id="components" class="section-block">
+      <div class="section-heading">
+        <span class="eyebrow">V1.1 component catalog</span>
+        <h2>32 bounded contracts across five tiers.</h2>
+        <p>Foundation 8 · Structure 8 · Overlay 6 · Signature 5 · Intelligence 5. Catalog status defines reusable semantics; it does not auto-implement components inside downstream products.</p>
+      </div>
+      <div class="demo-grid">
+        <article class="glaze-surface glaze-card demo"><h3>Foundation</h3><p>Controls, fields, and selection semantics.</p></article>
+        <article class="glaze-surface-raised glaze-card demo"><h3>Structure</h3><p>Cards, lists, tables, tabs, and navigation structures.</p></article>
+        <article class="glaze-material-soft glaze-card demo"><h3>Overlay</h3><p>Tooltips, menus, dialogs, sheets, and transient feedback.</p></article>
+        <article class="glaze-surface glaze-card demo"><h3>Signature</h3><p>Capsule, Morph Card, Smart Rail, Aurora Surface, and Universal Search.</p></article>
+        <article class="glaze-surface-raised glaze-card demo"><h3>Intelligence</h3><p>Generated-content presentation with identity, provenance, and authority boundaries.</p></article>
+      </div>
+    </section>
+
+    <section id="adaptation" class="section-block">
+      <div class="section-heading">
+        <span class="eyebrow">Adaptive interaction</span>
+        <h2>Transform rather than resize.</h2>
+        <p>The same navigation concept may become a phone Capsule, tablet rail, desktop sidebar, TV focus dock, compact wearable rotational navigation, or spatial floating surface. Foldable hinges are physical exclusion regions, not decorative gaps.</p>
+      </div>
+      <div class="demo-grid">
+        <article class="glaze-surface glaze-card demo"><h3>Mobile</h3><p>Reachability, safe areas, and a 48px touch-oriented floor.</p></article>
+        <article class="glaze-surface-raised glaze-card demo"><h3>Tablet</h3><p>Rail and pane patterns with posture-aware task continuity.</p></article>
+        <article class="glaze-material-soft glaze-card demo"><h3>Desktop</h3><p>Persistent tools, pointer and keyboard support, and resizable workspaces.</p></article>
+        <article class="glaze-surface glaze-card demo"><h3>TV</h3><p>Far-view treatment, a 56px floor where applicable, and directional focus.</p></article>
+        <article class="glaze-surface glaze-card demo"><h3>Wearable</h3><p>Compact rotational navigation rather than a shrunken phone interface.</p></article>
+        <article class="glaze-surface-raised glaze-card demo"><h3>Spatial</h3><p>Depth is supplemental; a fully flat fallback remains operable.</p></article>
+      </div>
+    </section>
+
+    <section id="accessibility" class="section-block glaze-surface adoption">
+      <span class="eyebrow">Accessibility and resilience</span>
+      <h2>Effects are optional. Usability is not.</h2>
+      <p>Reduced Transparency resolves optical material to solid hierarchy. Increased Contrast strengthens boundaries. Reduced Motion removes nonessential travel and morphing. 200% text reorganizes instead of clipping. Forced Colors, RTL and localization, Touch Assistance, and no-backdrop or no-depth modes preserve state and task completion.</p>
+    </section>
+
+    <section id="conformance" class="section-block">
+      <div class="section-heading">
+        <span class="eyebrow">Exact-revision conformance</span>
+        <h2>Stable V1.1 identity does not equal downstream production acceptance.</h2>
+        <p>Downstream applications must target GLAZE UI V1.1 / 1.1.0 explicitly and generate fresh application-specific evidence for the exact source revision they evaluate. The Stable design-system release does not auto-upgrade consumers or inherit application production acceptance.</p>
+      </div>
+      <div class="actions">
+        <a class="glaze-button" data-variant="emphasis" href="https://github.com/GoreeCloud/goreecloud-glaze-ui/blob/main/ADOPTION.md">Adoption guide</a>
+        <a class="glaze-button" data-variant="soft" href="https://github.com/GoreeCloud/goreecloud-glaze-ui/blob/main/CONFORMANCE.md">Conformance contract</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-identity">
+      <img src="/assets/glaze-ui-mark.svg" alt="" width="34" height="34">
+      <div><strong>Design Center · GLAZE UI V1.1</strong><p>Current Stable design-system release. Downstream conformance remains application-specific.</p></div>
+    </div>
+  </footer>
+  <script src="/assets/site.js" defer></script>
+</body>
+</html>
