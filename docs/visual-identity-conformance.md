@@ -40,6 +40,7 @@ The following packages have completed controlled V1.1 source and isolated-artifa
 
 - Archive
 - Blog
+- Continuity Center / Everkeep
 - Identity Center
 - Main
 - Privacy Center
@@ -47,13 +48,14 @@ The following packages have completed controlled V1.1 source and isolated-artifa
 
 The Main checkpoint at revision `6435e83ab3f9561e3662b74c355a6a71315c8073` passed Main source validation, isolated V1.1 artifact construction, shared V1.1 artifact validation, allowlist validation, JavaScript syntax, repository-wide validation, and all other workflows triggered by that exact revision.
 
-The Privacy Center checkpoint at revision `0fb49fbf1634aaa81e87f0bfff3a8d3260eed27d` passed its V1.1 source boundary, isolated same-origin V1.1 artifact build, shared V1.1 source/artifact validation, Privacy-specific authority and identity validation, JavaScript syntax, repository-wide validation, and every other workflow triggered by that exact revision. Security Center and Continuity Center also passed their existing contracts at that checkpoint; those successes do not imply Continuity Center has completed its namespace migration.
+The Privacy Center checkpoint at revision `0fb49fbf1634aaa81e87f0bfff3a8d3260eed27d` passed its V1.1 source boundary, isolated same-origin V1.1 artifact build, shared V1.1 source/artifact validation, Privacy-specific authority and identity validation, JavaScript syntax, repository-wide validation, and every other workflow triggered by that exact revision.
+
+The Continuity Center checkpoint at revision `7f9108cc3ec7c9bb5a7fbe82f138e14620e41f50` passed its V1.1 responsive/source boundary, isolated same-origin V1.1 artifact build, shared V1.1 source/artifact validation, Everkeep-specific truth/identity/artifact validation, repository-wide validation, and every other workflow triggered by that exact revision. Production recovery/failover remains explicitly outside this source/build evidence.
 
 ### Remaining controlled migrations
 
 These centralized packages still preserve active pre-reset 2.x consumer source or locks and require controlled migration rather than filename substitution:
 
-- Everkeep / Continuity Center
 - Manager
 - Mesh
 - Projects
@@ -63,4 +65,4 @@ Security Center, Design Center, and Labs already contain V1.1-era source, but th
 
 ## Completion boundary
 
-This record does not declare the full website portfolio conformant. The current PR closes the source/build namespace-reset gate only for the six listed migrated consumers. Missing canonical product identities, the five remaining pre-reset consumers, rendered/human acceptance where required, Cloudflare source cutover, exact production deployment verification, and formal GLAZE consumer acceptance remain separate blockers.
+This record does not declare the full website portfolio conformant. The current PR closes the source/build namespace-reset gate only for the seven listed migrated consumers. Missing canonical product identities, the four remaining pre-reset consumers, rendered/human acceptance where required, Cloudflare source cutover, exact production deployment verification, and formal GLAZE consumer acceptance remain separate blockers.
