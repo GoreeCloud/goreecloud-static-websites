@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-08-31",
+  "review_method": "Authenticated GitHub owner inventory reconciliation against current GoreeCloud repositories plus current application/runtime authority review",
+  "counts": {"total": 57, "public": 40, "private": 17, "functional_groups": 13},
+  "groups": [
+    {
+      "id": "design-system",
+      "label": "Design system",
+      "repositories": [
+        {"name":"goreecloud-glaze-ui","visibility":"public","description":"Canonical source for the Glaze UI design system and Design Center website.","role":"Shared design-system authority and current Glaze UI 2.1.0 Stable contract."}
+      ]
+    },
+    {
+      "id": "core-platform-shared-foundations",
+      "label": "Core platform & shared foundations",
+      "repositories": [
+        {"name":"goreecloud-manager","visibility":"public","description":"Administration and operations console for GoreeCloud.","role":"Central management and operations console."},
+        {"name":"goreecloud-everkeep","visibility":"private","description":"Everkeep resilience, recovery, preservation, portability, continuity, succession, and assurance source.","role":"Everkeep platform authority and Continuity Center source boundary."},
+        {"name":"goreecloud-branding-assets","visibility":"private","description":"Canonical GoreeCloud logos, icons, artwork, and reusable visual-identity assets.","role":"Shared visual-identity asset authority for current and future GoreeCloud products."},
+        {"name":"goreecloud-suite","visibility":"private","description":"Suite-level integration and the public GoreeCloud Suite directory.","role":"GoreeCloud Suite integration and product-directory source boundary."},
+        {"name":"goreecloud-waypoint","visibility":"public","description":"Waypoint capability identity associated with GoreeCloud Tasks.","role":"Waypoint capability-identity authority."},
+        {"name":"goreecloud-mesh","visibility":"public","description":"Coordination and governance plane connecting GoreeCloud applications, services, evidence, and platform relationships.","role":"GoreeCloud Mesh platform authority and Mesh Center source."},
+        {"name":"goreecloud-gateway","visibility":"public","description":"GoreeCloud reverse proxy, HTTPS ingress, routing, certificate-management, and controlled service-publication platform.","role":"Ingress, certificate, routing, and publication authority."},
+        {"name":"goreecloud-app-store","visibility":"public","description":"Official GoreeCloud application and service catalog and distribution experience.","role":"Application discovery, entitlement-aware catalog, and distribution client under development."}
+      ]
+    },
+    {
+      "id": "identity-security-secrets",
+      "label": "Identity, security & secrets",
+      "repositories": [
+        {"name":"goreecloud-vault-server","visibility":"public","description":"GoreeCloud credential and encrypted-vault server.","role":"Canonical GoreeCloud Vault Server backend."},
+        {"name":"goreecloud-identity","visibility":"public","description":"GoreeCloud identity, authentication, authorization, accounts, devices, credentials, sessions, and delegated-authority project.","role":"Identity platform authority and Identity Center source."},
+        {"name":"goreecloud-wardveil-security","visibility":"private","description":"Wardveil Security source, evidence contracts, protection semantics, and Security Center website.","role":"Wardveil Security platform authority and Security Center source."},
+        {"name":"goreecloud-privacy-shield","visibility":"private","description":"Privacy Shield contracts, adapters, evidence semantics, governance, consent, minimization, and Privacy Center website.","role":"Privacy Shield platform authority and Privacy Center source."}
+      ]
+    },
+    {
+      "id": "backup-recovery",
+      "label": "Backup & recovery",
+      "repositories": [
+        {"name":"goreecloud-backup","visibility":"public","description":"GoreeCloud backup and recovery project.","role":"Backup product source; production claims remain evidence-gated."}
+      ]
+    },
+    {
+      "id": "private-networking-dns",
+      "label": "Private networking & DNS",
+      "repositories": [
+        {"name":"goreecloud-network","visibility":"public","description":"GoreeCloud private-network project.","role":"Private-network platform source."},
+        {"name":"goreecloud-network-dashboard","visibility":"public","description":"Web administration source for GoreeCloud Network.","role":"Network administration UI source."},
+        {"name":"goreecloud-network-android","visibility":"public","description":"Android client for GoreeCloud Network.","role":"Private-network Android client."},
+        {"name":"goreecloud-dns","visibility":"public","description":"GoreeCloud DNS filtering and policy project.","role":"DNS filtering and policy source; recursive resolution is a separate responsibility."}
+      ]
+    },
+    {
+      "id": "research-knowledge-bookmarks",
+      "label": "Research, knowledge & bookmarks",
+      "repositories": [
+        {"name":"goreecloud-notes","visibility":"public","description":"GoreeCloud note-taking, knowledge-management, and productivity platform.","role":"Notes and knowledge-management application source."},
+        {"name":"goreecloud-memos","visibility":"public","description":"Lightweight Markdown-native quick-note application.","role":"Quick-note capture application source; GoreeCloud Memos v0.1.3 is the accepted Stable production runtime."},
+        {"name":"goreecloud-bookmarks","visibility":"public","description":"Bookmark, reading, annotation, and web-preservation platform.","role":"Bookmark management and web-preservation source."},
+        {"name":"goreecloud-bookmark-browser-extension","visibility":"public","description":"Official browser extension for GoreeCloud Bookmarks.","role":"Browser integration client for GoreeCloud Bookmarks."},
+        {"name":"goreecloud-documents","visibility":"public","description":"First-party document-management platform for capture, OCR, search, organization, automation, collaboration, and preservation.","role":"Document-management application source."}
+      ]
+    },
+    {
+      "id": "productivity-personal-information",
+      "label": "Productivity & personal information",
+      "repositories": [
+        {"name":"goreecloud-tasks","visibility":"private","description":"Privacy-first multi-user task and project-management application.","role":"Task and project-management application source."},
+        {"name":"goreecloud-contacts","visibility":"private","description":"Privacy-first contact-management application.","role":"Contact application and CardDAV presentation source."},
+        {"name":"goreecloud-calendar","visibility":"public","description":"GoreeCloud calendar application.","role":"Calendar application and CalDAV presentation source."},
+        {"name":"goreecloud-keyboard","visibility":"public","description":"GoreeCloud Android keyboard.","role":"Android input method and productivity client source."},
+        {"name":"goreecloud-launcher","visibility":"public","description":"GoreeCloud Android home-screen launcher.","role":"Privacy-first Android launcher source."},
+        {"name":"goreecloud-quill","visibility":"public","description":"GoreeCloud typing, editing, privacy, and intelligent-input capability project.","role":"Quill shared editing and intelligent-input capability source."}
+      ]
+    },
+    {
+      "id": "operations-developer-tools",
+      "label": "Operations, developer tools & intelligence",
+      "repositories": [
+        {"name":"goreecloud-changelogs","visibility":"private","description":"Historical change-ledger application.","role":"Historical change-management application source."},
+        {"name":"goreecloud-notify","visibility":"private","description":"GoreeCloud-native notification and alert service.","role":"GoreeCloud Notify 0.2.0 Release Candidate source; ntfy v2.26.3 remains the active production notification service and rollback path until controlled acceptance and cutover."},
+        {"name":"goreecloud-monitor","visibility":"public","description":"Monitoring application for availability, endpoint health, heartbeats, certificates, incidents, and recovery.","role":"Availability-monitoring application source under active validation; Uptime Kuma remains authoritative until controlled acceptance and cutover."},
+        {"name":"goreecloud-terminal","visibility":"public","description":"GoreeCloud Linux terminal.","role":"Linux terminal application source."},
+        {"name":"goreecloud-github-dashboard","visibility":"private","description":"Dashboard for GitHub repository activity and repository health.","role":"Private GitHub administration and repository-health dashboard."},
+        {"name":"goreecloud-firefox-extensions","visibility":"private","description":"Canonical source for Firefox extensions built or maintained by GoreeCloud.","role":"Firefox-extension source, build, maintenance, and release boundary."},
+        {"name":"goreecloud-code","visibility":"private","description":"Developer and source-control platform for repositories, collaboration, CI/CD, packages, security, and AI-assisted development.","role":"Developer platform source."},
+        {"name":"goreecloud-ai","visibility":"public","description":"First-party conversational AI and local-model workspace built around GoreeCloud services and governed integrations.","role":"AI workspace, knowledge, research, and tool-interaction application source."}
+      ]
+    },
+    {
+      "id": "search-feeds-browser",
+      "label": "Search, indexing, feeds & browser",
+      "repositories": [
+        {"name":"goreecloud-search","visibility":"public","description":"GoreeCloud private search and metasearch project.","role":"Internet/web search, discovery, and AI-research gateway source; the current SearXNG-derived GoreeCloud Search runtime remains transitional production continuity while the mandatory native rebuild proceeds."},
+        {"name":"goreecloud-index","visibility":"private","description":"Privacy-first universal search and indexing layer coordinating authorized GoreeCloud search providers while preserving source ownership and provenance.","role":"Universal GoreeCloud search/indexing authority; current source is Development and is not Stable or production-accepted."},
+        {"name":"goreecloud-rss","visibility":"public","description":"Source for GoreeCloud Feed across supported clients.","role":"RSS and feed application source."},
+        {"name":"goreecloud-browser","visibility":"public","description":"GoreeCloud browser distribution and first-party browser product layers.","role":"Primary GoreeCloud web-browser source."},
+        {"name":"goreecloud-redirector","visibility":"public","description":"Privacy-first browser extension for redirecting selected external-service URLs to GoreeCloud services.","role":"Browser URL-routing and service-migration utility."},
+        {"name":"goreecloud-source-resync","visibility":"public","description":"Browser extension supporting GoreeCloud project-source synchronization workflows.","role":"Project-source synchronization browser utility."}
+      ]
+    },
+    {
+      "id": "communication-collaboration",
+      "label": "Communication & collaboration",
+      "repositories": [
+        {"name":"goreecloud-mail","visibility":"private","description":"GoreeCloud mail client and provider-integration project.","role":"Mail-client application source; GoreeCloud does not operate a mail server."},
+        {"name":"goreecloud-messenger","visibility":"private","description":"First-party private messaging and calling application.","role":"Messaging, groups, calling, and GoreeCloud integration application source."}
+      ]
+    },
+    {
+      "id": "photos-media-entertainment",
+      "label": "Photos, media & entertainment",
+      "repositories": [
+        {"name":"goreecloud-gallery","visibility":"public","description":"Offline-first Android gallery for device-local photos and media.","role":"Local photo and media gallery client source."},
+        {"name":"goreecloud-photos","visibility":"public","description":"GoreeCloud cloud-photo and family-media application.","role":"Cloud photo and family-media platform source."},
+        {"name":"goreecloud-music","visibility":"public","description":"GoreeCloud multi-user music service and application.","role":"Music application and service source."},
+        {"name":"goreecloud-video","visibility":"public","description":"GoreeCloud video library and streaming application.","role":"Private multi-user video application and service source."}
+      ]
+    },
+    {
+      "id": "storage-location-synchronization",
+      "label": "Storage, location & synchronization",
+      "repositories": [
+        {"name":"goreecloud-drive","visibility":"public","description":"First-party private multi-user cloud file storage, sharing, collaboration, and version-history application.","role":"Cloud file-storage and file-management platform source."},
+        {"name":"goreecloud-file-manager","visibility":"public","description":"First-party GoreeCloud file-management application.","role":"Local and connected file-management experience source."},
+        {"name":"goreecloud-location","visibility":"public","description":"Privacy-first multi-user location and tracking platform.","role":"Location application and service source."},
+        {"name":"goreecloud-maps","visibility":"private","description":"GoreeCloud maps and mapping experience.","role":"Maps application source with privacy and GoreeCloud Location integration boundaries."},
+        {"name":"goreecloud-sync","visibility":"public","description":"Privacy-first file synchronization, transfer, and sharing platform.","role":"File synchronization and transfer source."}
+      ]
+    },
+    {
+      "id": "web-presence-documentation",
+      "label": "Web presence & documentation",
+      "repositories": [
+        {"name":"goreecloud-website","visibility":"private","description":"Source for the main GoreeCloud public website and the Projects, Roadmap, Blog, and Archive sites.","role":"Public website portfolio source and Cloudflare Pages build boundary."},
+        {"name":"GoreeCloud","visibility":"public","description":"GoreeCloud organization profile and overview repository.","role":"Organization-level public profile and navigation source."},
+        {"name":"goreecloud-autobiography","visibility":"public","description":"GoreeCloud project history and autobiography source.","role":"Long-form project history and narrative documentation source."}
+      ]
+    }
+  ]
+}

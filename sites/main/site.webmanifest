@@ -1,0 +1,39 @@
+{
+  "id": "/",
+  "name": "GoreeCloud",
+  "short_name": "GoreeCloud",
+  "description": "Privacy-first personal and family cloud focused on ownership, recoverability, open-source independence, and long-term digital preservation.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#07111f",
+  "background_color": "#07111f",
+  "icons": [
+    {
+      "src": "/assets/goreecloud-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Repositories",
+      "short_name": "Repositories",
+      "url": "/repositories.html"
+    },
+    {
+      "name": "Privacy",
+      "short_name": "Privacy",
+      "url": "/privacy.html"
+    },
+    {
+      "name": "Security",
+      "short_name": "Security",
+      "url": "/security.html"
+    }
+  ],
+  "prefer_related_applications": false
+}

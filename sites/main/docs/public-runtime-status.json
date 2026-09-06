@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "as_of": "2026-08-31",
+  "purpose": "Repository-only current-state authority that separates GoreeCloud product/source lifecycle from the live production runtime or predecessor that remains authoritative during controlled migrations.",
+  "services": {
+    "goreecloud-memos": {
+      "public_name": "GoreeCloud Memos",
+      "product_state": "stable-production",
+      "runtime_state": "production-accepted",
+      "public_label": "Stable Production v0.1.3",
+      "current_service": "GoreeCloud Memos v0.1.3",
+      "production_authority": "GoreeCloud Memos v0.1.3",
+      "transition": "GoreeCloud Memos web/server v0.1.3 is the accepted Stable production runtime."
+    },
+    "goreecloud-notify": {
+      "public_name": "GoreeCloud Notify",
+      "product_state": "release-candidate",
+      "runtime_state": "pre-cutover",
+      "public_label": "Release Candidate",
+      "current_service": "ntfy v2.26.3",
+      "production_authority": "ntfy v2.26.3",
+      "transition": "GoreeCloud Notify 0.2.0 remains a Release Candidate. ntfy v2.26.3 remains the active production notification service and rollback path until target acceptance, controlled producer and consumer migration, tested rollback, and explicit cutover are complete."
+    },
+    "goreecloud-search": {
+      "public_name": "GoreeCloud Search",
+      "product_state": "active-development",
+      "runtime_state": "transitional-production",
+      "public_label": "Current Service · Native Rebuild",
+      "current_service": "GoreeCloud Search",
+      "production_authority": "Current SearXNG-derived GoreeCloud Search runtime",
+      "transition": "GoreeCloud Search remains the current production search service, while its existing SearXNG-derived implementation is transitional continuity during the mandatory native rebuild. Native Stable qualification requires separate implementation and acceptance evidence."
+    },
+    "goreecloud-monitor": {
+      "public_name": "GoreeCloud Monitor",
+      "product_state": "active-validation",
+      "runtime_state": "pre-cutover",
+      "public_label": "Active Validation",
+      "current_service": "Uptime Kuma",
+      "production_authority": "Uptime Kuma",
+      "transition": "Uptime Kuma remains the active and authoritative GoreeCloud availability-monitoring platform until GoreeCloud Monitor completes target recovery, isolated deployment, reviewed activation, live parity and scenario validation, rollback evidence, and explicit cutover approval."
+    }
+  }
+}

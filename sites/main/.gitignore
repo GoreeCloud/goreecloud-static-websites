@@ -1,0 +1,30 @@
+# Generated public deployment artifact
+/dist/
+
+# Local Python bytecode from validators/build tooling
+__pycache__/
+*.py[cod]
+
+# Local environment and secret-bearing configuration
+.env
+.env.*
+!.env.example
+
+# Private keys and certificate containers are never repository source
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+
+# Local editor and operating-system artifacts
+*.swp
+*.swo
+*.orig
+*.rej
+*~
+.DS_Store
+Thumbs.db

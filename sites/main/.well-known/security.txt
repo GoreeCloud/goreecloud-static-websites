@@ -1,0 +1,5 @@
+Contact: mailto:security@goreecloud.com
+Expires: 2027-08-14T23:59:59Z
+Preferred-Languages: en
+Canonical: https://www.goreecloud.com/.well-known/security.txt
+Policy: https://www.goreecloud.com/security.html

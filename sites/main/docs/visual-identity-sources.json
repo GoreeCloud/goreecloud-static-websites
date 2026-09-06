@@ -1,0 +1,355 @@
+{
+  "assets": [
+    {
+      "asset_path": "assets/goreecloud-logo.svg",
+      "bytes": 689,
+      "official_artwork_exists": true,
+      "sha256": "630c05ea616f4de042436dcb0968ba60c650540c8e99abd0ca6ed12eb13564df",
+      "source_authority": "GoreeCloud/goreecloud-branding-assets",
+      "source_path": "official/goreecloud-logo.svg",
+      "source_ref": "9f434ac22fe2cf9121a4390df22ccb0ce1c648dc",
+      "source_url": "https://raw.githubusercontent.com/GoreeCloud/goreecloud-branding-assets/9f434ac22fe2cf9121a4390df22ccb0ce1c648dc/official/goreecloud-logo.svg"
+    },
+    {
+      "asset_path": "assets/services/nextcloud.svg",
+      "bytes": 815,
+      "official_artwork_exists": true,
+      "sha256": "7b762288d5b7bf4d5d3fd83c5caac1792dc525f1aab4b70968cb9fb9a113867f",
+      "source_authority": "nextcloud/server",
+      "source_path": "core/img/logo/logo.svg",
+      "source_ref": "master",
+      "source_url": "https://raw.githubusercontent.com/nextcloud/server/master/core/img/logo/logo.svg"
+    },
+    {
+      "asset_path": "assets/services/immich.svg",
+      "bytes": 2053,
+      "official_artwork_exists": true,
+      "sha256": "dfa5ef704d07854914306c0c224173bda2710f8fc0dffeb7d78690f58f9811a6",
+      "source_authority": "immich-app/immich",
+      "source_path": "design/immich-logo.svg",
+      "source_ref": "main",
+      "source_url": "https://raw.githubusercontent.com/immich-app/immich/main/design/immich-logo.svg"
+    },
+    {
+      "asset_path": "assets/services/jellyfin.svg",
+      "bytes": 1270,
+      "official_artwork_exists": true,
+      "sha256": "cf3262b0eee6a47b8a09515ef01dd9a2151cb58022645e68acbf09efc9d0ed20",
+      "source_authority": "jellyfin/jellyfin-ux",
+      "source_path": "logos/SVG/jellyfin-icon--color-on-light.svg",
+      "source_ref": "master",
+      "source_url": "https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/logos/SVG/jellyfin-icon--color-on-light.svg"
+    },
+    {
+      "asset_path": "assets/services/navidrome.png",
+      "bytes": 9876,
+      "official_artwork_exists": true,
+      "sha256": "f4b626075a233b81db83b90cc0da3b1a7b093485ec831160530607916c595658",
+      "source_authority": "navidrome/navidrome",
+      "source_path": "ui/public/android-chrome-192x192.png",
+      "source_ref": "master",
+      "source_url": "https://raw.githubusercontent.com/navidrome/navidrome/master/ui/public/android-chrome-192x192.png"
+    },
+    {
+      "asset_path": "assets/services/audiobookshelf.svg",
+      "bytes": 2458,
+      "official_artwork_exists": true,
+      "sha256": "560baf46422e3ff516d249b449bd331d6b257f1099a130150e10845a8c922a69",
+      "source_authority": "advplyr/audiobookshelf",
+      "source_path": "client/static/icon.svg",
+      "source_ref": "master",
+      "source_url": "https://raw.githubusercontent.com/advplyr/audiobookshelf/master/client/static/icon.svg"
+    },
+    {
+      "asset_path": "assets/services/paperless-ngx.svg",
+      "bytes": 644,
+      "official_artwork_exists": true,
+      "sha256": "27a6a4519fa481a1181a3b9b52513763740dce9d0eb073bc874a1a4ae3d7d759",
+      "source_authority": "paperless-ngx/paperless-ngx",
+      "source_path": "docs/assets/logo_leaf.svg",
+      "source_ref": "dev",
+      "source_url": "https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/docs/assets/logo_leaf.svg"
+    },
+    {
+      "asset_path": "assets/services/vaultwarden.svg",
+      "bytes": 6614,
+      "official_artwork_exists": true,
+      "sha256": "06e1cca116b6fd15c0a11f4d8b8b948a3823459059876943f9b67be6e4a8d2b9",
+      "source_authority": "dani-garcia/vaultwarden",
+      "source_path": "resources/vaultwarden-logo.svg",
+      "source_ref": "0cefa4cca7c9f2a5579dd290f78193b543818c51",
+      "source_url": "https://raw.githubusercontent.com/dani-garcia/vaultwarden/0cefa4cca7c9f2a5579dd290f78193b543818c51/resources/vaultwarden-logo.svg"
+    },
+    {
+      "asset_path": "assets/services/element.svg",
+      "bytes": 1771,
+      "official_artwork_exists": true,
+      "sha256": "8e88116dae7088cc9f825fc3c80bcc84804e98c53494aa40c8954d21dcded584",
+      "source_authority": "element-hq/element-web",
+      "source_path": "apps/web/res/themes/element/img/logos/element-logo.svg",
+      "source_ref": "d8e18abdf90c917d38fc1c8021e32e5e5782ec91",
+      "source_url": "https://raw.githubusercontent.com/element-hq/element-web/d8e18abdf90c917d38fc1c8021e32e5e5782ec91/apps/web/res/themes/element/img/logos/element-logo.svg"
+    },
+    {
+      "asset_path": "assets/services/matrix.svg",
+      "bytes": 8944,
+      "official_artwork_exists": true,
+      "sha256": "13f20decd72229aa3f9591b8afd13e7d5031ecb0b3b6196df5c570fd5298e062",
+      "source_authority": "matrix-org/matrix.org",
+      "source_path": "static/images/matrix-logo-white.svg",
+      "source_ref": "afca85178d131d3d85a33da34d64cbae88697a77",
+      "source_url": "https://raw.githubusercontent.com/matrix-org/matrix.org/afca85178d131d3d85a33da34d64cbae88697a77/static/images/matrix-logo-white.svg"
+    },
+    {
+      "asset_path": "assets/services/onlyoffice.ico",
+      "bytes": 1821,
+      "official_artwork_exists": true,
+      "sha256": "0efe15ee5ae7c01fd5cb3198bc849371ebc12ce48e0e595118724b182c765ec6",
+      "source_authority": "ONLYOFFICE official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.onlyoffice.com/favicon.ico"
+    },
+    {
+      "asset_path": "assets/services/stirling-pdf.png",
+      "bytes": 8941,
+      "official_artwork_exists": true,
+      "sha256": "ca36324067baf10f9e48b860560f7e65a9c7769fcd9a165f4b084ef7a2449aad",
+      "source_authority": "Stirling Tools official GitHub organization",
+      "source_path": "GitHub organization avatar",
+      "source_ref": "2026-08-19",
+      "source_url": "https://github.com/Stirling-Tools.png?size=192"
+    },
+    {
+      "asset_path": "assets/services/actual-budget.png",
+      "bytes": 5804,
+      "official_artwork_exists": true,
+      "sha256": "5e2bcfc3a79b43ab5fd59ae277230781876fe93819da926613b76ca727d1b699",
+      "source_authority": "actualbudget/actual",
+      "source_path": "packages/desktop-client/public/android-chrome-192x192.png",
+      "source_ref": "master",
+      "source_url": "https://raw.githubusercontent.com/actualbudget/actual/master/packages/desktop-client/public/android-chrome-192x192.png"
+    },
+    {
+      "asset_path": "assets/platform/proxmox.svg",
+      "bytes": 20690,
+      "official_artwork_exists": true,
+      "sha256": "b50f7a2ce2febc3ffbb7af9b185f1ccbfc5e8f49729490a641ca7086d8009174",
+      "source_authority": "Proxmox official media kit",
+      "source_path": "mediakit-proxmox-server-solutions-logos-light.svg",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.proxmox.com/images/proxmox/logos/mediakit-proxmox-server-solutions-logos-light.svg"
+    },
+    {
+      "asset_path": "assets/platform/debian.svg",
+      "bytes": 6863,
+      "official_artwork_exists": true,
+      "sha256": "89a3ca1a1bc91610edcc637457e7275a159309f4621829b2a0170e28970cac20",
+      "source_authority": "Debian official logo page",
+      "source_path": "logos/openlogo-nd.svg",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.debian.org/logos/openlogo-nd.svg"
+    },
+    {
+      "asset_path": "assets/platform/docker.png",
+      "bytes": 2365,
+      "official_artwork_exists": true,
+      "sha256": "88c8e77031f96d816afc67d476e58191ce0926849fc9ef1151bd7ef556425647",
+      "source_authority": "Docker official brand site",
+      "source_path": "Docker_Mark_660x400.png",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.docker.com/app/uploads/2026/02/Docker_Mark_660x400.png"
+    },
+    {
+      "asset_path": "assets/platform/netbird.svg",
+      "bytes": 500,
+      "official_artwork_exists": true,
+      "sha256": "64773bd313506a921e51558fdb0c243da6fb0c0df0a81c1f2cd4bc733a54838e",
+      "source_authority": "netbirdio/netbird",
+      "source_path": "proxy/web/src/assets/netbird.svg",
+      "source_ref": "9efa3c6579fe5b193fa72b8e717a0bfac014d0f0",
+      "source_url": "https://raw.githubusercontent.com/netbirdio/netbird/9efa3c6579fe5b193fa72b8e717a0bfac014d0f0/proxy/web/src/assets/netbird.svg"
+    },
+    {
+      "asset_path": "assets/platform/adguard-home.svg",
+      "bytes": 1273,
+      "official_artwork_exists": true,
+      "sha256": "5a8119378d2a5783080afd44db2420198d925a15d161c8879305de8c5cc15f8d",
+      "source_authority": "AdguardTeam/AdGuardHome",
+      "source_path": "client_v2/public/assets/favicon.svg",
+      "source_ref": "5c113ec4c565a8911f4531b3701a9013e066c433",
+      "source_url": "https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/5c113ec4c565a8911f4531b3701a9013e066c433/client_v2/public/assets/favicon.svg"
+    },
+    {
+      "asset_path": "assets/platform/caddy.svg",
+      "bytes": 12660,
+      "official_artwork_exists": true,
+      "sha256": "0b6891b8c8df86c081a1179bf2d8c709d73fb9c8d0da04d0a1d52eeb922a2811",
+      "source_authority": "caddyserver/website",
+      "source_path": "src/old/resources/images/caddy-logo.svg",
+      "source_ref": "15ac087cfd9c21a53b2ddfa10359fdc63d5ec9b6",
+      "source_url": "https://raw.githubusercontent.com/caddyserver/website/15ac087cfd9c21a53b2ddfa10359fdc63d5ec9b6/src/old/resources/images/caddy-logo.svg"
+    },
+    {
+      "asset_path": "assets/platform/uptime-kuma.svg",
+      "bytes": 1168,
+      "official_artwork_exists": true,
+      "sha256": "1f7b4df28ef01c74e334382dab159d96b2ff145ac835b5d2febbbc4166857831",
+      "source_authority": "louislam/uptime-kuma",
+      "source_path": "public/icon.svg",
+      "source_ref": "master",
+      "source_url": "https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.svg"
+    },
+    {
+      "asset_path": "assets/roadmap/home-assistant.png",
+      "bytes": 11361,
+      "official_artwork_exists": true,
+      "sha256": "07f872633ddd6385ddc36b3f5c4770a221c33fcd9660fca1f89b3cd18d28d86a",
+      "source_authority": "home-assistant/home-assistant.io",
+      "source_path": "source/images/favicon-192x192.png",
+      "source_ref": "6947d83903e932fb3d757b439e34814af2a23b42",
+      "source_url": "https://raw.githubusercontent.com/home-assistant/home-assistant.io/6947d83903e932fb3d757b439e34814af2a23b42/source/images/favicon-192x192.png"
+    },
+    {
+      "asset_path": "assets/roadmap/frigate.svg",
+      "bytes": 2983,
+      "official_artwork_exists": true,
+      "sha256": "1264f127d8a1a44a306aee34a76d58d61cf44a4646ebed8a1b100d079eed6b8d",
+      "source_authority": "blakeblackshear/frigate",
+      "source_path": "web/images/branding/favicon.svg",
+      "source_ref": "036bae4ea96f23e564622a3d19c1558254122b2b",
+      "source_url": "https://raw.githubusercontent.com/blakeblackshear/frigate/036bae4ea96f23e564622a3d19c1558254122b2b/web/images/branding/favicon.svg"
+    },
+    {
+      "asset_path": "assets/social/instagram.ico",
+      "bytes": 2214,
+      "official_artwork_exists": true,
+      "sha256": "d31ce478c9729130303a3537a43906bc8164debf5546f7ad4d1beed9d9b2c630",
+      "source_authority": "Instagram official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.instagram.com/favicon.ico"
+    },
+    {
+      "asset_path": "assets/social/pinterest.ico",
+      "bytes": 1663,
+      "official_artwork_exists": true,
+      "sha256": "e5d6f15dbde0f8c823dabb9b6fea3540812c5fa343bcf723da2af1d5d7d23184",
+      "source_authority": "Pinterest official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.pinterest.com/favicon.ico"
+    },
+    {
+      "asset_path": "assets/social/threads.ico",
+      "bytes": 32038,
+      "official_artwork_exists": true,
+      "sha256": "9507ab25e108609881b195aea46f36844aeb229c2ae80301c10c42202bc28770",
+      "source_authority": "Threads official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.threads.net/favicon.ico"
+    },
+    {
+      "asset_path": "assets/social/tiktok.ico",
+      "bytes": 842,
+      "official_artwork_exists": true,
+      "sha256": "d0d48654b83875f95e62ef0744e31de50aa9913c031eeee4a20f407485be3595",
+      "source_authority": "TikTok official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.tiktok.com/favicon.ico"
+    },
+    {
+      "asset_path": "assets/social/youtube.ico",
+      "bytes": 1150,
+      "official_artwork_exists": true,
+      "sha256": "8bb1d0fa43a17436d59dd546f6f74c76dc44735def7522c22d8031166db8911d",
+      "source_authority": "YouTube official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.youtube.com/favicon.ico"
+    },
+    {
+      "asset_path": "assets/social/x.ico",
+      "bytes": 549,
+      "official_artwork_exists": true,
+      "sha256": "cc4939af5d16855f2bea8322dbf33461ebc6bfd092fa3e2291d87d3d83ebd8ed",
+      "source_authority": "X official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://x.com/favicon.ico"
+    },
+    {
+      "asset_path": "assets/social/reddit.ico",
+      "bytes": 2441,
+      "official_artwork_exists": true,
+      "sha256": "3fcb0febd3450b5edbd536a86dbfe6dd7bad6bd39d3976801b069e14d15da5d3",
+      "source_authority": "Reddit official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://www.reddit.com/favicon.ico"
+    },
+    {
+      "asset_path": "assets/social/github.ico",
+      "bytes": 6518,
+      "official_artwork_exists": true,
+      "sha256": "2ee43237d196100210f1786e7b73b57cd140f6013c072c70dbdffd9e9bc695f8",
+      "source_authority": "GitHub official website",
+      "source_path": "/favicon.ico",
+      "source_ref": "2026-08-19",
+      "source_url": "https://github.com/favicon.ico"
+    },
+    {
+      "fallback": "text-only",
+      "id": "goreecloud-notes",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    },
+    {
+      "fallback": "text-only",
+      "id": "goreecloud-memos",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    },
+    {
+      "fallback": "text-only",
+      "id": "goreecloud-tasks",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    },
+    {
+      "fallback": "text-only",
+      "id": "goreecloud-contacts",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    },
+    {
+      "fallback": "text-only",
+      "id": "goreecloud-notify",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    },
+    {
+      "fallback": "text-only",
+      "id": "goreecloud-monitor",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    },
+    {
+      "fallback": "text-only",
+      "id": "goreecloud-search",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    },
+    {
+      "fallback": "text-only",
+      "id": "local-ai",
+      "official_artwork_exists": false,
+      "reason": "No approved canonical artwork was found in the authoritative GoreeCloud repository during the v5.23 review."
+    }
+  ],
+  "policy": "Official icon, logo, or artwork is required when it exists; text-only is the only allowed fallback when approved official artwork does not exist.",
+  "reviewed": "2026-08-27",
+  "schema_version": 1
+}
