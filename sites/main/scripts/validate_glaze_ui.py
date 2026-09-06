@@ -1,106 +1,69 @@
 #!/usr/bin/env python3
+"""Validate Main's source-side GLAZE UI V1.1 consumer contract."""
+from __future__ import annotations
+
 from pathlib import Path
+import re
 import sys
 
-from glaze_ui_2 import GLAZE_PROMOTION_REVISION, GLAZE_VERSION
+REPO_ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from glaze_v1 import GLAZE_SOURCE_REVISION, GLAZE_VERSION  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-SITES = ROOT.parent
-BUNDLE = ROOT / "css/glaze-ui-2.1.0.css"
-ROOT_PAGES = [ROOT / n for n in ("index.html", "repositories.html", "privacy.html", "security.html", "404.html")]
-CHILD_PAGES = [
-    SITES / "projects/index.html", SITES / "projects/404.html",
-    SITES / "roadmap/index.html", SITES / "roadmap/404.html",
-    SITES / "blog/index.html", SITES / "blog/404.html",
-    SITES / "archive/index.html", SITES / "archive/404.html",
-]
-CHILD_BUNDLES = [
-    SITES / "projects/assets/glaze-ui-2.1.0.css",
-    SITES / "roadmap/glaze-ui-2.1.0.css",
-    SITES / "blog/glaze-ui-2.1.0.css",
-    SITES / "archive/glaze-ui-2.1.0.css",
-]
-CONFORMANCE = ROOT / "docs/glaze-ui-conformance.md"
-errors = []
+PAGES = ("index.html", "repositories.html", "privacy.html", "security.html", "404.html")
+errors: list[str] = []
 
 
-def display(path: Path) -> str:
-    try:
-        return str(path.relative_to(ROOT))
-    except ValueError:
-        return str(path.relative_to(SITES.parent))
+def has_class_token(text: str, token: str) -> bool:
+    return any(token in match.group(1).split() for match in re.finditer(r'class\s*=\s*["\']([^"\']*)["\']', text, re.I))
 
 
-bundle_markers = [
-    "Glaze UI 2.1.0 Stable integration",
-    GLAZE_PROMOTION_REVISION,
-    "Content is solid. Interaction is glazed.",
-    "--glaze-touch-min:48px",
-    "--glaze-touch-assisted:56px",
-    "data-glaze-density=comfortable",
-    "data-glaze-density=compact",
-    "data-glaze-performance=reduced",
-    "data-glaze-large-text=true",
-    "prefers-reduced-motion",
-    "prefers-reduced-transparency",
-    "forced-colors:active",
-]
-for bundle in [BUNDLE, *CHILD_BUNDLES]:
-    if not bundle.is_file():
-        errors.append(f"Glaze UI 2.1 bundle is missing: {display(bundle)}")
+for name in PAGES:
+    path = ROOT / name
+    if not path.is_file():
+        errors.append(f"missing public page: {name}")
         continue
-    css = bundle.read_text(encoding="utf-8")
-    for marker in bundle_markers:
-        if marker not in css:
-            errors.append(f"{display(bundle)} missing 2.1 marker: {marker}")
-
-
-def validate_page(page: Path) -> None:
-    if not page.is_file():
-        errors.append(f"Glaze UI page is missing: {display(page)}")
-        return
-    text = page.read_text(encoding="utf-8")
-    for marker in [
+    text = path.read_text(encoding="utf-8")
+    for marker in (
+        'data-glaze-version="1.1"',
         f'name="goreecloud-glaze-ui" content="{GLAZE_VERSION}"',
         f'data-glaze-ui="{GLAZE_VERSION}"',
-        'glaze-canvas',
-        'name="viewport"',
-    ]:
-        if marker not in text:
-            errors.append(f"{display(page)} missing source-native 2.1 marker: {marker}")
-    for stale in (
-        'data-glaze-ui="1.5.0"',
-        'data-glaze-ui="2.0.0"',
-        'goreecloud-glaze-ui" content="1.5.0"',
-        'goreecloud-glaze-ui" content="2.0.0"',
+        '/assets/glaze-v1/glaze-v1.1.0.css',
+        '/css/site-v1.1.css',
     ):
-        if stale in text:
-            errors.append(f"{display(page)} still activates a superseded Glaze UI bundle: {stale}")
+        if marker not in text:
+            errors.append(f"{name} missing V1.1 marker: {marker}")
+    if not has_class_token(text, "glaze-canvas"):
+        errors.append(f"{name} missing glaze-canvas class token")
+    for forbidden in ('data-glaze-ui="2.', 'name="goreecloud-glaze-ui" content="2.', 'glaze-ui-2.', 'glaze-2.'):
+        if forbidden in text:
+            errors.append(f"{name} still activates pre-reset GLAZE source: {forbidden}")
     if "raw.githubusercontent.com" in text:
-        errors.append(f"{display(page)} must not load remote Glaze UI at runtime")
+        errors.append(f"{name} must not load remote GLAZE resources")
 
+css_path = ROOT / "css" / "site-v1.1.css"
+css = css_path.read_text(encoding="utf-8") if css_path.is_file() else ""
+for marker in (
+    "GLAZE UI V1.1 / 1.1.0",
+    "min-height: 48px",
+    "@media (max-width: 980px)",
+    "@media (max-width: 700px)",
+    "prefers-reduced-motion: reduce",
+    "prefers-reduced-transparency: reduce",
+    "forced-colors: active",
+):
+    if marker not in css:
+        errors.append(f"Main V1.1 consumer stylesheet missing marker: {marker}")
 
-for page in [*ROOT_PAGES, *CHILD_PAGES]:
-    validate_page(page)
-
-text = CONFORMANCE.read_text(encoding="utf-8") if CONFORMANCE.is_file() else ""
-for marker in [
-    "Target Glaze UI version: **2.1.0**",
-    "GoreeCloud/goreecloud-glaze-ui",
-    GLAZE_PROMOTION_REVISION,
-    "same-origin",
-    "Content is solid. Interaction is glazed.",
-    "48px general interaction floor",
-    "56px Touch Assistance floor",
-    "Rendered/production acceptance",
-    "No production Glaze UI exception",
-]:
-    if marker not in text:
-        errors.append(f"Conformance marker missing: {marker}")
+readme = (ROOT / "README.md").read_text(encoding="utf-8") if (ROOT / "README.md").is_file() else ""
+for marker in ("GLAZE UI V1.1", GLAZE_SOURCE_REVISION, "production acceptance"):
+    if marker not in readme:
+        errors.append(f"Main README missing V1.1 governance marker: {marker}")
 
 if errors:
-    print("Glaze UI 2.1 validation failed:")
+    print("Main GLAZE UI V1.1 source validation failed:")
     for error in errors:
         print(f"  - {error}")
-    sys.exit(1)
-print("Glaze UI 2.1.0 Stable source validation passed across every Main, Projects, Roadmap, Blog, and Archive HTML surface in the canonical central hierarchy.")
+    raise SystemExit(1)
+print(f"Main source targets GLAZE UI V1.1/{GLAZE_VERSION} at immutable revision {GLAZE_SOURCE_REVISION}; deployment and conformance acceptance remain separate.")
