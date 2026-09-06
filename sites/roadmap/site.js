@@ -1,6 +1,25 @@
-(()=>{const root=document.documentElement;const key='goreecloud-roadmap-theme';const button=document.querySelector('[data-theme-toggle]');let theme='system';try{theme=localStorage.getItem(key)||'system';}catch(_){}const apply=()=>{if(theme==='dark')root.dataset.theme='dark';else if(theme==='light')root.dataset.theme='light';else root.removeAttribute('data-theme');if(button)button.textContent=theme==='system'?'Appearance: System':`Appearance: ${theme[0].toUpperCase()}${theme.slice(1)}`;};apply();button?.addEventListener('click',()=>{theme=theme==='system'?'light':theme==='light'?'dark':'system';apply();try{localStorage.setItem(key,theme);}catch(_){}});
-const findCard=(title)=>[...document.querySelectorAll('#now article')].find(card=>card.querySelector('h3')?.textContent?.trim()===title);
-const ai=findCard('GoreeCloud AI');if(ai){const status=ai.querySelector('.status');const text=ai.querySelector('p');if(status)status.textContent='Repository established · initial source foundation';if(text)text.textContent='The first-party goreecloud-ai repository is now established for a native Ollama front end designed with Glaze UI and secured through Wardveil Security. The broader Workspace, knowledge, RAG, research, file, tool, and orchestration scope remains active development rather than Stable or production acceptance.';}
-const mesh=findCard('GoreeCloud Mesh');if(mesh){const status=mesh.querySelector('.status');const text=mesh.querySelector('p');if(status)status.textContent='Scoped API authorization + durable recovery evidence';if(text)text.textContent='Mesh now implements fail-closed scoped authorization for private mutating APIs, producer-bound evidence validity, and durable Everkeep recovery-evidence persistence. These capabilities strengthen coordination and auditability without allowing Mesh to replace Identity, Wardveil Security, Privacy Shield, Everkeep, Glaze UI, or application authority.';}
-const cards=document.querySelector('#now .cards');if(cards&&!findCard('Search native category boundary')){const article=document.createElement('article');article.innerHTML='<span class="status" data-status="active">Native contract implemented</span><h3>Search native category boundary</h3><p>GoreeCloud Search now includes a fail-closed native category request and readiness contract, server-side category selection, accessible category controls, and bounded readiness states. This is a native replacement milestone while the current SearXNG-derived production line remains transitional continuity.</p>';const anchor=findCard('Search, Notify, and Terminal candidates');if(anchor)cards.insertBefore(article,anchor);else cards.append(article);}
+(()=>{
+  const root=document.documentElement;
+  const key='goreecloud-roadmap-appearance';
+  const button=document.querySelector('[data-theme-toggle]');
+  let appearance='system';
+  try{appearance=localStorage.getItem(key)||'system';}catch(_){}
+
+  const apply=()=>{
+    if(appearance==='dark')root.dataset.glzAppearance='dark';
+    else if(appearance==='light')root.dataset.glzAppearance='light';
+    else root.removeAttribute('data-glz-appearance');
+    if(button){
+      const label=appearance==='system'?'System':appearance[0].toUpperCase()+appearance.slice(1);
+      button.textContent=`Appearance: ${label}`;
+      button.setAttribute('aria-label',`Appearance: ${label}. Change appearance.`);
+    }
+  };
+
+  apply();
+  button?.addEventListener('click',()=>{
+    appearance=appearance==='system'?'light':appearance==='light'?'dark':'system';
+    apply();
+    try{localStorage.setItem(key,appearance);}catch(_){}
+  });
 })();
