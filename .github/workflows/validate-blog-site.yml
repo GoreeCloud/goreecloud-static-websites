@@ -4,13 +4,15 @@ on:
   pull_request:
     paths:
       - 'sites/blog/**'
-      - 'scripts/validate_simple_static_site.py'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-blog-site.yml'
   push:
     branches: [main]
     paths:
       - 'sites/blog/**'
-      - 'scripts/validate_simple_static_site.py'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-blog-site.yml'
   workflow_dispatch:
 
@@ -27,9 +29,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Compile central validator
-        run: python -m py_compile scripts/validate_simple_static_site.py
-      - name: Validate Blog source contract
-        run: python scripts/validate_simple_static_site.py sites/blog --glaze 2.1.0
+      - name: Compile controlled V1.1 tooling
+        run: python -m py_compile scripts/glaze_v1.py scripts/validate_v1_static_site.py sites/blog/build.py
+      - name: Build isolated Blog Pages artifact
+        run: python sites/blog/build.py
+      - name: Validate Blog V1.1 source and artifact
+        run: python scripts/validate_v1_static_site.py sites/blog
       - name: Validate Blog JavaScript syntax
         run: node --check sites/blog/site.js
