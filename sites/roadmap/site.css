@@ -5,3 +5,6 @@ body.glaze-canvas .site-header{position:relative;inset-block-start:auto}.nav nav
 @media(max-width:900px){.nav{grid-template-columns:auto 1fr auto}.nav nav{gap:8px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.shell{padding-inline:14px}.nav{grid-template-columns:1fr auto;gap:10px 12px;padding-block:12px}.nav nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-column:1/-1;grid-row:2;width:100%;padding-bottom:0;gap:8px}body.glaze-canvas .nav nav{display:grid}.nav nav a{width:100%;padding-inline:10px}.hero{padding:26px 20px}.hero h1{font-size:clamp(2.8rem,12vw,4.1rem);line-height:.97}.hero p{font-size:1rem}.roadmap-section{padding-top:52px}.heading h2,.principles h2{font-size:clamp(2.2rem,9vw,3.25rem)}.cards{grid-template-columns:1fr}.cards article{padding:20px}.principles{padding:22px 18px}.principle-grid{grid-template-columns:1fr}}
 @media(max-width:420px){.nav nav{grid-template-columns:1fr}.legend{gap:6px}.legend span,.status{font-size:12px;padding-inline:9px}}
+
+/* Canonical GoreeCloud identity wiring. */
+.brand{display:inline-flex;align-items:center;gap:10px}.brand img{width:32px;height:32px;flex:0 0 32px}.brand .brand-name{color:inherit}.brand .brand-name>span{color:var(--accent)}
