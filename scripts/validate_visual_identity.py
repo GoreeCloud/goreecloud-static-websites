@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed on known GoreeCloud visual-identity drift in centralized static websites."""
+"""Fail closed on GoreeCloud visual-identity drift in centralized static websites."""
 from __future__ import annotations
 
 import hashlib
@@ -45,17 +45,32 @@ def main() -> None:
         if path.is_file() and path.name in FORBIDDEN_ACTIVE_ASSET_NAMES:
             errors.append(f"forbidden placeholder artwork remains in active source: {path.relative_to(ROOT)}")
 
+    # Labs must render approved AI/Code marks as actual images and must not manufacture
+    # textual/CSS surrogate identities for products whose canonical artwork is pending.
+    labs_index = (ROOT / "sites/labs/index.html").read_text(encoding="utf-8")
     labs_css = (ROOT / "sites/labs/labs.css").read_text(encoding="utf-8")
-    required_labs_markers = (
-        '#intelligence .text-mark { background-image: url("/assets/products/ai.svg"); }',
-        '#build .product-card:nth-child(2) .text-mark { background-image: url("/assets/products/code.svg"); }',
-        "#home .text-mark,",
-        "#build .product-card:first-child .text-mark,",
-        "#boot .text-mark { display: none; }",
-    )
-    for marker in required_labs_markers:
-        if marker not in labs_css:
-            errors.append(f"Labs identity rendering boundary missing: {marker}")
+    for marker in (
+        '<img class="product-mark" src="/assets/products/ai.svg"',
+        '<img class="product-mark" src="/assets/products/code.svg"',
+    ):
+        if marker not in labs_index:
+            errors.append(f"Labs canonical product artwork missing from markup: {marker}")
+    if labs_index.count('class="product-mark"') != 2:
+        errors.append("Labs must render exactly the two currently approved product marks")
+    for forbidden in (
+        'class="text-mark"',
+        '>Home</span>',
+        '>Security</span>',
+        '>OCI</span>',
+        '>Boot</span>',
+    ):
+        if forbidden in labs_index:
+            errors.append(f"Labs surrogate product identity remains in markup: {forbidden}")
+    for forbidden in (".text-mark", "background-image: url(\"/assets/products/ai.svg\")", "background-image: url(\"/assets/products/code.svg\")"):
+        if forbidden in labs_css:
+            errors.append(f"Labs surrogate/CSS-painted identity remains in stylesheet: {forbidden}")
+    if ".product-mark" not in labs_css:
+        errors.append("Labs canonical product artwork sizing contract is missing")
 
     identity_record = ROOT / "sites/labs/IDENTITY-ASSETS.md"
     if not identity_record.is_file():
@@ -78,7 +93,7 @@ def main() -> None:
             print(f"  - {error}")
         fail(f"{len(errors)} defect(s)")
 
-    print(f"Visual identity validation passed: {len(CANONICAL)} canonical asset pins verified; no forbidden placeholder artwork present.")
+    print(f"Visual identity validation passed: {len(CANONICAL)} canonical asset pins verified; no forbidden placeholder or Labs surrogate identity present.")
 
 
 if __name__ == "__main__":
