@@ -10,9 +10,12 @@ during full-page review from silently returning.
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+SITES = ROOT.parent
 
 
 def text(path: str) -> str:
+    if path.startswith("sites/"):
+        return (SITES / path.removeprefix("sites/")).read_text(encoding="utf-8")
     return (ROOT / path).read_text(encoding="utf-8")
 
 
@@ -119,7 +122,7 @@ def main() -> int:
         for error in errors:
             print(f"- {error}")
         return 1
-    print("Responsive layout source contract passed for Main, Repositories, Projects, Blog, Roadmap, and Archive.")
+    print("Responsive layout source contract passed for Main, Repositories, Projects, Blog, Roadmap, and Archive in the canonical central hierarchy.")
     return 0
 
 
