@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
+"""Validate Roadmap truth, identity, and source-specific public contract."""
 from pathlib import Path
 import hashlib
 
 ROOT = Path(__file__).resolve().parent
-for name in ("index.html", "404.html", "site.css", "site.js", "glaze-ui-2.1.0.css", "_headers", "assets/goreecloud-logo.svg"):
+for name in ("index.html", "404.html", "site.css", "site.js", "build.py", "_headers", "assets/goreecloud-logo.svg"):
     if not (ROOT / name).is_file():
         raise SystemExit(f"missing roadmap site file: {name}")
 
 html = (ROOT / "index.html").read_text(encoding="utf-8")
 error_html = (ROOT / "404.html").read_text(encoding="utf-8")
-css = (ROOT / "glaze-ui-2.1.0.css").read_text(encoding="utf-8")
+script = (ROOT / "site.js").read_text(encoding="utf-8")
 headers = (ROOT / "_headers").read_text(encoding="utf-8")
 
 for needle in (
     "Public Development Roadmap",
-    "August 31, 2026",
+    "September 6, 2026",
     "Active development",
     "Near-term priorities",
     "Long-term direction",
@@ -29,28 +30,33 @@ for needle in (
     "GoreeCloud Quill",
     "GoreeCloud Mesh",
     "GoreeCloud Identity",
+    "GoreeCloud Manager",
     "GoreeCloud File Manager",
     "GoreeCloud Maps",
     "GoreeCloud App Store",
-    "Six substantive platform systems",
-    "Glaze UI 2.1.0",
-    "Content is solid. Interaction is glazed.",
-    "56px Touch Assistance",
-    "Facet is the current official Glaze UI identity",
+    "Seven Integral Platform Systems",
+    "GLAZE UI V1.1 / 1.1.0",
+    "GoreeCloud/goreecloud-static-websites",
+    "Controlled GLAZE UI V1.1 website adoption",
+    "Central Cloudflare source cutover",
+    "id.goreecloud.com",
+    "Missing canonical product artwork",
     "Evidence over labels",
-    "Ten independently deployed public destinations",
-    "Identity Center is the eleventh official first-party surface",
-    "Identity Center publication acceptance",
+    "Authority stays explicit",
 ):
     if needle not in html:
         raise SystemExit(f"required roadmap content missing: {needle}")
 
 for page_name, page in (("index", html), ("404", error_html)):
-    for needle in ('name="goreecloud-glaze-ui" content="2.1.0"', 'data-glaze-ui="2.1.0"', 'glaze-canvas'):
+    for needle in (
+        'data-glaze-version="1.1"',
+        'name="goreecloud-glaze-ui" content="1.1.0"',
+        'data-glaze-ui="1.1.0"',
+        '/assets/glaze-v1/glaze-v1.1.0.css',
+        'glaze-canvas',
+    ):
         if needle not in page:
-            raise SystemExit(f"{page_name} missing Glaze UI 2.1 marker: {needle}")
-    if 'data-glaze-ui="1.5.0"' in page or 'data-glaze-ui="2.0.0"' in page:
-        raise SystemExit(f"{page_name} still activates a superseded Glaze UI bundle")
+            raise SystemExit(f"{page_name} missing GLAZE UI V1.1 marker: {needle}")
     if '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">' not in page:
         raise SystemExit(f"{page_name} missing canonical GoreeCloud favicon")
 
@@ -67,35 +73,27 @@ actual_blob = hashlib.sha1(f"blob {len(raw)}\0".encode("ascii") + raw).hexdigest
 if actual_blob != "082936062de7839148db89ea3ab4e86ff71341b0":
     raise SystemExit(f"roadmap GoreeCloud logo drifted from canonical branding asset: {actual_blob}")
 
-for needle in (
-    "Glaze UI 2.1.0 Stable integration",
-    "c49113eb8b93c267613fdf1bbca1f814495acad7",
-    "Content is solid. Interaction is glazed.",
-    "--glaze-touch-assisted:56px",
-    "data-glaze-density=compact",
-    "data-glaze-performance=reduced",
-    "data-glaze-large-text=true",
-    "prefers-reduced-motion",
-    "prefers-reduced-transparency",
-    "forced-colors:active",
-):
-    if needle not in css:
-        raise SystemExit(f"Glaze UI 2.1 web-layer marker missing: {needle}")
-
 for stale in (
-    "Glaze UI 2.1 remains Candidate",
-    "53-repository source inventory",
+    'name="goreecloud-glaze-ui" content="2.1.0"',
+    'data-glaze-ui="2.1.0"',
+    'href="/glaze-ui-2.1.0.css"',
+    "Ten independently deployed public destinations",
+    "Six substantive platform systems",
+    "Identity Center is the eleventh official first-party surface",
+    "Glaze UI 2.1.0 is the current Stable production design target",
+    "official websites consume Glaze UI 2.1 Stable directly",
+    "identity.goreecloud.com",
     "the five substantive platform systems",
     "Gitea is the selected permanent authoritative source-control",
     "Complete Gitea independence",
-    "Glaze UI 1.4 is the current Stable production target",
-    "Glaze UI 1.5.0 is the current Stable production target",
-    "Glaze UI 2.0.0 is the current Stable production target",
-    "Glaze UI Fold identity",
-    "approved Fold mark remains the canonical Glaze UI visual identity",
 ):
     if stale in html:
         raise SystemExit(f"superseded roadmap direction remains public: {stale}")
+
+if "dataset.glzAppearance" not in script or "data-glz-appearance" not in script:
+    raise SystemExit("Roadmap JavaScript is missing the V1.1 appearance contract")
+if "dataset.theme" in script:
+    raise SystemExit("Roadmap JavaScript still mutates the pre-reset theme attribute")
 
 for needle in ("Content-Security-Policy:", "frame-ancestors 'none'", "Permissions-Policy:", "X-Content-Type-Options: nosniff"):
     if needle not in headers:
@@ -104,4 +102,4 @@ for prohibited in ("google-analytics", "googletagmanager", "fonts.googleapis.com
     if prohibited in html.lower():
         raise SystemExit(f"prohibited runtime dependency: {prohibited}")
 
-print("GoreeCloud roadmap current portfolio, canonical GoreeCloud identity, six-system model, Facet identity, and Glaze UI 2.1 public-site validation passed")
+print("GoreeCloud Roadmap current V1.1 target, seven-system platform model, canonical identity, and public truth validation passed")

@@ -4,11 +4,15 @@ on:
   pull_request:
     paths:
       - 'sites/main/**'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-main-site.yml'
   push:
     branches: [main]
     paths:
       - 'sites/main/**'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-main-site.yml'
   workflow_dispatch:
 
@@ -27,24 +31,28 @@ jobs:
           persist-credentials: false
       - name: Confirm generated artifact is not source authority
         run: test ! -e sites/main/dist
-      - name: Compile main-site build and validation tools
+      - name: Compile Main and controlled V1.1 tooling
         run: |
           python -m py_compile \
+            scripts/glaze_v1.py \
+            scripts/validate_v1_static_site.py \
             sites/main/scripts/build_public_site.py \
             sites/main/scripts/validate_build_artifact.py \
             sites/main/scripts/validate_site.py \
             sites/main/scripts/validate_glaze_ui.py \
             sites/main/scripts/validate_responsive_layout.py \
             sites/main/scripts/validate_public_surface.py
-      - name: Validate main-site source contracts
+      - name: Validate Main source contracts
         run: |
           python sites/main/scripts/validate_glaze_ui.py
           python sites/main/scripts/validate_responsive_layout.py
           python sites/main/scripts/validate_public_surface.py
           python sites/main/scripts/validate_site.py
-      - name: Build isolated public artifact
+      - name: Build isolated Main Pages artifact
         run: python sites/main/scripts/build_public_site.py
-      - name: Validate isolated public artifact
+      - name: Validate Main V1.1 source and artifact
+        run: python scripts/validate_v1_static_site.py sites/main
+      - name: Validate isolated Main artifact allowlist
         run: python sites/main/scripts/validate_build_artifact.py
       - name: Check JavaScript syntax
         run: |

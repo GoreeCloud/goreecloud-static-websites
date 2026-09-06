@@ -17,7 +17,7 @@ Every active GoreeCloud public website must use current approved first-party log
 - Labs: the former Home, Security, OCI, and Boot text badges are no longer rendered as surrogate product identity while canonical artwork is unapproved.
 - Main: the obsolete `goreecloud-artwork-pending.svg` placeholder is removed from active centralized source.
 
-Repository validation now checks the exact Git blob identity of these canonical assets and rejects the forbidden artwork-pending placeholder.
+Repository validation checks the exact Git blob identity of these canonical assets and rejects the forbidden artwork-pending placeholder.
 
 ## Open branding-authority blockers
 
@@ -32,22 +32,37 @@ The approval gate is `GoreeCloud/goreecloud-branding-assets#16`. Until approval 
 
 ## Glaze UI namespace-reset review
 
-Visual identity conformance is separate from design-system consumer conformance. The current Stable Glaze UI namespace is V1.1 / 1.1.0, while several centralized site packages still preserve active pre-reset 2.x consumer bundles or locks from their migration source. These sites require controlled V1.1 consumer migration rather than filename substitution:
+Visual identity conformance is separate from design-system consumer conformance. The current Stable Glaze UI namespace is V1.1 / 1.1.0.
+
+### Source/build migration validated in the current stacked candidate
+
+The following packages have completed controlled V1.1 source and isolated-artifact migration in PR #15. Their migration uses the immutable V1.1 authority, same-origin generated bundles, fail-closed validation, and the documented bounded workaround for the known immutable Stable import defect. This is source/build evidence, not production or GLAZE conformance acceptance.
 
 - Archive
 - Blog
-- Everkeep / Continuity Center
+- Continuity Center / Everkeep
 - Identity Center
 - Main
+- Privacy Center
+- Roadmap
+
+The Main checkpoint at revision `6435e83ab3f9561e3662b74c355a6a71315c8073` passed Main source validation, isolated V1.1 artifact construction, shared V1.1 artifact validation, allowlist validation, JavaScript syntax, repository-wide validation, and all other workflows triggered by that exact revision.
+
+The Privacy Center checkpoint at revision `0fb49fbf1634aaa81e87f0bfff3a8d3260eed27d` passed its V1.1 source boundary, isolated same-origin V1.1 artifact build, shared V1.1 source/artifact validation, Privacy-specific authority and identity validation, JavaScript syntax, repository-wide validation, and every other workflow triggered by that exact revision.
+
+The Continuity Center checkpoint at revision `7f9108cc3ec7c9bb5a7fbe82f138e14620e41f50` passed its V1.1 responsive/source boundary, isolated same-origin V1.1 artifact build, shared V1.1 source/artifact validation, Everkeep-specific truth/identity/artifact validation, repository-wide validation, and every other workflow triggered by that exact revision. Production recovery/failover remains explicitly outside this source/build evidence.
+
+### Remaining controlled migrations
+
+These centralized packages still preserve active pre-reset 2.x consumer source or locks and require controlled migration rather than filename substitution:
+
 - Manager
 - Mesh
-- Privacy Center
 - Projects
-- Roadmap
 - Suite
 
-Security Center, Design Center, and Labs already contain V1.1-era source, but their own exact consumer acceptance remains governed separately. Pre-reset source retained solely as historical/reference evidence must be clearly non-active and must not be loaded by the public artifact.
+Security Center, Design Center, and Labs already contain V1.1-era source, but their own exact consumer acceptance remains separately governed. Pre-reset source retained solely as historical/reference evidence must be clearly non-active and must not be loaded by the public artifact.
 
 ## Completion boundary
 
-This record does not declare the full website portfolio conformant yet. Identity defects with available approved canonical replacements are corrected in the current candidate and protected by CI. Missing canonical product identities and active pre-reset Glaze consumers remain explicit blockers until their respective approval/migration and deployment verification gates close.
+This record does not declare the full website portfolio conformant. The current PR closes the source/build namespace-reset gate only for the seven listed migrated consumers. Missing canonical product identities, the four remaining pre-reset consumers, rendered/human acceptance where required, Cloudflare source cutover, exact production deployment verification, and formal GLAZE consumer acceptance remain separate blockers.
