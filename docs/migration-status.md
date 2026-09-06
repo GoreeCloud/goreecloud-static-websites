@@ -2,8 +2,8 @@
 
 **Canonical target:** `GoreeCloud/goreecloud-static-websites`  
 **Reviewed:** 2026-09-06  
-**Accepted central revision:** `4bfee305550e2e43991188816f4fc80c16ccfad5`  
-**Overall state:** Source consolidation and current repository-discovery gates are complete for the thirteen identified standalone static website packages. Deployment cutover, exact production verification, legacy-source retirement, and final deletion remain open.
+**Accepted central revision:** `c8e5629f323de850b8d345786713056ff0dc0ff1` for the prior thirteen-site checkpoint  
+**Overall state:** The thirteen sites in the completed discovery checkpoint remain `validated-in-central-repo`. Labs was created afterward in the Website rebuild candidate, has now been identified as the fourteenth standalone static public site, and is being migrated here with GoreeCloud Boot included. Deployment cutover, exact production verification, legacy-source retirement, and final Website deletion remain open.
 
 ## Mandatory consolidation rule
 
@@ -15,7 +15,7 @@ No legacy repository may remain a second source authority after its site's deplo
 
 ## Current source-migration state
 
-All thirteen current standalone public static website packages are present in the central repository and are `validated-in-central-repo`.
+The thirteen previously identified standalone public static website packages are `validated-in-central-repo`. Labs is newly `source-copied` in this migration candidate and must pass its exact central validation before that state can advance.
 
 | Site | Domain | Central path | Migration state | Deployment state |
 | --- | --- | --- | --- | --- |
@@ -32,33 +32,17 @@ All thirteen current standalone public static website packages are present in th
 | Identity Center | `identity.goreecloud.com` | `sites/identity` | `validated-in-central-repo` | `legacy-source` |
 | Manager public site | `manage.goreecloud.com` | `sites/manager` | `validated-in-central-repo` | `legacy-source` |
 | Mesh Center | `mesh.goreecloud.com` | `sites/mesh` | `validated-in-central-repo` | `legacy-source` |
+| Labs product center | `labs.goreecloud.com` | `sites/labs` | `source-copied` | `legacy-source` |
 
 The migration state and deployment state are intentionally separate. A validated central source package does not prove that Cloudflare Pages or production traffic uses that package.
 
-## Accepted source-migration evidence
+## Labs reconciliation — September 6, 2026
 
-The source consolidation was completed in bounded, reviewable tranches with exact-candidate validation:
+The earlier repository-discovery pass correctly described the repository inventory available at that checkpoint, but Labs was subsequently introduced in `GoreeCloud/goreecloud-website` draft PR #116 and therefore was not part of the original thirteen-site manifest.
 
-- Roadmap — PR #2; source-copy evidence `7b416ce7d280e7bf91bf3c973ab0bd4831f3341b`; accepted merge `2982b1b77272698bd4ac48e049475af45e98a61c`.
-- Archive — PR #3; source-copy evidence `f48a5cc287436972f1a215878530ae0ac40e44e0`; accepted merge `4997bf74ee3e2bf2bc5f379638f4ef5e169645a3`.
-- Blog — PR #4; source-copy evidence `9f3d3a2adf47ccb890847a61a3d253cafff563b6`; accepted merge `70504569c81362f688edee889b40614ef30f702a`.
-- Projects — PR #5; source-copy evidence `c353b1c14aecf081646b3fab5337e646e59780a6`; accepted merge `d66e4746e9f23a5edd43f8b5c2ebad01a2a1dc9d`.
-- Manager — PR #6; central-copy evidence `4fcbe7ce370ecf765a393a41cdfc65ef3f403676`; accepted merge `075fa1817bd75b7cf1a9dc175c1b4524c745df77`.
-- Design, Identity, Mesh, and Suite — PR #7; bounded source-copy evidence `f9be2cf9b3e02c1b56a2b6ea00fc958572db589d`; accepted merge `b8817cea54cad3cd03c040409ec8b65c92aeffdc`.
-- Main — PR #8; immutable legacy source revision `18f5276d21b8eb3b55adc18e00e88aa11b6edfd8`; central source-copy evidence `bb95964e0a1f28c7d5f1eae1dc111c43daea1317`; final validated candidate `c945108b7f5dd59ce69ce71264a47d8a22a72829`; accepted merge `553e42f59573f8cacc5e6ab8bb2223d6b7575bb3`.
-- Privacy, Wardveil Security, and Everkeep — superseding PR #10 after Main changed the shared registry; exact final candidate `ba3b254f624e13d886a9cdbea6ae64b5f515addd`; accepted merge `4bfee305550e2e43991188816f4fc80c16ccfad5`.
+Labs is a standalone static public site and is automatically in scope for the centralization directive. Its legacy source was captured from `sites/labs` tree `60cf6dbefa274a19bbb7bf3ae75638ac6d20e1c7` at Website candidate `7d9b03c90d3ea2c74dacd2f03430a86dd93a3ba6`. The central package copies the site plus the exact shared Website CSS, JavaScript, logo, and pinned GLAZE helper required to reproduce the isolated artifact without retaining a source dependency on the transitional repository.
 
-The accepted `main` revision `4bfee305550e2e43991188816f4fc80c16ccfad5` passed the repository migration-registry workflow and the dedicated Privacy/Security/Everkeep post-merge workflow.
-
-## Current inventory-discovery result
-
-Repository-wide discovery is no longer an open source-migration gate for the current repository inventory.
-
-The discovery evidence scanned 66 public, non-archived GoreeCloud repositories using recursive Git trees. Every signature-bearing candidate repository was then classified. The authenticated GitHub installation inventory was also reviewed to cover the accessible private GoreeCloud repositories.
-
-The review found no additional standalone GoreeCloud public static website package beyond the thirteen manifest entries. Browser-extension pages, application UIs, generated `dist` output, validation fixtures, demos, design references, internal service pages, OpenAPI pages, portability templates, and inherited upstream documentation were excluded from standalone-site authority.
-
-See `docs/static-site-discovery-review.md` for the classification record. A future repository or a future distinct public static website remains automatically in scope for centralization.
+The same migration candidate corrects the Labs inventory from five to six products by adding GoreeCloud Boot. Boot remains explicitly Development: the public card describes the validated read-only discovery, safety/revalidation, partition-planning, GPT metadata, catalog-validation, and development image-tooling foundation while preserving the gates around physical writes, filesystems, boot runtime, bootable releases, broader storage qualification, and Stable/production acceptance.
 
 ## Preserved authority boundaries
 
@@ -68,10 +52,11 @@ See `docs/static-site-discovery-review.md` for the classification record. A futu
 - Privacy Shield, Wardveil Security, and Everkeep were migrated as bounded public packages from private repositories. Their private runtime, service, contract, and security/continuity implementation authority was not copied into this public repository.
 - Generated `dist` directories are deployment artifacts/evidence, not central source authority.
 - Design Center includes the exact Glaze UI build inputs required by its public site without transferring the design system's broader authority into this repository.
+- Labs contains public development information only; GoreeCloud Home, Home Security, AI, Containers, Code, and Boot runtime authority remains in their respective repositories.
 
 ## Deployment and retirement gate
 
-Every manifest entry still records `deployment_state: legacy-source`.
+Every manifest entry still records `deployment_state: legacy-source`, including Labs.
 
 No site may advance to production-verified or legacy-source-retired merely because its central source builds or passes CI. For each site, the remaining controlled sequence is:
 
@@ -87,15 +72,16 @@ No Cloudflare Pages, DNS, HTTPS, or production-traffic change is claimed by the 
 
 `GoreeCloud/goreecloud-website` remains a protected transitional repository.
 
-It must not be deleted until all five sites historically sourced there have been cut over to the centralized repository, exact production verification has passed, all required references and dependencies have been removed or redirected, legacy copies have been retired, and any applicable preservation/deletion gate has been satisfied.
+It must not be deleted until every static website source or candidate still depending on it—including Labs—has been cut over to the centralized repository, exact production verification has passed, all required references and dependencies have been removed or redirected, legacy copies have been retired, and any applicable preservation/deletion gate has been satisfied.
 
 After those gates are satisfied, the repository must not remain as a competing website authority.
 
 ## Next implementation tranche
 
-1. Obtain an authenticated Cloudflare Pages management path capable of changing project repository/root/build settings.
-2. Cut over the thirteen site deployments in controlled, individually verifiable steps using their central paths.
-3. Verify exact production state after each cutover and record the accepted deployed revision.
-4. Update remaining deployment/reference documentation after each accepted cutover.
-5. Retire legacy static copies only after their individual production and rollback/dependency gates pass.
-6. Perform the final dependency and preservation review for `GoreeCloud/goreecloud-website`, then delete it only if every deletion precondition is verified.
+1. Complete exact central validation for the Labs package and advance its manifest state only with evidence.
+2. Obtain an authenticated Cloudflare Pages management path capable of changing project repository/root/build settings.
+3. Cut over the site deployments in controlled, individually verifiable steps using their central paths, including Labs.
+4. Verify exact production state after each cutover and record the accepted deployed revision.
+5. Update remaining deployment/reference documentation after each accepted cutover.
+6. Retire legacy static copies only after their individual production and rollback/dependency gates pass.
+7. Perform the final dependency and preservation review for `GoreeCloud/goreecloud-website`, then delete it only if every deletion precondition is verified.

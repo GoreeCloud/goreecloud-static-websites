@@ -1,0 +1,39 @@
+/* Product-center-only composition; inherits GLAZE V1.1 and the shared GoreeCloud public-site consumer layer. */
+.labs-hero { padding-top: clamp(92px, 11vw, 156px); }
+.labs-hero-grid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(330px,.85fr); gap: clamp(38px,7vw,88px); align-items: center; }
+.labs-hero h1 { margin: 12px 0 22px; max-width: 12ch; font-size: clamp(3rem,6.5vw,6.1rem); line-height: .97; letter-spacing: -.06em; }
+.labs-status { padding: clamp(26px,4vw,42px); }
+.labs-status h2 { margin: 10px 0 12px; font-size: clamp(1.8rem,3vw,2.6rem); line-height: 1.05; letter-spacing: -.04em; }
+.labs-status > p:not(.eyebrow) { color: var(--site-muted); }
+.labs-status dl { margin: 26px 0 0; }
+.labs-status dl div { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding-block: 13px; border-top: 1px solid var(--site-border); }
+.labs-status dt { color: var(--site-tertiary); }
+.labs-status dd { margin: 0; font-weight: 650; }
+.track { padding-block: 42px 78px; border-top: 1px solid var(--site-border); }
+.track:first-of-type { border-top: 0; padding-top: 8px; }
+.track-heading { display: grid; grid-template-columns: 48px 1fr; gap: 18px; align-items: start; margin-bottom: 28px; }
+.track-heading > span { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid var(--site-border); border-radius: 16px; color: var(--site-tertiary); font-size: .8rem; font-weight: 800; }
+.track-heading h2 { margin: 7px 0 0; font-size: clamp(2rem,4vw,3.5rem); line-height: 1.05; letter-spacing: -.045em; }
+.product-grid { display: grid; gap: 16px; }
+.product-grid.two-up { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.product-card { padding: clamp(26px,4vw,40px); border-radius: 28px; }
+.product-card-top { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
+.product-status { margin: 0 0 7px; color: var(--site-tertiary); font-size: .76rem; text-transform: uppercase; letter-spacing: .11em; font-weight: 800; }
+.product-card h3 { margin: 0; font-size: clamp(1.8rem,3vw,2.6rem); line-height: 1.06; letter-spacing: -.04em; }
+.text-mark { display: grid; place-items: center; min-width: 68px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--site-border); border-radius: 16px; color: var(--site-muted); font-size: .76rem; font-weight: 780; text-transform: uppercase; letter-spacing: .08em; }
+.product-summary { margin: 26px 0; max-width: 68ch; color: var(--site-muted); font-size: 1.05rem; }
+.product-evidence { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.product-evidence > div { padding: 18px; border-radius: 18px; border: 1px solid var(--site-border); background: color-mix(in srgb, var(--site-raised) 62%, transparent); }
+.product-evidence strong { display: block; margin-bottom: 7px; }
+.product-evidence p { margin: 0; color: var(--site-muted); font-size: .93rem; }
+.product-card .text-link { margin-top: 22px; }
+.integration-list { padding: 10px 24px; }
+.integration-list div { display: flex; justify-content: space-between; gap: 24px; padding-block: 16px; border-bottom: 1px solid var(--site-border); }
+.integration-list div:last-child { border-bottom: 0; }
+.integration-list span { color: var(--site-muted); text-align: right; max-width: 48ch; }
+.public-boundary { padding: clamp(28px,5vw,56px); display: flex; justify-content: space-between; gap: 36px; align-items: end; }
+.public-boundary h2 { margin: 8px 0 12px; font-size: clamp(2rem,4vw,3.6rem); line-height: 1.04; letter-spacing: -.05em; }
+.public-boundary p:not(.eyebrow) { max-width: 70ch; color: var(--site-muted); }
+.public-boundary .button { flex: 0 0 auto; }
+@media (max-width: 900px) { .labs-hero-grid, .product-grid.two-up { grid-template-columns: 1fr; } .public-boundary { align-items: stretch; flex-direction: column; } }
+@media (max-width: 700px) { .labs-hero h1 { font-size: clamp(2.7rem,14vw,4.4rem); } .product-evidence { grid-template-columns: 1fr; } .integration-list div { flex-direction: column; gap: 4px; } .integration-list span { text-align: left; } .labs-status dl div { grid-template-columns: 1fr; gap: 2px; } .track-heading { grid-template-columns: 1fr; } }
