@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,6 +22,15 @@ for name in ("index.html", "404.html", "_headers"):
     if not (site / name).is_file():
         errors.append(f"missing required site source: {name}")
 
+
+def has_class_token(page: str, token: str) -> bool:
+    """Return true only when token is a complete whitespace-delimited HTML class."""
+    for match in re.finditer(r'class\s*=\s*["\']([^"\']*)["\']', page, flags=re.IGNORECASE):
+        if token in match.group(1).split():
+            return True
+    return False
+
+
 for page_name in ("index.html", "404.html"):
     path = site / page_name
     if not path.is_file():
@@ -31,10 +41,11 @@ for page_name in ("index.html", "404.html"):
         f'name="goreecloud-glaze-ui" content="{GLAZE_VERSION}"',
         f'data-glaze-ui="{GLAZE_VERSION}"',
         '/assets/glaze-v1/glaze-v1.1.0.css',
-        'class="glaze-canvas"',
     ):
         if marker not in page:
             errors.append(f"{page_name} missing V1.1 source marker: {marker}")
+    if not has_class_token(page, "glaze-canvas"):
+        errors.append(f"{page_name} missing required HTML class token: glaze-canvas")
     for forbidden in (
         'data-glaze-ui="2.',
         'name="goreecloud-glaze-ui" content="2.',
