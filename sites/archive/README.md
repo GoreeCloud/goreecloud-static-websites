@@ -11,7 +11,7 @@ Canonical static source for `https://archive.goreecloud.com`.
 - Build output directory: `sites/archive/dist`
 - Custom domain: `archive.goreecloud.com`
 - Migration source: `GoreeCloud/goreecloud-website` at `sites/archive`
-- Reviewed legacy source tree: `261f21095d096707bcc001e0e0ae46eb718c5ea3ab3f`
+- Reviewed legacy source tree: `261f21095d912d0ee915553f52d41c3861a4cff1`
 
 ## GLAZE UI boundary
 
