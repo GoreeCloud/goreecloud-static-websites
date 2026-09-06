@@ -1,0 +1,33 @@
+name: Validate Roadmap static site
+
+on:
+  pull_request:
+    paths:
+      - 'sites/roadmap/**'
+      - '.github/workflows/validate-roadmap-site.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/roadmap/**'
+      - '.github/workflows/validate-roadmap-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact website candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Compile validator
+        run: python -m py_compile sites/roadmap/validate.py
+      - name: Validate source contract
+        run: python sites/roadmap/validate.py
+      - name: Validate JavaScript syntax
+        run: node --check sites/roadmap/site.js
