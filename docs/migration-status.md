@@ -4,6 +4,16 @@
 **Reviewed:** 2026-09-05  
 **Overall state:** Migration in progress; no deployment cutover or legacy deletion is claimed.
 
+## Mandatory consolidation rule
+
+Every GoreeCloud static website MUST be stored, maintained, and referenced from `GoreeCloud/goreecloud-static-websites`.
+
+This includes the main GoreeCloud website, Wardveil Security website, GoreeCloud Identity website, GoreeCloud Privacy website, GoreeCloud Roadmap website, GoreeCloud Archive website, and every other static website currently stored in a standalone website repository or embedded inside an application, service, Platform System, design-system, or historical repository.
+
+No legacy repository may remain a second authoritative source after its site has completed migration. Build configuration, deployment configuration, documentation, automation, and repository references must be updated to point to the corresponding centralized site package.
+
+All future GoreeCloud static websites must also be created in this repository unless an explicit architectural exception is documented.
+
 ## Confirmed inventory
 
 The first repository audit identified thirteen static public-site source packages that must be consolidated:
@@ -18,13 +28,13 @@ The first repository audit identified thirteen static public-site source package
 | Suite | `suite.goreecloud.com` | `GoreeCloud/goreecloud-suite` | `/` website package | `sites/suite` |
 | Design | `design.goreecloud.com` | `GoreeCloud/goreecloud-glaze-ui` | `website` | `sites/design` |
 | Privacy | `privacy.goreecloud.com` | `GoreeCloud/goreecloud-privacy-shield` | `website` | `sites/privacy` |
-| Security | `security.goreecloud.com` | `GoreeCloud/goreecloud-wardveil-security` | `website` | `sites/security` |
+| Security / Wardveil | `security.goreecloud.com` | `GoreeCloud/goreecloud-wardveil-security` | `website` | `sites/security` |
 | Everkeep | `everkeep.goreecloud.com` | `GoreeCloud/goreecloud-everkeep` | `website` plus site-specific build resources | `sites/everkeep` |
 | Identity | `identity.goreecloud.com` | `GoreeCloud/goreecloud-identity` | `identity-center-site` | `sites/identity` |
 | Manager | `manage.goreecloud.com` | `GoreeCloud/goreecloud-manager` | `website` | `sites/manager` |
 | Mesh | `mesh.goreecloud.com` | `GoreeCloud/goreecloud-mesh` | `website` plus site-specific build resources | `sites/mesh` |
 
-This is a verified initial inventory, not a declaration that no additional static source exists. Repository-wide discovery remains a migration gate.
+This is a verified initial inventory, not a declaration that no additional static source exists. Repository-wide discovery remains a migration gate. Any additional static website discovered later is automatically in scope for consolidation.
 
 ## Important boundaries found during inventory
 
@@ -39,14 +49,18 @@ This is a verified initial inventory, not a declaration that no additional stati
 
 A site advances only when all requirements for the next state are satisfied. In particular, `source-copied` requires a reproducible central package, not just HTML/CSS files. `production-verified` requires deployment evidence against the central accepted revision. `legacy-source-retired` requires old source/reference cleanup after cutover.
 
-`GoreeCloud/goreecloud-website` remains in service as a migration source and must not be deleted until every static site across the ecosystem reaches the required retirement state and no dependency points to it.
+`GoreeCloud/goreecloud-website` remains in service only as a migration source. It MUST be deleted after every static site across the GoreeCloud ecosystem has completed source migration, validation, deployment/reference cutover, required production verification, and legacy-source retirement, and after no required dependency remains on that repository.
+
+The repository must not be deleted prematurely. Conversely, after all retirement gates are satisfied, it must not be retained as a competing website authority.
 
 ## Next implementation tranche
 
 1. Establish repository-level manifest validation and site-boundary checks.
-2. Migrate self-contained/reproducible site packages in small reviewable tranches.
-3. Port each site's validation/build contract into `sites/<id>/` or shared repository tooling without changing its public behavior.
-4. Validate candidate source centrally.
-5. Change Cloudflare Pages source/root only after central validation is accepted.
-6. Verify exact deployed production bytes/behavior where the legacy site already has a production acceptance contract.
-7. Remove legacy static source and obsolete references only after successful cutover.
+2. Continue repository-wide discovery so every static website is represented in the central manifest.
+3. Migrate self-contained/reproducible site packages in small reviewable tranches.
+4. Port each site's validation/build contract into `sites/<id>/` or shared repository tooling without changing its public behavior.
+5. Validate candidate source centrally.
+6. Change Cloudflare Pages source/root and every repository reference only after central validation is accepted.
+7. Verify exact deployed production bytes/behavior where the legacy site already has a production acceptance contract.
+8. Remove legacy static source and obsolete references only after successful cutover.
+9. Delete `GoreeCloud/goreecloud-website` after all ecosystem-wide migration and retirement gates are complete.
