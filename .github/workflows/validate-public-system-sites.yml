@@ -7,6 +7,8 @@ on:
       - 'sites/identity/**'
       - 'sites/mesh/**'
       - 'sites/suite/**'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-public-system-sites.yml'
   push:
     branches: [main]
@@ -15,6 +17,8 @@ on:
       - 'sites/identity/**'
       - 'sites/mesh/**'
       - 'sites/suite/**'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-public-system-sites.yml'
   workflow_dispatch:
 
@@ -42,22 +46,14 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Validate Identity Center static boundary
-        shell: python
-        run: |
-          from pathlib import Path
-          root=Path('sites/identity')
-          for name in ('index.html','app.js','style.css','glaze-ui-2.1.0.css','_headers','robots.txt','sitemap.xml','assets/identity.svg'):
-              if not (root/name).is_file(): raise SystemExit(f'missing Identity Center source: {name}')
-          html=(root/'index.html').read_text(encoding='utf-8')
-          headers=(root/'_headers').read_text(encoding='utf-8')
-          for marker in ('identity.goreecloud.com','goreecloud-glaze-ui','glaze-ui-2.1.0.css'):
-              if marker not in html: raise SystemExit(f'missing Identity Center marker: {marker}')
-          for marker in ('Content-Security-Policy:','X-Content-Type-Options: nosniff','frame-ancestors'):
-              if marker not in headers: raise SystemExit(f'missing Identity Center security header: {marker}')
-          for forbidden in ('docs.goauthentik.io','google-analytics','googletagmanager','segment.com'):
-              if forbidden in html.lower(): raise SystemExit(f'forbidden/upstream Identity Center dependency: {forbidden}')
-          print('Identity Center static boundary validated')
+      - name: Compile Identity Center and V1.1 tooling
+        run: python -m py_compile scripts/glaze_v1.py scripts/validate_v1_static_site.py sites/identity/build.py sites/identity/validate.py
+      - name: Build isolated Identity Center artifact
+        run: python sites/identity/build.py
+      - name: Validate Identity Center V1.1 source and artifact
+        run: python scripts/validate_v1_static_site.py sites/identity
+      - name: Validate Identity Center truth and namespace boundary
+        run: python sites/identity/validate.py
       - run: node --check sites/identity/app.js
 
   mesh:
