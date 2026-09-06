@@ -1,180 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-glaze-version="1.1">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="GoreeCloud is a privacy-first, self-hosted personal and family cloud built for data ownership, recoverability, open-source independence, and long-term digital preservation.">
+  <meta name="description" content="GoreeCloud is an owner-controlled computing platform focused on privacy, portability, recoverability, first-party software, and replaceable infrastructure.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="application-name" content="GoreeCloud">
   <meta name="author" content="GoreeCloud">
   <meta name="color-scheme" content="dark light">
-  <meta name="theme-color" data-theme-color="dark" content="#07111f" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" data-theme-color="light" content="#f4f7fb" media="(prefers-color-scheme: light)">
-  <script src="js/theme-init.js"></script>
-  <title>GoreeCloud — Privacy-First Personal &amp; Family Cloud</title>
+  <meta name="goreecloud-glaze-ui" content="1.1.0">
+  <meta name="theme-color" content="#0b0d11" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f7fa" media="(prefers-color-scheme: light)">
+  <script src="/js/theme-init.js"></script>
+  <title>GoreeCloud — Owner-Controlled Computing</title>
   <link rel="canonical" href="https://www.goreecloud.com/">
-  <link rel="manifest" href="site.webmanifest">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" href="assets/goreecloud-logo.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/goreecloud-logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/status.css">
-  <link rel="stylesheet" href="css/how-it-works.css">
-  <link rel="stylesheet" href="css/platform.css">
-  <link rel="stylesheet" href="css/roadmap.css">
-  <link rel="stylesheet" href="css/development.css">
-  <link rel="stylesheet" href="css/social.css">
-  <link rel="stylesheet" href="css/glaze.css">
-  <link rel="stylesheet" href="css/glaze-polish.css">
-  <link rel="stylesheet" href="css/repositories.css">
-  <meta name="goreecloud-glaze-ui" content="2.1.0">
-  <link rel="stylesheet" href="css/glaze-ui-2.1.0.css" data-glaze-ui="2.1.0">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:site_name" content="GoreeCloud">
-  <meta property="og:title" content="GoreeCloud — Privacy-First Personal &amp; Family Cloud">
-  <meta property="og:description" content="A self-hosted personal and family cloud built for ownership, privacy, recoverability, open-source independence, and the future.">
-  <meta property="og:url" content="https://www.goreecloud.com/">
-  <meta property="og:image" content="https://www.goreecloud.com/assets/social-preview.png">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="GoreeCloud — A private cloud built for family, ownership, and the future.">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@GoreeCloud">
-  <meta name="twitter:title" content="GoreeCloud — Privacy-First Personal &amp; Family Cloud">
-  <meta name="twitter:description" content="A self-hosted personal and family cloud built for ownership, privacy, recoverability, open-source independence, and the future.">
-  <meta name="twitter:image" content="https://www.goreecloud.com/assets/social-preview.png">
-  <meta name="twitter:image:alt" content="GoreeCloud — A private cloud built for family, ownership, and the future.">
+  <link rel="stylesheet" href="/assets/glaze-v1/glaze-v1.1.0.css" data-glaze-ui="1.1.0">
+  <link rel="stylesheet" href="/css/site-v1.1.css">
 </head>
-<body class="glaze-canvas">
+<body class="glaze-canvas glz1-workspace site-shell">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header glaze-material-soft">
-    <div class="container nav-wrap">
-      <a class="brand" href="#top" aria-label="GoreeCloud home"><img class="brand-logo" src="assets/goreecloud-logo.svg" alt="" width="36" height="36"><span class="brand-text">GoreeCloud</span></a>
-      <div class="nav-actions">
-        <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" hidden><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="sr-only theme-toggle-label">Switch theme</span></button>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="sr-only">Toggle navigation</span><span></span><span></span><span></span></button>
-      </div>
-      <nav id="site-nav" class="site-nav glaze-navigation-capsule" aria-label="Primary navigation">
-        <a href="#services">Suite</a>
-        <a href="#capabilities">Capabilities</a>
-        <a href="#platform">Platform</a>
-        <a href="#development">Projects</a>
-        <a href="repositories.html">Repositories</a>
-        <a href="#roadmap">Roadmap</a>
-        <a href="#about">About</a>
-        <a href="#follow">Follow</a>
-        <a href="#contact" class="nav-cta">Contact</a>
-      </nav>
+  <header class="site-header glz1-system-overlay">
+    <div class="wrap header-row">
+      <a class="brand glz1-focusable" href="/" aria-label="GoreeCloud home"><img class="brand-logo" src="assets/goreecloud-logo.svg" alt="" width="36" height="36"><span>GoreeCloud</span></a>
+      <div class="header-actions"><button class="appearance-toggle glz1-shell-control glz1-state-layer" type="button" aria-label="Appearance: System. Change appearance." hidden>System</button><button class="nav-toggle glz1-shell-control glz1-state-layer" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="sr-only">Toggle navigation</span><span aria-hidden="true">Menu</span></button></div>
+      <nav class="primary-nav glz1-capsule" id="primary-nav" aria-label="Primary"><a href="/" aria-current="page">Home</a><a href="/repositories.html">Repositories</a><a href="/privacy.html">Privacy</a><a href="/security.html">Security</a></nav>
     </div>
   </header>
-
   <main id="main" tabindex="-1">
-    <section id="top" class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <div class="hero-labels" aria-label="GoreeCloud platform foundations"><span class="eyebrow">Private • Self-hosted • Recoverable</span></div>
-          <h1>Own your cloud. Preserve what matters.</h1>
-          <p class="hero-lede">GoreeCloud is a privacy-first, self-hosted personal and family cloud for keeping important data, applications, and digital history under the control of the people they belong to.</p>
-          <div class="hero-actions"><a class="button primary glaze-button" href="#services">Explore GoreeCloud Suite</a><a class="button secondary glaze-button" href="repositories.html">Browse Source Repositories</a></div>
-          <ul class="hero-points" aria-label="GoreeCloud principles"><li>Private by default</li><li>Open source first</li><li>Designed to be recoverable</li></ul>
-        </div>
-        <div class="hero-card glaze-material" aria-label="GoreeCloud overview">
-          <div class="cloud-orb" aria-hidden="true"><div class="orb-core"><img src="assets/goreecloud-logo.svg" alt="" width="140" height="140"></div><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="node n1"></span><span class="node n2"></span><span class="node n3"></span></div>
-          <div class="hero-card-copy"><span class="status-dot"></span><span>Building a durable family digital foundation</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="band" aria-label="Core principles"><div class="container"><strong>Privacy</strong><strong>Ownership</strong><strong>Recoverability</strong></div></section>
-
-    <section id="services" class="section">
-      <div class="container"><div class="section-heading"><p class="eyebrow">GoreeCloud Suite</p><h2>Focused applications, shared foundations.</h2><p>This source placeholder is replaced from the reviewed Suite and capability manifests before publication.</p></div></div>
-    </section>
-    <section id="how-it-works" class="section how-section">
-      <div class="container">
-        <div class="section-heading"><p class="eyebrow">How GoreeCloud works</p><h2>One platform. Multiple layers of control.</h2><p>GoreeCloud separates access, applications, storage, security, and recovery so no single product becomes the platform itself. Technologies can be replaced while ownership, portability, and preservation remain constant.</p></div>
-        <div class="how-flow" aria-label="GoreeCloud platform layers">
-          <article class="how-card"><span class="how-step">01</span><h3>Private Access</h3><p>Approved users and devices receive only the connectivity required for their role.</p></article>
-          <article class="how-card"><span class="how-step">02</span><h3>Applications</h3><p>Self-hosted and GoreeCloud-built applications serve family, knowledge, and operational needs.</p></article>
-          <article class="how-card"><span class="how-step">03</span><h3>Storage &amp; Data</h3><p>Important information remains organized, portable, and under direct GoreeCloud control.</p></article>
-          <article class="how-card"><span class="how-step">04</span><h3>Security &amp; Isolation</h3><p>Least privilege and workload separation reduce unnecessary access and blast radius.</p></article>
-          <article class="how-card"><span class="how-step">05</span><h3>Backup &amp; Recovery</h3><p>Independent recovery layers protect information from failures, mistakes, and migrations.</p></article>
-        </div>
-        <div class="how-principle"><span><strong>GoreeCloud principle:</strong> Systems are replaceable. The information they protect is not.</span></div>
-      </div>
-    </section>
-
-    <section id="platform" class="section platform-section">
-      <div class="container">
-        <div class="section-heading"><p class="eyebrow">Infrastructure foundations</p><h2>Known technical foundations, clearly bounded.</h2><p>These approved project assets identify currently documented infrastructure foundations without turning them into GoreeCloud product identities.</p></div>
-        <div class="platform-grid">
-          <a class="platform-logo-link" href="https://www.proxmox.com/" target="_blank" rel="noopener noreferrer"><img src="assets/platform/proxmox.svg" alt="Proxmox" width="48" height="48"></a>
-          <a class="platform-logo-link" href="https://www.debian.org/" target="_blank" rel="noopener noreferrer"><img src="assets/platform/debian.svg" alt="Debian" width="48" height="48"></a>
-          <a class="platform-logo-link" href="https://www.docker.com/" target="_blank" rel="noopener noreferrer"><img src="assets/platform/docker.png" alt="Docker" width="48" height="48"></a>
-          <a class="platform-logo-link" href="https://netbird.io/" target="_blank" rel="noopener noreferrer"><img src="assets/platform/netbird.svg" alt="NetBird" width="48" height="48"></a>
-          <a class="platform-logo-link" href="https://adguard.com/en/adguard-home/overview.html" target="_blank" rel="noopener noreferrer"><img src="assets/platform/adguard-home.svg" alt="AdGuard Home" width="48" height="48"></a>
-          <a class="platform-logo-link" href="https://caddyserver.com/" target="_blank" rel="noopener noreferrer"><img src="assets/platform/caddy.svg" alt="Caddy" width="48" height="48"></a>
-          <a class="platform-logo-link" href="https://github.com/louislam/uptime-kuma" target="_blank" rel="noopener noreferrer"><img src="assets/platform/uptime-kuma.svg" alt="Uptime Kuma" width="48" height="48"></a>
-        </div>
-      </div>
-    </section>
-    <section id="development" class="section section-alt">
-      <div class="container"><div class="section-heading"><p class="eyebrow">Development</p><h2>Native GoreeCloud software continues to expand.</h2><p>This legacy composition anchor is removed during publication; current product detail belongs on Projects and Suite.</p></div></div>
-    </section>
-    <section id="repositories" class="section repository-teaser">
-      <div class="container repository-teaser-grid">
-        <div class="repository-teaser-copy">
-          <p class="eyebrow">GitHub repositories</p><h2>Source code is part of the platform.</h2>
-          <p>GoreeCloud currently maintains 57 repositories spanning first-party applications, maintained forks, shared foundations, platform systems, developer tooling, media, storage, and public-presence work.</p>
-          <div class="repository-teaser-actions"><a class="button primary glaze-button" href="repositories.html">Explore all repositories</a><a class="button secondary glaze-button" href="https://github.com/GoreeCloud" target="_blank" rel="noopener noreferrer">Open GitHub profile</a></div>
-        </div>
-        <div class="repository-teaser-stats" aria-label="Repository portfolio summary"><div><strong>57</strong><span>current repositories</span></div><div><strong>40</strong><span>public repositories</span></div><div><strong>17</strong><span>private repositories</span></div><div><strong>13</strong><span>functional groups</span></div></div>
-      </div>
-    </section>
-
-    <section id="roadmap" class="section roadmap-section">
-      <div class="container">
-        <div class="section-heading"><p class="eyebrow">Expanding the platform</p><h2>Local infrastructure, home automation, security, and AI.</h2><p>The target home architecture adds dedicated workload boundaries for family services, infrastructure, storage, home automation, physical security, artificial intelligence, and backup so each role can be secured, scaled, maintained, and recovered independently.</p></div>
-        <div class="roadmap-grid" aria-label="Planned GoreeCloud capabilities">
-          <article class="roadmap-card"><div class="roadmap-card-head"><span class="roadmap-icon roadmap-art" aria-hidden="true"><img src="assets/roadmap/home-assistant.png" alt="" width="52" height="52"></span><span class="roadmap-state">Planned</span></div><p class="roadmap-kicker">Home Automation</p><h3>Home Assistant</h3><p>Dedicated household automation and orchestration for approved smart devices, scenes, dashboards, alerts, and future voice or AI integrations.</p><p class="roadmap-current"><strong>Target:</strong> A dedicated Home Assistant OS virtual machine in the local Proxmox environment.</p><ul class="roadmap-details"><li>Purpose-built VM boundary</li><li>Local-first automation</li><li>Independent backup and recovery</li></ul></article>
-          <article class="roadmap-card"><div class="roadmap-card-head"><span class="roadmap-icon roadmap-art" aria-hidden="true"><img src="assets/roadmap/frigate.svg" alt="" width="52" height="52"></span><span class="roadmap-state">Planned</span></div><p class="roadmap-kicker">Physical Security</p><h3>Frigate</h3><p>Local video-surveillance and object-detection platform with deliberately restricted access to camera feeds, recordings, and administration.</p><p class="roadmap-current"><strong>Target:</strong> A dedicated Security VM separated from family, infrastructure, and AI workloads.</p><ul class="roadmap-details"><li>Local camera processing</li><li>Dedicated retention controls</li><li>Restricted administrative access</li></ul></article>
-          <article class="roadmap-card">
-            <div class="roadmap-card-head"><span class="roadmap-icon roadmap-art" aria-hidden="true"><img src="assets/suite/ai.svg" alt="" width="52" height="52"></span><span class="roadmap-state">Active Development</span></div>
-            <p class="roadmap-kicker">Local Intelligence</p>
-            <h3>GoreeCloud AI</h3>
-            <p>First-party private AI work continues under explicit data, authority, and evidence boundaries.</p>
-          </article>
-        </div>
-        <p class="roadmap-note"><strong>Status note:</strong> Planned capabilities are not represented as active until deployment, security, monitoring, backup, and recovery validation are complete.</p>
-      </div>
-    </section>
-
-    <section id="about" class="section section-alt">
-      <div class="container about-grid"><div><p class="eyebrow">What is GoreeCloud?</p><h2>More than a homelab.</h2></div><div class="about-copy"><p>GoreeCloud is a privacy-first, self-hosted personal and family cloud platform built to preserve a family's digital life over the long term.</p><p>Success is measured by whether information remains accessible, understandable, recoverable, portable, and under the control of its rightful owner as technology changes.</p><div class="glaze-callout"><div><span class="glaze-chip">Public purpose</span><h3>Ownership should be understandable and repeatable.</h3></div><p>GoreeCloud is not a commercial cloud product. The build is documented publicly to show that individuals and families can own more of their infrastructure, software, data, backups, and recovery paths.</p></div><div class="principle-grid"><div><strong>Privacy</strong><span>Protection is a design requirement, not an optional setting.</span></div><div><strong>Ownership</strong><span>The rightful owner retains authority over their information.</span></div><div><strong>Open Source</strong><span>Open-source, self-hosted software is the default direction.</span></div><div><strong>Recoverability</strong><span>Restore paths are part of the architecture, not an afterthought.</span></div><div><strong>Independence</strong><span>Core software and infrastructure move toward direct GoreeCloud control where it provides durable value.</span></div><div><strong>Preservation</strong><span>Important information should outlive the technology storing it.</span></div></div></div></div>
-    </section>
-
-    <section id="story" class="section">
-      <div class="container"><div class="section-heading"><p class="eyebrow">The GoreeCloud story</p><h2>Built deliberately from the beginning.</h2><p>GoreeCloud started in 2026 as a self-hosting plan and grew into a governed personal cloud, software portfolio, and long-term digital preservation platform.</p></div><div class="timeline"><article><time datetime="2026-06-01">June 1, 2026</time><div><h3>Initial planning begins</h3><p>The first planning work starts with a goal of replacing subscription dependence with greater privacy, control, and data ownership.</p></div></article><article><time datetime="2026-06-07">June 7, 2026</time><div><h3>The GoreeCloud name is established</h3><p>GoreeCloud becomes the name for the complete ecosystem: hardware, software, infrastructure, services, configurations, and data.</p></div></article><article><time datetime="2026-08-30">August 30, 2026</time><div><h3>Glaze UI 2.1 becomes the Stable design target</h3><p>The current design contract standardizes solid content, controlled glazed interaction, accessibility, responsive layouts, and resilient material behavior across GoreeCloud surfaces.</p></div></article><article><time datetime="2026-08-31">August 31, 2026</time><div><h3>The public ecosystem reconciles current portfolio truth</h3><p>The reviewed source inventory reaches 57 repositories while ten production-accepted public destinations remain on Glaze UI 2.1 and Identity Center stays separately publication-gated.</p></div></article></div></div>
-    </section>
-
-    <section id="follow" class="section section-alt">
-      <div class="container"><div class="section-heading"><p class="eyebrow">Follow the build</p><h2>GoreeCloud is being documented in public.</h2><p>Follow progress, demonstrations, lessons learned, privacy discussions, open-source development, and self-hosting content across GoreeCloud's public accounts.</p></div><div class="social-grid">
-        <a class="social-card" href="https://instagram.com/goreecloud" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on Instagram"><span class="social-icon" aria-hidden="true"><img src="assets/social/instagram.ico" alt="" width="52" height="52"></span><strong>Instagram</strong><span>@goreecloud</span><small>Visual progress &amp; demonstrations</small></a>
-        <a class="social-card" href="https://www.pinterest.com/goreecloud/" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on Pinterest"><span class="social-icon" aria-hidden="true"><img src="assets/social/pinterest.ico" alt="" width="52" height="52"></span><strong>Pinterest</strong><span>@goreecloud</span><small>Evergreen visual discovery</small></a>
-        <a class="social-card" href="https://www.threads.net/@goreecloud" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on Threads"><span class="social-icon" aria-hidden="true"><img src="assets/social/threads.ico" alt="" width="52" height="52"></span><strong>Threads</strong><span>@goreecloud</span><small>Conversation &amp; community</small></a>
-        <a class="social-card" href="https://www.tiktok.com/@goreecloud" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on TikTok"><span class="social-icon" aria-hidden="true"><img src="assets/social/tiktok.ico" alt="" width="52" height="52"></span><strong>TikTok</strong><span>@goreecloud</span><small>Short-form demonstrations</small></a>
-        <a class="social-card" href="https://www.youtube.com/@GoreeCloud" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on YouTube"><span class="social-icon" aria-hidden="true"><img src="assets/social/youtube.ico" alt="" width="52" height="52"></span><strong>YouTube</strong><span>@GoreeCloud</span><small>Build videos &amp; walkthroughs</small></a>
-        <a class="social-card" href="https://x.com/GoreeCloud" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on X"><span class="social-icon" aria-hidden="true"><img src="assets/social/x.ico" alt="" width="52" height="52"></span><strong>X</strong><span>@GoreeCloud</span><small>Updates &amp; milestones</small></a>
-        <a class="social-card" href="https://www.reddit.com/user/goreecloud/" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on Reddit"><span class="social-icon" aria-hidden="true"><img src="assets/social/reddit.ico" alt="" width="52" height="52"></span><strong>Reddit</strong><span>u/goreecloud</span><small>Technical discussion</small></a>
-        <a class="social-card github-card" href="https://github.com/GoreeCloud" target="_blank" rel="me noopener noreferrer" aria-label="GoreeCloud on GitHub"><span class="social-icon" aria-hidden="true"><img src="assets/social/github.ico" alt="" width="52" height="52"></span><strong>GitHub</strong><span>GoreeCloud</span><small>Source code &amp; development</small></a>
-      </div></div>
-    </section>
-
-    <section id="contact" class="section contact-section"><div class="container contact-card"><div class="contact-copy"><p class="eyebrow">Contact GoreeCloud</p><h2>Questions, ideas, or want to talk self-hosting?</h2><p>Reach GoreeCloud directly at <strong>goreecloud@gmail.com</strong>.</p></div><a class="button primary glaze-button contact-button" href="mailto:goreecloud@gmail.com">Send an Email</a></div></section>
-  </main>
-
-  <footer class="site-footer"><div class="container footer-grid"><div><a class="brand footer-brand" href="#top"><img class="brand-logo" src="assets/goreecloud-logo.svg" alt="" width="36" height="36"><span class="brand-text">GoreeCloud</span></a><p>Privacy • Ownership • Open Source • Recoverability • Long-Term Preservation</p><p class="footer-glaze"><strong>Glaze UI</strong> design • <strong>Privacy Shield</strong> privacy • <strong>Wardveil Security</strong> security.</p></div><nav class="footer-links" aria-label="Footer navigation"><a href="#services">Suite</a><a href="repositories.html">Repositories</a><a href="#roadmap">Roadmap</a><a href="#about">About</a><a href="#follow">Social</a><a href="privacy.html">Privacy</a><a href="security.html">Security</a><a href="mailto:goreecloud@gmail.com">Email</a></nav><p class="copyright">© <span id="year">2026</span> GoreeCloud</p></div></footer>
-  <script src="js/main.js"></script>
-</body>
-</html>
+<section class="hero section hero-home" id="top"><div class="wrap hero-grid"><div class="hero-copy"><p class="eyebrow">Owner-controlled • Private by design • Built to endure</p><h1>Your cloud should belong to you.</h1><p class="lede">GoreeCloud is building an owner-controlled computing platform for daily software, infrastructure, intelligence, home systems, security, and long-term continuity—without making one vendor, one service, or one device the permanent center of your digital life.</p><div class="actions"><a class="button primary glz1-state-layer" href="https://projects.goreecloud.com/">Explore current projects</a><a class="button secondary glz1-state-layer" href="/repositories.html">Browse source</a></div><div class="truth-note glz1-raised"><strong>Development reality:</strong> public pages distinguish implemented foundations from plans. A working build, draft pull request, or design target is not represented as Stable production acceptance.</div></div><div class="hero-visual glz1-system-panel" aria-label="GoreeCloud platform overview"><div class="hero-mark"><img src="/assets/goreecloud-logo.svg" width="132" height="132" alt=""></div><p class="hero-visual-kicker">One platform, multiple replaceable layers</p><div class="layer-list" aria-label="GoreeCloud platform layers"><span>Applications</span><span>Home &amp; security</span><span>AI &amp; development</span><span>Infrastructure</span><span>Continuity</span></div></div></div></section>
+<section class="section" id="principles"><div class="wrap"><div class="section-heading"><p class="eyebrow">The design brief</p><h2>Keep control close. Keep the future open.</h2><p>GoreeCloud is organized around durable outcomes rather than attachment to today’s implementation choices.</p></div><div class="principle-grid"><article class="card glz1-raised"><p class="card-index">01</p><h3>Ownership</h3><p>Data, configuration, identities, and source should remain controllable by the people and systems they belong to.</p></article><article class="card glz1-raised"><p class="card-index">02</p><h3>Privacy</h3><p>Prefer local and bounded processing, minimize unnecessary data movement, and make external dependencies visible.</p></article><article class="card glz1-raised"><p class="card-index">03</p><h3>Portability</h3><p>Products and infrastructure can evolve without trapping durable information inside a single implementation.</p></article><article class="card glz1-raised"><p class="card-index">04</p><h3>Recoverability</h3><p>Backups are not enough; important state should have a tested path back to useful operation.</p></article></div></div></section>
+<section class="section section-soft" id="explore"><div class="wrap"><div class="section-heading"><p class="eyebrow">Explore GoreeCloud</p><h2>A clearer public front door.</h2><p>The main website points to specialized public surfaces that explain products, design, governance boundaries, and ongoing development.</p></div><div class="destination-grid"><a class="destination-card glz1-system-overlay glz1-state-layer" href="https://suite.goreecloud.com/"><span>Applications</span><h3>GoreeCloud Suite</h3><p>First-party applications and service relationships.</p><strong>Open Suite →</strong></a><a class="destination-card glz1-system-overlay glz1-state-layer" href="https://projects.goreecloud.com/"><span>Development</span><h3>GoreeCloud Projects</h3><p>Current native software work and implementation status.</p><strong>Open Projects →</strong></a><a class="destination-card glz1-system-overlay glz1-state-layer" href="https://labs.goreecloud.com/"><span>Development information</span><h3>Home, AI, Boot &amp; Developer Systems</h3><p>The dedicated product center covers GoreeCloud Home Security, Home, AI, Containers, Code, and Boot. Central source migration and production publication acceptance remain separately gated.</p><strong>Open product center →</strong></a><a class="destination-card glz1-system-overlay glz1-state-layer" href="https://design.goreecloud.com/"><span>Design system</span><h3>Glaze UI</h3><p>The current Stable design language and consumer guidance.</p><strong>Open Design Center →</strong></a><a class="destination-card glz1-system-overlay glz1-state-layer" href="https://privacy.goreecloud.com/"><span>Privacy</span><h3>Privacy Shield</h3><p>Privacy authority, data-use boundaries, and user-control direction.</p><strong>Open Privacy Center →</strong></a><a class="destination-card glz1-system-overlay glz1-state-layer" href="https://security.goreecloud.com/"><span>Security</span><h3>Wardveil Security</h3><p>Security authority, trust, policy, and evidence boundaries.</p><strong>Open Security Center →</strong></a></div></div></section>
+<section class="section" id="systems"><div class="wrap split-section"><div class="section-heading"><p class="eyebrow">Platform systems</p><h2>Shared authorities without hidden shortcuts.</h2><p>GoreeCloud products are intended to integrate with seven Integral Platform Systems. A product does not gain conformance merely because it displays a logo or names an integration.</p></div><div class="system-list glz1-system-panel"><div><strong>GoreeCloud Manager</strong><span>Management and operational visibility</span></div><div><strong>Glaze UI</strong><span>Design and interaction</span></div><div><strong>Privacy Shield</strong><span>Privacy and data use</span></div><div><strong>Wardveil Security</strong><span>Security and trust</span></div><div><strong>Everkeep</strong><span>Continuity and recovery</span></div><div><strong>GoreeCloud Mesh</strong><span>Coordination and capability exchange</span></div><div><strong>GoreeCloud Identity</strong><span>Identity and authentication</span></div></div></div></section>
+<section class="section section-soft" id="architecture"><div class="wrap architecture-grid"><div><p class="eyebrow">Built to evolve</p><h2>Systems are replaceable. Durable information is not.</h2></div><div class="architecture-copy"><p>GoreeCloud separates product experience, platform authority, infrastructure, storage, and recovery so a change in one layer does not have to redefine the whole system.</p><p>Open standards and replaceable dependencies are used where they improve interoperability and maintenance. First-party boundaries are built where GoreeCloud needs stable ownership of experience, policy, evidence, portability, or long-term behavior.</p><a class="text-link" href="/repositories.html">See the source-control boundary →</a></div></div></section>
+<section class="section final-cta"><div class="wrap glz1-system-panel cta-panel"><div><p class="eyebrow">Follow the build</p><h2>Development is public where it can be.</h2><p>Use the project portfolio for product status and GitHub for source, pull requests, and implementation evidence.</p></div><div class="actions"><a class="button primary glz1-state-layer" href="https://projects.goreecloud.com/">Projects</a><a class="button secondary glz1-state-layer" href="https://github.com/GoreeCloud" target="_blank" rel="noopener noreferrer">GitHub</a></div></div></section>
+</main>
+  <footer class="site-footer"><div class="wrap footer-grid"><div><a class="brand footer-brand glz1-focusable" href="/"><img src="/assets/goreecloud-logo.svg" width="30" height="30" alt=""><span>GoreeCloud</span></a><p>Owner-controlled computing, built to remain understandable, portable, and recoverable.</p></div><nav aria-label="Footer"><a href="https://github.com/GoreeCloud" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://projects.goreecloud.com/">Projects</a><a href="https://design.goreecloud.com/">Design</a><a href="https://blog.goreecloud.com/">Blog</a></nav><p class="copyright">© <span id="year">2026</span> GoreeCloud</p></div></footer>
+  <script src="/js/main.js"></script>
+</body></html>
