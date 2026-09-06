@@ -1,0 +1,85 @@
+name: Import main website source once
+
+on:
+  push:
+    branches:
+      - agent/migrate-main-20260905
+    paths:
+      - '.github/workflows/import-main-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out migration branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: agent/migrate-main-20260905
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Fetch immutable legacy source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init /tmp/goreecloud-website
+          git -C /tmp/goreecloud-website remote add origin https://github.com/GoreeCloud/goreecloud-website.git
+          git -C /tmp/goreecloud-website fetch --depth=1 origin 18f5276d21b8eb3b55adc18e00e88aa11b6edfd8
+          git -C /tmp/goreecloud-website checkout --detach FETCH_HEAD
+          test "$(git -C /tmp/goreecloud-website rev-parse HEAD)" = "18f5276d21b8eb3b55adc18e00e88aa11b6edfd8"
+
+      - name: Reproduce bounded main-site package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf sites/main
+          mkdir -p sites/main
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='sites/' \
+            --exclude='dist/' \
+            --exclude='goreecloud.platform.yaml' \
+            /tmp/goreecloud-website/ sites/main/
+          if [ -f sites/main/README.md ]; then
+            mv sites/main/README.md sites/main/LEGACY-REPOSITORY-README.md
+          fi
+          cat > sites/main/README.md <<'EOF'
+          # GoreeCloud Main Website
+
+          Canonical source repository: `GoreeCloud/goreecloud-static-websites`
+
+          Site root: `sites/main`
+          Canonical domain: `www.goreecloud.com`
+          Legacy source repository: `GoreeCloud/goreecloud-website`
+          Reviewed legacy revision: `18f5276d21b8eb3b55adc18e00e88aa11b6edfd8`
+
+          This package contains the main GoreeCloud public website source plus the build, rendering, validation, data-manifest, and test inputs required to reproduce its isolated public artifact. It intentionally excludes the legacy repository's `.github/` governance, the already separately centralized `sites/` subtree, generated `dist/`, and the legacy repository Platform Contract.
+
+          Production deployment cutover remains a separate acceptance gate. The presence of this source in the canonical repository does not itself prove that Cloudflare Pages, DNS, HTTPS, or production traffic has been cut over.
+          EOF
+          cat > sites/main/SOURCE-PROVENANCE.md <<'EOF'
+          # Source Provenance
+
+          - Legacy repository: `GoreeCloud/goreecloud-website`
+          - Immutable source revision: `18f5276d21b8eb3b55adc18e00e88aa11b6edfd8`
+          - Migration method: exact Git checkout followed by bounded rsync into `sites/main`
+          - Excluded from central main-site authority: `.github/`, `sites/`, generated `dist/`, and `goreecloud.platform.yaml`
+          - `LEGACY-REPOSITORY-README.md` preserves the source repository README as migration evidence; `README.md` identifies the new canonical source boundary.
+          EOF
+
+      - name: Commit imported site source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "GoreeCloud Migration"
+          git config user.email "295260680+GoreeCloud@users.noreply.github.com"
+          git add sites/main
+          git diff --cached --quiet && exit 0
+          git commit -m "migrate main GoreeCloud website source"
+          git push origin HEAD:agent/migrate-main-20260905
