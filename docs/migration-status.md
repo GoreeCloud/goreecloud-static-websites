@@ -14,6 +14,11 @@ No legacy repository may remain a second authoritative source after its site has
 
 All future GoreeCloud static websites must also be created in this repository unless an explicit architectural exception is documented.
 
+## Migration progress
+
+- **Manager (`manage.goreecloud.com`) — `source-copied`.** The reviewed static source, product mark, Glaze UI 2.2.0 Stable consumer lock, reproducible build tool, validation tool, and central CI workflow are now present under `sites/manager/`. The private authenticated Manager application remains in `GoreeCloud/goreecloud-manager` and was not moved. Deployment still uses the legacy source until central validation, Cloudflare Pages cutover, and exact production verification are accepted.
+- All other inventoried sites remain `inventory-confirmed` until their complete reproducible website package is copied into the central repository.
+
 ## Confirmed inventory
 
 The first repository audit identified thirteen static public-site source packages that must be consolidated:
