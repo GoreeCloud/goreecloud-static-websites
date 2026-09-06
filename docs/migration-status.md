@@ -16,6 +16,7 @@ All future GoreeCloud static websites must also be created in this repository un
 
 ## Migration progress
 
+- **Roadmap (`roadmap.goreecloud.com`) — `source-copied`.** The reviewed current static source, active Glaze UI 2.1.0 bundle, security headers, JavaScript, validator, central repository contract, and dedicated exact-candidate CI workflow are now present under `sites/roadmap/`. The inactive Glaze UI 1.5.0 and 2.0.0 legacy bundles were intentionally not promoted into the new authority because the current site neither activates nor requires them. Deployment remains on the legacy repository until central validation, Cloudflare Pages source/root cutover, and exact production verification are accepted.
 - **Manager (`manage.goreecloud.com`) — `source-copied`.** The reviewed static source, product mark, Glaze UI 2.2.0 Stable consumer lock, reproducible build tool, validation tool, and central CI workflow are now present under `sites/manager/`. The private authenticated Manager application remains in `GoreeCloud/goreecloud-manager` and was not moved. Deployment still uses the legacy source until central validation, Cloudflare Pages cutover, and exact production verification are accepted.
 - All other inventoried sites remain `inventory-confirmed` until their complete reproducible website package is copied into the central repository.
 
@@ -60,9 +61,9 @@ The repository must not be deleted prematurely. Conversely, after all retirement
 
 ## Next implementation tranche
 
-1. Establish repository-level manifest validation and site-boundary checks.
+1. Complete central validation of the Roadmap and Manager source packages.
 2. Continue repository-wide discovery so every static website is represented in the central manifest.
-3. Migrate self-contained/reproducible site packages in small reviewable tranches.
+3. Migrate the remaining self-contained/reproducible site packages in small reviewable tranches, prioritizing Projects, Blog, and Archive from `goreecloud-website`.
 4. Port each site's validation/build contract into `sites/<id>/` or shared repository tooling without changing its public behavior.
 5. Validate candidate source centrally.
 6. Change Cloudflare Pages source/root and every repository reference only after central validation is accepted.
