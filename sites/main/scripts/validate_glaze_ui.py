@@ -5,22 +5,31 @@ import sys
 from glaze_ui_2 import GLAZE_PROMOTION_REVISION, GLAZE_VERSION
 
 ROOT = Path(__file__).resolve().parents[1]
+SITES = ROOT.parent
 BUNDLE = ROOT / "css/glaze-ui-2.1.0.css"
 ROOT_PAGES = [ROOT / n for n in ("index.html", "repositories.html", "privacy.html", "security.html", "404.html")]
 CHILD_PAGES = [
-    ROOT / "sites/projects/index.html", ROOT / "sites/projects/404.html",
-    ROOT / "sites/roadmap/index.html", ROOT / "sites/roadmap/404.html",
-    ROOT / "sites/blog/index.html", ROOT / "sites/blog/404.html",
-    ROOT / "sites/archive/index.html", ROOT / "sites/archive/404.html",
+    SITES / "projects/index.html", SITES / "projects/404.html",
+    SITES / "roadmap/index.html", SITES / "roadmap/404.html",
+    SITES / "blog/index.html", SITES / "blog/404.html",
+    SITES / "archive/index.html", SITES / "archive/404.html",
 ]
 CHILD_BUNDLES = [
-    ROOT / "sites/projects/assets/glaze-ui-2.1.0.css",
-    ROOT / "sites/roadmap/glaze-ui-2.1.0.css",
-    ROOT / "sites/blog/glaze-ui-2.1.0.css",
-    ROOT / "sites/archive/glaze-ui-2.1.0.css",
+    SITES / "projects/assets/glaze-ui-2.1.0.css",
+    SITES / "roadmap/glaze-ui-2.1.0.css",
+    SITES / "blog/glaze-ui-2.1.0.css",
+    SITES / "archive/glaze-ui-2.1.0.css",
 ]
 CONFORMANCE = ROOT / "docs/glaze-ui-conformance.md"
 errors = []
+
+
+def display(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path.relative_to(SITES.parent))
+
 
 bundle_markers = [
     "Glaze UI 2.1.0 Stable integration",
@@ -38,15 +47,18 @@ bundle_markers = [
 ]
 for bundle in [BUNDLE, *CHILD_BUNDLES]:
     if not bundle.is_file():
-        errors.append(f"Glaze UI 2.1 bundle is missing: {bundle.relative_to(ROOT)}")
+        errors.append(f"Glaze UI 2.1 bundle is missing: {display(bundle)}")
         continue
     css = bundle.read_text(encoding="utf-8")
     for marker in bundle_markers:
         if marker not in css:
-            errors.append(f"{bundle.relative_to(ROOT)} missing 2.1 marker: {marker}")
+            errors.append(f"{display(bundle)} missing 2.1 marker: {marker}")
 
 
 def validate_page(page: Path) -> None:
+    if not page.is_file():
+        errors.append(f"Glaze UI page is missing: {display(page)}")
+        return
     text = page.read_text(encoding="utf-8")
     for marker in [
         f'name="goreecloud-glaze-ui" content="{GLAZE_VERSION}"',
@@ -55,7 +67,7 @@ def validate_page(page: Path) -> None:
         'name="viewport"',
     ]:
         if marker not in text:
-            errors.append(f"{page.relative_to(ROOT)} missing source-native 2.1 marker: {marker}")
+            errors.append(f"{display(page)} missing source-native 2.1 marker: {marker}")
     for stale in (
         'data-glaze-ui="1.5.0"',
         'data-glaze-ui="2.0.0"',
@@ -63,9 +75,9 @@ def validate_page(page: Path) -> None:
         'goreecloud-glaze-ui" content="2.0.0"',
     ):
         if stale in text:
-            errors.append(f"{page.relative_to(ROOT)} still activates a superseded Glaze UI bundle: {stale}")
+            errors.append(f"{display(page)} still activates a superseded Glaze UI bundle: {stale}")
     if "raw.githubusercontent.com" in text:
-        errors.append(f"{page.relative_to(ROOT)} must not load remote Glaze UI at runtime")
+        errors.append(f"{display(page)} must not load remote Glaze UI at runtime")
 
 
 for page in [*ROOT_PAGES, *CHILD_PAGES]:
@@ -91,4 +103,4 @@ if errors:
     for error in errors:
         print(f"  - {error}")
     sys.exit(1)
-print("Glaze UI 2.1.0 Stable source validation passed across every Main, Projects, Roadmap, Blog, and Archive HTML surface.")
+print("Glaze UI 2.1.0 Stable source validation passed across every Main, Projects, Roadmap, Blog, and Archive HTML surface in the canonical central hierarchy.")
