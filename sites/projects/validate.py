@@ -126,7 +126,7 @@ system_blobs = {
     "assets/privacy-shield-icon.svg": "62b10029d4104d0235afe634c21f55d0a826a63d",
     "assets/wardveil-security-icon.svg": "fb3d643cca5477c3f8d4e03ce10a3458fd12f407",
     "assets/everkeep.svg": "5f70a483e06147193944c816291d42774a8648b2",
-    "assets/goreecloud-mesh-mark.svg": "0b2c6881668ce319081390b217f6d59b4298dd4d",
+    "assets/goreecloud-mesh-mark.svg": "5362a52bd9fb38379f083a4d894934ed1acf9b67",
     "assets/identity.svg": "dc8287e385f86767f0105c48a8f234d8440d7623",
 }
 for relative, expected in system_blobs.items():

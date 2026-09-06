@@ -93,7 +93,7 @@ check("Referrer-Policy: no-referrer" in headers, "strict referrer policy missing
 mark = SOURCE / "assets" / "manager-mark.svg"
 check(mark.exists(), "Manager mark missing")
 if mark.exists():
-    check(blob_sha(mark) == "81d5d6659bf22ee61a1be46fce816031b835f967", "Manager mark diverged from approved product blob")
+    check(blob_sha(mark) == "024d82d5b5911e426216dfbd6a19d95cd6d71fc3", "Manager mark diverged from canonical branding-authority blob")
 check("noindex,nofollow,noarchive" in html, "Manager must remain noindex before public deployment acceptance")
 check(f'rel="canonical" href="{PUBLIC_MANAGER_ORIGIN}"' in html, "Manager public canonical must use manage.goreecloud.com")
 check("manage.goreecloud.com" in html, "Manager public hostname identity is missing")
