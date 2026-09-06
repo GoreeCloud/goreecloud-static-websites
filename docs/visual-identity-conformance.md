@@ -42,9 +42,12 @@ The following packages have completed controlled V1.1 source and isolated-artifa
 - Blog
 - Identity Center
 - Main
+- Privacy Center
 - Roadmap
 
 The Main checkpoint at revision `6435e83ab3f9561e3662b74c355a6a71315c8073` passed Main source validation, isolated V1.1 artifact construction, shared V1.1 artifact validation, allowlist validation, JavaScript syntax, repository-wide validation, and all other workflows triggered by that exact revision.
+
+The Privacy Center checkpoint at revision `0fb49fbf1634aaa81e87f0bfff3a8d3260eed27d` passed its V1.1 source boundary, isolated same-origin V1.1 artifact build, shared V1.1 source/artifact validation, Privacy-specific authority and identity validation, JavaScript syntax, repository-wide validation, and every other workflow triggered by that exact revision. Security Center and Continuity Center also passed their existing contracts at that checkpoint; those successes do not imply Continuity Center has completed its namespace migration.
 
 ### Remaining controlled migrations
 
@@ -53,7 +56,6 @@ These centralized packages still preserve active pre-reset 2.x consumer source o
 - Everkeep / Continuity Center
 - Manager
 - Mesh
-- Privacy Center
 - Projects
 - Suite
 
@@ -61,4 +63,4 @@ Security Center, Design Center, and Labs already contain V1.1-era source, but th
 
 ## Completion boundary
 
-This record does not declare the full website portfolio conformant. The current PR closes the source/build namespace-reset gate only for the five listed migrated consumers. Missing canonical product identities, the six remaining pre-reset consumers, rendered/human acceptance where required, Cloudflare source cutover, exact production deployment verification, and formal GLAZE consumer acceptance remain separate blockers.
+This record does not declare the full website portfolio conformant. The current PR closes the source/build namespace-reset gate only for the six listed migrated consumers. Missing canonical product identities, the five remaining pre-reset consumers, rendered/human acceptance where required, Cloudflare source cutover, exact production deployment verification, and formal GLAZE consumer acceptance remain separate blockers.
