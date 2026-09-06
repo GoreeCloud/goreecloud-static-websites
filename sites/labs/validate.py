@@ -47,15 +47,31 @@ def main() -> int:
     for section in ("Implemented foundation","Still gated","Cloudflare Pages boundary","This website explains the products. It does not host them."):
         if section not in index:
             errors.append(f"index missing truthfulness boundary: {section}")
+
+    # Approved artwork must be actual image content, not CSS-painted or textual surrogate identity.
     for marker in (
-        '#intelligence .text-mark { background-image: url("/assets/products/ai.svg"); }',
-        '#build .product-card:nth-child(2) .text-mark { background-image: url("/assets/products/code.svg"); }',
-        "#home .text-mark,",
-        "#build .product-card:first-child .text-mark,",
-        "#boot .text-mark { display: none; }",
+        '<img class="product-mark" src="/assets/products/ai.svg"',
+        '<img class="product-mark" src="/assets/products/code.svg"',
     ):
-        if marker not in css:
-            errors.append(f"Labs identity rendering contract missing: {marker}")
+        if marker not in index:
+            errors.append(f"Labs canonical product artwork missing from markup: {marker}")
+    if index.count('class="product-mark"') != 2:
+        errors.append("Labs must render exactly the two currently approved product marks (AI and Code)")
+    for forbidden in (
+        'class="text-mark"',
+        '>Home</span>',
+        '>Security</span>',
+        '>OCI</span>',
+        '>Boot</span>',
+    ):
+        if forbidden in index:
+            errors.append(f"Labs surrogate product identity remains in markup: {forbidden}")
+    for forbidden in (".text-mark", "background-image: url(\"/assets/products/ai.svg\")", "background-image: url(\"/assets/products/code.svg\")"):
+        if forbidden in css:
+            errors.append(f"Labs surrogate/CSS-painted identity remains in stylesheet: {forbidden}")
+    if ".product-mark" not in css:
+        errors.append("Labs canonical product artwork sizing contract is missing")
+
     for rel, expected in CANONICAL_ASSETS.items():
         path = SITE / rel
         if not path.is_file() or path.is_symlink():
@@ -92,11 +108,14 @@ def main() -> int:
             p=DIST/rel
             if p.is_file() and git_blob_sha(p) != expected_sha:
                 errors.append(f"built artifact canonical asset drift: {rel}")
+        built_index = (DIST / "index.html").read_text(encoding="utf-8") if (DIST / "index.html").is_file() else ""
+        if built_index.count('class="product-mark"') != 2 or 'class="text-mark"' in built_index:
+            errors.append("built Labs artifact does not preserve the canonical-artwork/no-surrogate boundary")
     if errors:
         print("Labs site validation failed:")
         [print(f"  - {e}") for e in errors]
         return 1
-    print("Labs six-product center source validation passed; approved artwork is exact-source and products lacking approved artwork render no surrogate identity.")
+    print("Labs six-product center source validation passed; canonical AI/Code artwork is direct markup and products lacking approved artwork have no surrogate identity.")
     return 0
 
 if __name__=="__main__":
