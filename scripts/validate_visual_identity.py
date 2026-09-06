@@ -8,7 +8,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 CANONICAL = {
+    "sites/archive/assets/goreecloud-logo.svg": "082936062de7839148db89ea3ab4e86ff71341b0",
+    "sites/blog/assets/goreecloud-logo.svg": "082936062de7839148db89ea3ab4e86ff71341b0",
     "sites/projects/assets/goreecloud-mesh-mark.svg": "5362a52bd9fb38379f083a4d894934ed1acf9b67",
+    "sites/roadmap/assets/goreecloud-logo.svg": "082936062de7839148db89ea3ab4e86ff71341b0",
+    "sites/privacy/branding/privacy-shield/privacy-shield-icon.svg": "62b10029d4104d0235afe634c21f55d0a826a63d",
     "sites/manager/assets/manager-mark.svg": "024d82d5b5911e426216dfbd6a19d95cd6d71fc3",
     "sites/labs/assets/goreecloud-logo.svg": "082936062de7839148db89ea3ab4e86ff71341b0",
     "sites/labs/assets/products/ai.svg": "1cbe04748f50cb843eef0cbb7233e2769efa275a",
@@ -17,6 +21,36 @@ CANONICAL = {
 
 FORBIDDEN_ACTIVE_ASSET_NAMES = {
     "goreecloud-artwork-pending.svg",
+}
+
+# Source pages whose main browser identity and visible header identity are now
+# required to resolve to the approved canonical asset rather than text-only or
+# improvised artwork. More site mappings are added as their audited contracts are
+# pinned; passing this validator never substitutes for the separate Glaze migration.
+PAGE_IDENTITY = {
+    "sites/archive/index.html": (
+        '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">',
+        '<img src="/assets/goreecloud-logo.svg" width="32" height="32" alt="">',
+    ),
+    "sites/blog/index.html": (
+        '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">',
+        '<img src="/assets/goreecloud-logo.svg" width="32" height="32" alt="">',
+    ),
+    "sites/roadmap/index.html": (
+        '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">',
+        '<img src="/assets/goreecloud-logo.svg" width="32" height="32" alt="">',
+    ),
+    "sites/privacy/website/index.html": (
+        '<link rel="icon" href="/assets/privacy-shield-icon.svg" type="image/svg+xml">',
+        '<img src="/assets/privacy-shield-icon.svg" alt="" width="34" height="34">',
+    ),
+}
+
+ERROR_PAGE_IDENTITY = {
+    "sites/archive/404.html": '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">',
+    "sites/blog/404.html": '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">',
+    "sites/roadmap/404.html": '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">',
+    "sites/privacy/website/404.html": '<link rel="icon" href="/assets/privacy-shield-icon.svg" type="image/svg+xml">',
 }
 
 
@@ -44,6 +78,24 @@ def main() -> None:
     for path in (ROOT / "sites").rglob("*"):
         if path.is_file() and path.name in FORBIDDEN_ACTIVE_ASSET_NAMES:
             errors.append(f"forbidden placeholder artwork remains in active source: {path.relative_to(ROOT)}")
+
+    for rel, markers in PAGE_IDENTITY.items():
+        path = ROOT / rel
+        if not path.is_file():
+            errors.append(f"website identity page missing: {rel}")
+            continue
+        text = path.read_text(encoding="utf-8")
+        for marker in markers:
+            if marker not in text:
+                errors.append(f"website identity marker missing from {rel}: {marker}")
+
+    for rel, marker in ERROR_PAGE_IDENTITY.items():
+        path = ROOT / rel
+        if not path.is_file():
+            errors.append(f"website error page missing: {rel}")
+            continue
+        if marker not in path.read_text(encoding="utf-8"):
+            errors.append(f"canonical favicon missing from {rel}")
 
     # Labs must render approved AI/Code marks as actual images and must not manufacture
     # textual/CSS surrogate identities for products whose canonical artwork is pending.
@@ -93,7 +145,11 @@ def main() -> None:
             print(f"  - {error}")
         fail(f"{len(errors)} defect(s)")
 
-    print(f"Visual identity validation passed: {len(CANONICAL)} canonical asset pins verified; no forbidden placeholder or Labs surrogate identity present.")
+    print(
+        "Visual identity validation passed: "
+        f"{len(CANONICAL)} canonical asset pins verified; audited favicon/header wiring is present; "
+        "no forbidden placeholder or Labs surrogate identity remains."
+    )
 
 
 if __name__ == "__main__":
