@@ -4,11 +4,15 @@ on:
   pull_request:
     paths:
       - 'sites/roadmap/**'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-roadmap-site.yml'
   push:
     branches: [main]
     paths:
       - 'sites/roadmap/**'
+      - 'scripts/glaze_v1.py'
+      - 'scripts/validate_v1_static_site.py'
       - '.github/workflows/validate-roadmap-site.yml'
   workflow_dispatch:
 
@@ -25,9 +29,13 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Compile validator
-        run: python -m py_compile sites/roadmap/validate.py
-      - name: Validate source contract
+      - name: Compile Roadmap and V1.1 tooling
+        run: python -m py_compile scripts/glaze_v1.py scripts/validate_v1_static_site.py sites/roadmap/build.py sites/roadmap/validate.py
+      - name: Build isolated Roadmap Pages artifact
+        run: python sites/roadmap/build.py
+      - name: Validate Roadmap V1.1 source and artifact
+        run: python scripts/validate_v1_static_site.py sites/roadmap
+      - name: Validate Roadmap public truth contract
         run: python sites/roadmap/validate.py
       - name: Validate JavaScript syntax
         run: node --check sites/roadmap/site.js
