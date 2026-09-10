@@ -42,22 +42,37 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Validate Identity Center static boundary
+      - name: Validate Identity Center GLAZE UI V1.3 source boundary
         shell: python
         run: |
           from pathlib import Path
           root=Path('sites/identity')
-          for name in ('index.html','app.js','style.css','glaze-ui-2.1.0.css','_headers','robots.txt','sitemap.xml','assets/identity.svg'):
+          version='1.3.0'
+          revision='8354308445da9ac35ced2b37a7f503a08a0aaf72'
+          for name in ('index.html','app.js','style.css','glaze-v1.3-consumer.css','_headers','robots.txt','sitemap.xml','assets/identity.svg'):
               if not (root/name).is_file(): raise SystemExit(f'missing Identity Center source: {name}')
           html=(root/'index.html').read_text(encoding='utf-8')
+          css=(root/'glaze-v1.3-consumer.css').read_text(encoding='utf-8')
           headers=(root/'_headers').read_text(encoding='utf-8')
-          for marker in ('identity.goreecloud.com','goreecloud-glaze-ui','glaze-ui-2.1.0.css'):
-              if marker not in html: raise SystemExit(f'missing Identity Center marker: {marker}')
+          for marker in (
+              'identity.goreecloud.com',
+              f'name="goreecloud-glaze-ui" content="{version}"',
+              f'name="goreecloud-glaze-source-revision" content="{revision}"',
+              'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"',
+              'data-glaze-version="1.3.0"',
+              'glaze-v1.3-consumer.css',
+              'GLAZE UI V1.3 consumer acceptance',
+          ):
+              if marker not in html: raise SystemExit(f'missing Identity Center V1.3 marker: {marker}')
+          for stale in ('data-glaze-ui="2.1.0"','glaze-ui-2.1.0.css','Glaze UI 2.1.0 Stable consumer acceptance'):
+              if stale in html: raise SystemExit(f'superseded active Identity Center Glaze target: {stale}')
+          for marker in ('--identity-v13-touch:48px','--identity-v13-touch-assisted:56px','prefers-reduced-motion:reduce','prefers-reduced-transparency:reduce','prefers-contrast:more','forced-colors:active','focus-visible'):
+              if marker not in css: raise SystemExit(f'missing Identity Center V1.3 accessibility/adaptation marker: {marker}')
           for marker in ('Content-Security-Policy:','X-Content-Type-Options: nosniff','frame-ancestors'):
               if marker not in headers: raise SystemExit(f'missing Identity Center security header: {marker}')
           for forbidden in ('docs.goauthentik.io','google-analytics','googletagmanager','segment.com'):
               if forbidden in html.lower(): raise SystemExit(f'forbidden/upstream Identity Center dependency: {forbidden}')
-          print('Identity Center static boundary validated')
+          print('Identity Center GLAZE UI V1.3 source boundary validated; rendered/production acceptance remains separate')
       - run: node --check sites/identity/app.js
 
   mesh:

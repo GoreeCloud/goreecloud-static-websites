@@ -1,0 +1,53 @@
+/*
+ * Identity Center — GLAZE UI V1.3 / 1.3.0 consumer layer.
+ * Canonical Glaze revision: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+ * Source migration only; consumer rendered/production acceptance remains separate.
+ */
+:root{
+  --identity-v13-accent:#2f7cf6;
+  --identity-v13-accent-2:#5b5ce2;
+  --identity-v13-touch:48px;
+  --identity-v13-touch-assisted:56px;
+  --identity-v13-line:rgba(15,23,42,.10);
+  --identity-v13-glass:rgba(255,255,255,.72);
+  --identity-v13-panel:rgba(255,255,255,.96);
+  --identity-v13-shadow:0 18px 52px rgba(20,34,58,.11);
+}
+[data-theme="dark"]{
+  --identity-v13-line:rgba(255,255,255,.11);
+  --identity-v13-glass:rgba(9,20,35,.72);
+  --identity-v13-panel:rgba(12,24,40,.97);
+  --identity-v13-shadow:0 20px 56px rgba(0,0,0,.31);
+}
+.topbar.glaze-material-soft{
+  background:var(--identity-v13-glass);
+  border-bottom:1px solid var(--identity-v13-line);
+  backdrop-filter:blur(22px) saturate(135%);
+  -webkit-backdrop-filter:blur(22px) saturate(135%);
+}
+.topbar nav a,.theme-toggle,.glaze-button{min-height:var(--identity-v13-touch);touch-action:manipulation}
+.hero-panel,.cap-card,.boundary-grid article,.status-panel{
+  background:var(--identity-v13-panel);
+  border-color:var(--identity-v13-line);
+  box-shadow:var(--identity-v13-shadow);
+}
+.hero{position:relative;isolation:isolate}
+.hero::after{
+  content:"";position:absolute;z-index:-1;right:-7rem;top:-7rem;width:23rem;height:23rem;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,92,226,.15),transparent 68%);pointer-events:none
+}
+.hero-panel::before{
+  content:"Adaptive Resonance · source target";display:inline-flex;margin-bottom:12px;padding:6px 10px;border-radius:999px;
+  background:color-mix(in srgb,var(--identity-v13-accent) 12%,transparent);color:var(--identity-v13-accent);
+  font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase
+}
+.v13-consumer-note{margin-top:16px;padding:13px 15px;border:1px solid var(--identity-v13-line);border-radius:15px;background:var(--identity-v13-panel);font-size:.9rem}
+.v13-consumer-note code{overflow-wrap:anywhere}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--identity-v13-accent);outline-offset:3px}
+@media(pointer:coarse){.topbar nav a,.theme-toggle,.glaze-button{min-height:var(--identity-v13-touch-assisted)}}
+@media(max-width:760px){.topbar nav{overflow-x:auto;scroll-snap-type:x proximity}.topbar nav a{scroll-snap-align:start}.hero::after{width:17rem;height:17rem;right:-8rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-transparency:reduce){.topbar.glaze-material-soft,.glaze-button{background:var(--identity-v13-panel);backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media(prefers-contrast:more){.topbar,.hero-panel,.cap-card,.boundary-grid article,.status-panel,.glaze-button{border:2px solid currentColor;box-shadow:none}}
+@media(forced-colors:active){.topbar,.hero-panel,.cap-card,.boundary-grid article,.status-panel,.glaze-button{forced-color-adjust:auto;background:Canvas;color:CanvasText;border:1px solid CanvasText;box-shadow:none}}
+@media print{.topbar,.hero-actions{display:none!important}.hero-panel,.cap-card,.boundary-grid article,.status-panel{box-shadow:none;background:#fff;border:1px solid #bbb}}
