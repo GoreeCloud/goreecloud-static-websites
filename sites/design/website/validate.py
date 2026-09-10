@@ -117,10 +117,13 @@ for directive in (
 if "localStorage" not in js or "data-theme-choice" not in html:
     raise SystemExit("local appearance preference contract missing")
 
+# The pending consumer-state marker above is the positive acceptance-state guard.
+# Reject only unambiguously affirmative completion claims; do not reject truthful
+# negative disclosures such as “not production visually accepted.”
 for forbidden in (
     "Design Center V1.3 conformance passed",
-    "production visually accepted",
     "production acceptance complete",
+    'name="goreecloud-glaze-consumer-state" content="accepted"',
 ):
     if forbidden in html:
         raise SystemExit(f"unsupported Design Center acceptance claim: {forbidden}")
