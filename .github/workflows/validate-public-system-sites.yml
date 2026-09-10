@@ -151,7 +151,17 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/glaze_ui_2.py sites/suite/scripts/validate_site.py sites/suite/scripts/validate_responsive_layout.py sites/suite/scripts/browser_responsive_smoke.py
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+      - run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/validate_site.py sites/suite/scripts/validate_responsive_layout.py sites/suite/scripts/browser_responsive_smoke.py
       - run: python sites/suite/scripts/validate_site.py
       - run: python sites/suite/scripts/validate_responsive_layout.py
-      - run: python sites/suite/scripts/build_public_site.py
+      - env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/suite/scripts/build_public_site.py
+      - run: python sites/suite/scripts/validate_site.py --dist
