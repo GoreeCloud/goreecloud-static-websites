@@ -4,13 +4,14 @@
 **Reviewed:** 2026-09-10  
 **GLAZE UI source/build baseline:** V1.3 / 1.3.0  
 **Verified Security production revision:** `256daf235066b4fd1f931e50e45e366fa92f45e7`  
-**Verified Privacy production revision:** `80379f6962a5ded6c01317542941a2c55aedd922`
+**Verified Privacy production revision:** `80379f6962a5ded6c01317542941a2c55aedd922`  
+**Verified Identity production revision:** `43141921a2c4915dd6e536dfa7af8d5da70a3319`
 
 ## Current state
 
 Source consolidation and GLAZE UI V1.3 source/build reconciliation are complete for the thirteen authoritative static website packages on canonical `main`.
 
-Production deployment migration is proceeding site by site. **Security Center and Privacy Center are now `production-verified`.** The other eleven packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
+Production deployment migration is proceeding site by site. **Security Center, Privacy Center, and Identity Center are now `production-verified`.** The other ten packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
 
 Production verification is independent per site. A central source build, CI pass, or another site's successful cutover never establishes production acceptance for a different site.
 
@@ -36,7 +37,7 @@ No legacy repository may remain a second website source authority after its site
 | Privacy Center | `privacy.goreecloud.com` | `sites/privacy` | `validated-in-central-repo` | **`production-verified`** |
 | Security Center / Wardveil | `security.goreecloud.com` | `sites/security` | `validated-in-central-repo` | **`production-verified`** |
 | Continuity Center / Everkeep | `everkeep.goreecloud.com` | `sites/everkeep` | `validated-in-central-repo` | `legacy-source` |
-| Identity Center | `id.goreecloud.com` | `sites/identity` | `validated-in-central-repo` | `legacy-source` |
+| Identity Center | `id.goreecloud.com` | `sites/identity` | `validated-in-central-repo` | **`production-verified`** |
 | Manager public site | `manage.goreecloud.com` | `sites/manager` | `validated-in-central-repo` | `legacy-source` |
 | Mesh Center | `mesh.goreecloud.com` | `sites/mesh` | `validated-in-central-repo` | `legacy-source` |
 
@@ -60,25 +61,35 @@ Live verification established HTTP 200 for the canonical root, HTTP 404 with `Ca
 
 See `docs/production-verification-privacy-2026-09-10.md`.
 
+### Identity Center
+
+Identity Center was verified after Cloudflare Pages was cut over to the central repository using `main` with root `sites/identity` and no build step. The successful Cloudflare Pages deployment was tied to exact central revision `43141921a2c4915dd6e536dfa7af8d5da70a3319` by the Cloudflare GitHub App deployment check.
+
+Public DNS at both `1.1.1.1` and `8.8.8.8` resolved the canonical `id.goreecloud.com` CNAME to `goreecloud-identity.pages.dev`. The Cloudflare custom domain was observed Active with SSL enabled. Live verification through the current public-DNS-resolved Cloudflare address established HTTP 200 for the canonical root, HTTP 404 with `Cache-Control: no-store` for an intentionally missing path, committed security headers, GLAZE UI `1.3.0`, exact Glaze source revision `8354308445da9ac35ced2b37a7f503a08a0aaf72`, and a live sitemap containing `https://id.goreecloud.com/`. Rendered review confirmed the current Identity Center V1.3 surface loaded successfully.
+
+The explicit 404 behavior was corrected during acceptance after the initial centralized package returned SPA-style HTTP 200 for missing paths. The resulting 404 publication contract is now guarded by dedicated CI.
+
+See `docs/production-verification-identity-2026-09-10.md`.
+
 ## Authority boundaries
 
 These production decisions apply only to the public website deployments.
 
-Security Center production verification does not establish Wardveil runtime protection, scan, detect, quarantine, response, incident, or other execution success. Privacy Center production verification does not establish any Privacy Shield authorization decision, consent state, purpose grant, durable authorization state, or runtime acceptance. Producer systems remain authoritative for those states.
+Security Center production verification does not establish Wardveil runtime protection, scan, detect, quarantine, response, incident, or other execution success. Privacy Center production verification does not establish any Privacy Shield authorization decision, consent state, purpose grant, durable authorization state, or runtime acceptance. Identity Center production verification does not establish production authentication, SSO, account, session, device, credential, authorization, recovery, delegated-authority, or backend-runtime acceptance.
 
-Neither decision transfers Identity, Everkeep, Mesh, Manager, or other platform authority.
+None of these website decisions transfers Everkeep, Mesh, Manager, or other platform authority.
 
 ## Legacy-source retirement remains separate
 
 `production-verified` does not mean `legacy-source-retired`.
 
-For Security, `GoreeCloud/goreecloud-wardveil-security` remains the Wardveil project/runtime authority. For Privacy, `GoreeCloud/goreecloud-privacy-shield` remains the Privacy Shield project/runtime authority. Before removing former website subtrees or related deployment references, verify that no Cloudflare, automation, rollback, documentation, preservation, or other governed dependency still requires those legacy website materials.
+For Security, `GoreeCloud/goreecloud-wardveil-security` remains the Wardveil project/runtime authority. For Privacy, `GoreeCloud/goreecloud-privacy-shield` remains the Privacy Shield project/runtime authority. For Identity, `GoreeCloud/goreecloud-identity` remains the Identity project/runtime authority. Before removing former website subtrees or related deployment references, verify that no Cloudflare, automation, rollback, documentation, preservation, or other governed dependency still requires those legacy website materials.
 
 The same rule applies to every other site after its future production cutover.
 
 ## Remaining production migration sequence
 
-For each of the remaining eleven sites:
+For each of the remaining ten sites:
 
 1. pause automatic production deployments before source reassignment when appropriate;
 2. connect the existing Cloudflare Pages project to `GoreeCloud/goreecloud-static-websites`;
@@ -92,7 +103,7 @@ For each of the remaining eleven sites:
 
 ## Next site
 
-Continuity Center / Everkeep is a good next controlled cutover because it uses the same public-system-site family and already has a current V1.3 central package:
+Continuity Center / Everkeep remains a good next controlled cutover because it uses the same public-system-site family and already has a current V1.3 central package:
 
 - domain: `everkeep.goreecloud.com`
 - central path: `sites/everkeep`
