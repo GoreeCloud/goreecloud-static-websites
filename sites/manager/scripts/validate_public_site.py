@@ -4,35 +4,36 @@ from html.parser import HTMLParser
 import argparse
 import hashlib
 import json
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT
 DIST = ROOT / "dist"
-PRODUCT = ROOT.name.lower()
 PUBLIC_MANAGER_ORIGIN = "https://manage.goreecloud.com/"
 PRIVATE_MANAGER_HOST = "manager.goreecloud.com"
+EXPECTED_VERSION = "1.3.0"
+EXPECTED_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
+EXPECTED_ENTRYPOINT = "glaze-v1.3.0.css"
+EXPECTED_ENTRYPOINT_BLOB = "4c3ad293ba9196e2e5a32700b530ec67fd01cef6"
+EXPECTED_MANAGER_MARK_BLOB = "024d82d5b5911e426216dfbd6a19d95cd6d71fc3"
+IMPORT_RE = re.compile(r'@import\s+(?:url\()?\s*["\']?\.\/([^"\')\s;]+)', re.IGNORECASE)
 parser = argparse.ArgumentParser()
 parser.add_argument("--dist", action="store_true")
 args = parser.parse_args()
-BASE = DIST if args.dist else SOURCE
-errors = []
+BASE = DIST if args.dist else ROOT
+errors: list[str] = []
 
-LEGACY_DIRECT_CANDIDATE_ASSETS = (
-    "glaze.workspace.candidate.css",
-    "glaze-2.candidate.css",
-    "glaze-2.foldable.candidate.css",
-    "glaze-2.emerging.candidate.css",
-)
 
 def check(condition: bool, message: str) -> None:
     if not condition:
         errors.append(message)
 
+
 def blob_sha(path: Path) -> str:
     data = path.read_bytes()
     prefix = b"blob " + str(len(data)).encode("ascii") + b"\0"
     return hashlib.sha1(prefix + data, usedforsecurity=False).hexdigest()
+
 
 class PublicHtmlAudit(HTMLParser):
     def handle_starttag(self, tag, attrs):
@@ -50,72 +51,109 @@ class PublicHtmlAudit(HTMLParser):
             if href.startswith(("http://", "https://", "//")) and "canonical" not in rel.split():
                 errors.append(f"remote runtime link is forbidden: {href}")
             if "stylesheet" in rel.split() and ".candidate.css" in href:
-                errors.append(
-                    "direct Candidate stylesheet imports are forbidden by the "
-                    f"Glaze 2.2 Stable consumer contract: {href}"
-                )
+                errors.append(f"direct Candidate stylesheet imports are forbidden: {href}")
         if tag == "a":
             href = values.get("href", "")
             if href.startswith("http://"):
                 errors.append(f"external navigation must use HTTPS: {href}")
 
-lock = json.loads((SOURCE / "glaze.lock.json").read_text(encoding="utf-8"))
-check(lock.get("version") == "2.2.0", "Glaze version must be 2.2.0")
+
+lock = json.loads((ROOT / "glaze.lock.json").read_text(encoding="utf-8"))
+check(lock.get("version") == EXPECTED_VERSION, "Glaze version must be 1.3.0")
 check(lock.get("lifecycle") == "Stable", "Glaze lifecycle must be Stable")
-check(lock.get("stable_commit") == "6731098b28dd0393faa878c70d989a221d714a20", "Glaze Stable commit must be pinned")
-check(lock.get("tag") == "v2.2.0", "Glaze Stable tag must be pinned")
-for legacy_candidate in LEGACY_DIRECT_CANDIDATE_ASSETS:
-    check(legacy_candidate not in lock.get("files", {}), f"legacy Candidate asset must not remain in production consumer lock: {legacy_candidate}")
+check(lock.get("stable_commit") == EXPECTED_COMMIT, "Glaze Stable commit must be exact")
+check(lock.get("entrypoint") == EXPECTED_ENTRYPOINT, "Glaze Stable entrypoint must be exact")
+check(lock.get("entrypoint_blob") == EXPECTED_ENTRYPOINT_BLOB, "Glaze Stable entrypoint blob must be exact")
+check(lock.get("consumer_state") == "source-migrated-rendered-acceptance-pending", "Manager consumer state must remain fail-closed")
 
 html = (BASE / "index.html").read_text(encoding="utf-8")
-css = (BASE / "assets" / "site.css" if args.dist else SOURCE / "site.css").read_text(encoding="utf-8")
-js = (BASE / "assets" / "site.js" if args.dist else SOURCE / "site.js").read_text(encoding="utf-8")
-for page in (BASE / "index.html", BASE / "404.html"):
-    PublicHtmlAudit().feed(page.read_text(encoding="utf-8"))
+nf = (BASE / "404.html").read_text(encoding="utf-8")
+css = (BASE / "assets" / "site.css" if args.dist else ROOT / "site.css").read_text(encoding="utf-8")
+v13 = (BASE / "assets" / "v1.3-site.css" if args.dist else ROOT / "v1.3-site.css").read_text(encoding="utf-8")
+js = (BASE / "assets" / "site.js" if args.dist else ROOT / "site.js").read_text(encoding="utf-8")
+for page in (html, nf):
+    PublicHtmlAudit().feed(page)
+    for marker in (
+        'data-glaze-version="1.3.0"',
+        'name="goreecloud-glaze-ui" content="1.3.0"',
+        f'name="goreecloud-glaze-source-revision" content="{EXPECTED_COMMIT}"',
+        'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"',
+        '/assets/glaze-v1.3.0.css',
+        '/assets/v1.3-site.css',
+    ):
+        check(marker in page, f"missing Manager V1.3 page marker: {marker}")
+    for stale in (
+        'data-glaze-version="2.2.0"', 'content="2.2.0"', 'glaze-2.2.0.css',
+        'glaze-ui-2.1.0.css', 'data-glaze-ui="2.1.0"', 'GLAZE UI 2.2 Stable',
+    ):
+        check(stale not in page, f"superseded active Manager Glaze target remains: {stale}")
 
-check('data-glaze-version="2.2.0"' in html, "missing Glaze 2.2.0 document marker")
-check('name="goreecloud-glaze-ui" content="2.2.0"' in html, "missing Glaze 2.2.0 meta marker")
-check('/assets/glaze-2.2.0.css' in html, "Stable Glaze stylesheet entrypoint not linked")
-check("prefers-reduced-motion:reduce" in css, "reduced-motion fallback missing")
-check("forced-colors:active" in css, "forced-colors fallback missing")
-check("prefers-contrast:more" in css, "increased-contrast fallback missing")
-check("data-reduce-transparency" in css, "reduced-transparency fallback missing")
-check("min-height:48px" in css, "48px interaction floor missing")
+for marker in (
+    "--manager-v13-control:48px", "--manager-v13-control-assisted:56px",
+    "focus-visible", "pointer:coarse", "prefers-reduced-motion:reduce",
+    "prefers-reduced-transparency:reduce", "prefers-contrast:more",
+    "forced-colors:active", "@media print",
+):
+    check(marker in v13, f"missing Manager V1.3 adaptation: {marker}")
+check("min-height:48px" in css or "--manager-v13-control:48px" in v13, "48px interaction floor missing")
 check("localStorage" in js and all(choice in js for choice in ("system", "light", "dark")), "appearance modes missing")
-check("fonts.googleapis" not in html + css, "remote fonts are forbidden")
+check("fonts.googleapis" not in html + css + v13, "remote fonts are forbidden")
 check("googletagmanager" not in html.lower(), "analytics/tracker runtime is forbidden")
 check("segment.com" not in html.lower(), "analytics/tracker runtime is forbidden")
+
 headers = (BASE / "_headers").read_text(encoding="utf-8")
 check("Content-Security-Policy:" in headers, "Content Security Policy missing")
 check("connect-src 'none'" in headers, "public website must not make browser network API connections")
 check("Referrer-Policy: no-referrer" in headers, "strict referrer policy missing")
 
-mark = SOURCE / "assets" / "manager-mark.svg"
-check(mark.exists(), "Manager mark missing")
-if mark.exists():
-    check(blob_sha(mark) == "81d5d6659bf22ee61a1be46fce816031b835f967", "Manager mark diverged from approved product blob")
+source_mark = ROOT / "assets" / "manager-mark.svg"
+check(source_mark.is_file() and not source_mark.is_symlink(), "Manager mark missing or unsafe")
+if source_mark.is_file():
+    check(blob_sha(source_mark) == EXPECTED_MANAGER_MARK_BLOB, "Manager mark diverged from canonical branding asset")
 check("noindex,nofollow,noarchive" in html, "Manager must remain noindex before public deployment acceptance")
 check(f'rel="canonical" href="{PUBLIC_MANAGER_ORIGIN}"' in html, "Manager public canonical must use manage.goreecloud.com")
 check("manage.goreecloud.com" in html, "Manager public hostname identity is missing")
 check(PRIVATE_MANAGER_HOST not in html, "private Manager application hostname must not be advertised by public site")
 check("Disallow: /" in (BASE / "robots.txt").read_text(encoding="utf-8"), "Manager robots must block indexing before public deployment acceptance")
 check("Conceptual · no live data" in html, "Manager conceptual graphic must be labeled non-live")
+for marker in (
+    "NetBird, Healthchecks, Uptime Kuma, Beszel, Kopia, and GoreeCloud Tasks",
+    "No direct Docker socket", "Production remains separately unapproved",
+    "Current GLAZE UI V1.3 source reconciliation under review",
+):
+    check(marker in html, f"current Manager authority/status marker missing: {marker}")
 
 if args.dist:
-    for name, expected_sha in lock["files"].items():
+    entry = DIST / "assets" / EXPECTED_ENTRYPOINT
+    check(entry.is_file() and not entry.is_symlink(), "built Glaze V1.3 entrypoint missing")
+    if entry.is_file():
+        check(blob_sha(entry) == EXPECTED_ENTRYPOINT_BLOB, "built Glaze V1.3 entrypoint integrity mismatch")
+    built_mark = DIST / "assets" / "manager-mark.svg"
+    check(built_mark.is_file(), "built Manager mark missing")
+    if built_mark.is_file():
+        check(blob_sha(built_mark) == EXPECTED_MANAGER_MARK_BLOB, "built Manager mark integrity mismatch")
+    seen: set[str] = set()
+    def visit(name: str) -> None:
+        if name in seen:
+            return
         path = DIST / "assets" / name
-        check(path.exists(), f"missing built Glaze asset: {name}")
-        if path.exists():
-            check(blob_sha(path) == expected_sha, f"Glaze asset integrity mismatch: {name}")
-    built_mark = DIST / "assets" / mark.name
-    check(built_mark.exists(), f"missing built product mark: {mark.name}")
-    if built_mark.exists():
-        check(blob_sha(built_mark) == blob_sha(mark), f"built product mark integrity mismatch: {mark.name}")
-    check((DIST / "_headers").exists(), "built security headers missing")
+        check(path.is_file() and not path.is_symlink(), f"missing built Glaze dependency: {name}")
+        if not path.is_file():
+            return
+        seen.add(name)
+        for statement in re.findall(r"@import[^;]+;", path.read_text(encoding="utf-8"), flags=re.IGNORECASE):
+            check("http://" not in statement.lower() and "https://" not in statement.lower() and "//" not in statement, f"remote built Glaze import: {statement}")
+            match = IMPORT_RE.search(statement)
+            check(match is not None, f"unsupported built Glaze import: {statement}")
+            if match:
+                visit(match.group(1))
+    visit(EXPECTED_ENTRYPOINT)
+    check("glaze-v1.2.0.css" in seen, "V1.3 inherited Stable dependency closure is incomplete")
+    check(not any("glaze-2.2" in path.name for path in (DIST / "assets").iterdir()), "obsolete Glaze 2.2 asset remains in built artifact")
 
 if errors:
-    print("Public website validation failed:", file=sys.stderr)
+    print("Manager public website validation failed:", file=sys.stderr)
     for error in errors:
         print(f" - {error}", file=sys.stderr)
     raise SystemExit(1)
-print(f"Public website validation passed ({'dist' if args.dist else 'source'})")
+print(f"Manager public website GLAZE UI V1.3 validation passed ({'dist' if args.dist else 'source'}); private-runtime and production acceptance remain separate")
