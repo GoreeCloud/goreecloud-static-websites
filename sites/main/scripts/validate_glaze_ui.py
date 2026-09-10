@@ -2,105 +2,96 @@
 from pathlib import Path
 import sys
 
-from glaze_ui_2 import GLAZE_PROMOTION_REVISION, GLAZE_VERSION
+from glaze_v1_3 import (
+    GLAZE_CONSUMER_STATE,
+    GLAZE_ENTRYPOINT,
+    GLAZE_ENTRYPOINT_BLOB,
+    GLAZE_PROMOTION_REVISION,
+    GLAZE_VERSION,
+    git_blob_sha,
+    load_lock,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
-SITES = ROOT.parent
-BUNDLE = ROOT / "css/glaze-ui-2.1.0.css"
-ROOT_PAGES = [ROOT / n for n in ("index.html", "repositories.html", "privacy.html", "security.html", "404.html")]
-CHILD_PAGES = [
-    SITES / "projects/index.html", SITES / "projects/404.html",
-    SITES / "roadmap/index.html", SITES / "roadmap/404.html",
-    SITES / "blog/index.html", SITES / "blog/404.html",
-    SITES / "archive/index.html", SITES / "archive/404.html",
-]
-CHILD_BUNDLES = [
-    SITES / "projects/assets/glaze-ui-2.1.0.css",
-    SITES / "roadmap/glaze-ui-2.1.0.css",
-    SITES / "blog/glaze-ui-2.1.0.css",
-    SITES / "archive/glaze-ui-2.1.0.css",
-]
-CONFORMANCE = ROOT / "docs/glaze-ui-conformance.md"
-errors = []
+PAGES = [ROOT / name for name in ("index.html", "repositories.html", "privacy.html", "security.html", "404.html")]
+ENTRYPOINT = ROOT / "css" / GLAZE_ENTRYPOINT
+POLISH = ROOT / "css" / "glaze-polish.css"
+CONFORMANCE = ROOT / "docs" / "glaze-ui-conformance.md"
+errors: list[str] = []
 
+try:
+    load_lock(ROOT)
+except (OSError, ValueError) as exc:
+    errors.append(str(exc))
 
-def display(path: Path) -> str:
-    try:
-        return str(path.relative_to(ROOT))
-    except ValueError:
-        return str(path.relative_to(SITES.parent))
+if not ENTRYPOINT.is_file() or ENTRYPOINT.is_symlink():
+    errors.append("exact GLAZE UI V1.3 source entrypoint is missing or unsafe")
+elif git_blob_sha(ENTRYPOINT.read_bytes()) != GLAZE_ENTRYPOINT_BLOB:
+    errors.append("committed GLAZE UI V1.3 entrypoint is not byte-identical to canonical source")
 
-
-bundle_markers = [
-    "Glaze UI 2.1.0 Stable integration",
-    GLAZE_PROMOTION_REVISION,
-    "Content is solid. Interaction is glazed.",
-    "--glaze-touch-min:48px",
-    "--glaze-touch-assisted:56px",
-    "data-glaze-density=comfortable",
-    "data-glaze-density=compact",
-    "data-glaze-performance=reduced",
-    "data-glaze-large-text=true",
-    "prefers-reduced-motion",
-    "prefers-reduced-transparency",
-    "forced-colors:active",
-]
-for bundle in [BUNDLE, *CHILD_BUNDLES]:
-    if not bundle.is_file():
-        errors.append(f"Glaze UI 2.1 bundle is missing: {display(bundle)}")
-        continue
-    css = bundle.read_text(encoding="utf-8")
-    for marker in bundle_markers:
-        if marker not in css:
-            errors.append(f"{display(bundle)} missing 2.1 marker: {marker}")
-
-
-def validate_page(page: Path) -> None:
+for page in PAGES:
     if not page.is_file():
-        errors.append(f"Glaze UI page is missing: {display(page)}")
-        return
+        errors.append(f"missing Main public page: {page.name}")
+        continue
     text = page.read_text(encoding="utf-8")
-    for marker in [
+    required = (
+        f'data-glaze-version="{GLAZE_VERSION}"',
         f'name="goreecloud-glaze-ui" content="{GLAZE_VERSION}"',
-        f'data-glaze-ui="{GLAZE_VERSION}"',
-        'glaze-canvas',
+        f'name="goreecloud-glaze-source-revision" content="{GLAZE_PROMOTION_REVISION}"',
+        f'name="goreecloud-glaze-consumer-state" content="{GLAZE_CONSUMER_STATE}"',
+        f'glaze-v1.3.0.css" data-glaze-ui="{GLAZE_VERSION}"',
+        "glaze-canvas",
         'name="viewport"',
-    ]:
+    )
+    for marker in required:
         if marker not in text:
-            errors.append(f"{display(page)} missing source-native 2.1 marker: {marker}")
+            errors.append(f"{page.name} missing V1.3 source marker: {marker}")
     for stale in (
-        'data-glaze-ui="1.5.0"',
-        'data-glaze-ui="2.0.0"',
-        'goreecloud-glaze-ui" content="1.5.0"',
-        'goreecloud-glaze-ui" content="2.0.0"',
+        'data-glaze-ui="2.1.0"',
+        'data-glaze-ui="2.2.0"',
+        'goreecloud-glaze-ui" content="2.1.0"',
+        'goreecloud-glaze-ui" content="2.2.0"',
+        "glaze-ui-2.1.0.css",
+        "glaze-2.2.0.css",
     ):
         if stale in text:
-            errors.append(f"{display(page)} still activates a superseded Glaze UI bundle: {stale}")
+            errors.append(f"{page.name} still activates a superseded Glaze contract: {stale}")
     if "raw.githubusercontent.com" in text:
-        errors.append(f"{display(page)} must not load remote Glaze UI at runtime")
+        errors.append(f"{page.name} must not load remote GLAZE UI at runtime")
 
-
-for page in [*ROOT_PAGES, *CHILD_PAGES]:
-    validate_page(page)
-
-text = CONFORMANCE.read_text(encoding="utf-8") if CONFORMANCE.is_file() else ""
-for marker in [
-    "Target Glaze UI version: **2.1.0**",
-    "GoreeCloud/goreecloud-glaze-ui",
+polish = POLISH.read_text(encoding="utf-8") if POLISH.is_file() else ""
+for marker in (
+    "GLAZE UI V1.3 / 1.3.0 consumer layer",
     GLAZE_PROMOTION_REVISION,
+    "--goreecloud-v13-touch:48px",
+    "--goreecloud-v13-touch-assisted:56px",
+    ":focus-visible",
+    "@media (pointer:coarse)",
+    "prefers-reduced-motion",
+    "prefers-reduced-transparency",
+    "prefers-contrast: more",
+    "forced-colors: active",
+    "@media print",
+):
+    if marker not in polish:
+        errors.append(f"Main V1.3 consumer adaptation missing: {marker}")
+
+conformance = CONFORMANCE.read_text(encoding="utf-8") if CONFORMANCE.is_file() else ""
+for marker in (
+    "Target GLAZE UI version: **V1.3 / 1.3.0 Stable**",
+    GLAZE_PROMOTION_REVISION,
+    GLAZE_ENTRYPOINT,
     "same-origin",
-    "Content is solid. Interaction is glazed.",
-    "48px general interaction floor",
-    "56px Touch Assistance floor",
-    "Rendered/production acceptance",
-    "No production Glaze UI exception",
-]:
-    if marker not in text:
-        errors.append(f"Conformance marker missing: {marker}")
+    "48px",
+    "56px",
+    "Rendered, accessibility, deployment, and production acceptance: **Separate gates**",
+):
+    if marker not in conformance:
+        errors.append(f"V1.3 conformance record missing: {marker}")
 
 if errors:
-    print("Glaze UI 2.1 validation failed:")
+    print("GLAZE UI V1.3 source validation failed:")
     for error in errors:
         print(f"  - {error}")
     sys.exit(1)
-print("Glaze UI 2.1.0 Stable source validation passed across every Main, Projects, Roadmap, Blog, and Archive HTML surface in the canonical central hierarchy.")
+print("GLAZE UI V1.3 source contract passed for all Main public HTML surfaces.")

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Build the exact allowlisted static artifact for GoreeCloud's public website.
 
-The source repository intentionally contains CI validators, GitHub metadata, and
-repository documentation that are not part of the public website. Every deployable
-file is named explicitly below so adding a file anywhere in the repository cannot
-silently make that file public on the next Cloudflare Pages build.
+Repository-only governance, validators, and documentation never enter the public
+artifact. GLAZE UI V1.3 is vendored from the exact canonical Stable revision at
+build time and remains subject to independent rendered/deployment acceptance.
 """
 
 from __future__ import annotations
@@ -13,8 +12,7 @@ from pathlib import Path
 import shutil
 import sys
 
-import glaze_render_patch  # installs the reviewed Glaze UI render boundary
-from glaze_ui_2 import apply_glaze_ui_2
+from glaze_v1_3 import collect_glaze_css
 from normalize_homepage import normalize_homepage
 from render_repository_portfolio import load_manifest, render_public_file
 
@@ -35,10 +33,6 @@ PUBLIC_ROOT_FILES = (
     ".well-known/security.txt",
 )
 
-# These upstream service marks are retained only as reviewed source/provenance
-# history. They represented earlier third-party service cards and MUST NOT enter
-# the current GoreeCloud-native public artifact unless a future, separately
-# reviewed third-party-reference surface explicitly re-authorizes them.
 RETIRED_SOURCE_ONLY_ASSET_FILES = (
     "assets/services/actual-budget.png",
     "assets/services/audiobookshelf.svg",
@@ -52,6 +46,8 @@ RETIRED_SOURCE_ONLY_ASSET_FILES = (
     "assets/services/paperless-ngx.svg",
     "assets/services/stirling-pdf.png",
     "assets/services/vaultwarden.svg",
+    "assets/roadmap/frigate.svg",
+    "assets/roadmap/home-assistant.png",
 )
 
 PUBLIC_ASSET_FILES = (
@@ -63,8 +59,6 @@ PUBLIC_ASSET_FILES = (
     "assets/platform/netbird.svg",
     "assets/platform/proxmox.svg",
     "assets/platform/uptime-kuma.svg",
-    "assets/roadmap/frigate.svg",
-    "assets/roadmap/home-assistant.png",
     "assets/suite/ai.svg",
     "assets/suite/app-store.svg",
     "assets/suite/backup.svg",
@@ -119,7 +113,7 @@ PUBLIC_STYLE_FILES = (
     "css/error.css",
     "css/glaze-polish.css",
     "css/glaze.css",
-    "css/glaze-ui-2.1.0.css",
+    "css/glaze-v1.3.0.css",
     "css/homepage-v6.css",
     "css/how-it-works.css",
     "css/platform.css",
@@ -143,9 +137,6 @@ PUBLIC_FILES = (
     *PUBLIC_SCRIPT_FILES,
 )
 
-# Every public HTML file is rendered through the same normalization boundary so
-# build-time output, artifact validation, and remote byte-integrity checks share
-# the exact Glaze UI 2.1 Stable representation.
 GENERATED_HTML = {"index.html", "repositories.html", "privacy.html", "security.html", "404.html"}
 
 
@@ -163,23 +154,18 @@ def main() -> int:
     try:
         if len(PUBLIC_FILES) != len(set(PUBLIC_FILES)):
             return fail("public file allowlist contains a duplicate path")
-
         retired_overlap = sorted(set(PUBLIC_ASSET_FILES).intersection(RETIRED_SOURCE_ONLY_ASSET_FILES))
         if retired_overlap:
-            return fail(
-                "source-only historical assets must never enter the public allowlist: "
-                + ", ".join(retired_overlap)
-            )
+            return fail("retired source-only assets entered the public allowlist: " + ", ".join(retired_overlap))
 
-        sources = [ROOT / relative for relative in PUBLIC_FILES]
-        for source in sources:
-            if not source.exists():
-                return fail(f"required public source is missing: {source.relative_to(ROOT)}")
-            if not source.is_file():
-                return fail(f"allowlisted public source is not a regular file: {source.relative_to(ROOT)}")
+        for relative in PUBLIC_FILES:
+            source = ROOT / relative
+            if not source.exists() or not source.is_file():
+                return fail(f"required public source is missing: {relative}")
             reject_symlink(source)
 
         manifest = load_manifest(ROOT)
+        glaze_css = collect_glaze_css(ROOT)
 
         if DIST.exists():
             if DIST.is_symlink():
@@ -197,17 +183,21 @@ def main() -> int:
                     rendered = render_public_file(relative, rendered, manifest)
                     if relative == "index.html":
                         rendered = normalize_homepage(rendered)
-                rendered = apply_glaze_ui_2(rendered)
                 destination.write_text(rendered, encoding="utf-8")
             else:
                 shutil.copy2(source, destination)
+
+        for name, data in sorted(glaze_css.items()):
+            target = DIST / "css" / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
 
     except (OSError, ValueError) as exc:
         return fail(str(exc))
 
     file_count = sum(1 for path in DIST.rglob("*") if path.is_file())
     total_bytes = sum(path.stat().st_size for path in DIST.rglob("*") if path.is_file())
-    print(f"Built isolated public artifact: {file_count} files, {total_bytes} bytes -> dist/")
+    print(f"Built isolated GLAZE UI V1.3 public artifact: {file_count} files, {total_bytes} bytes -> dist/")
     return 0
 
 
