@@ -113,6 +113,7 @@ PUBLIC_STYLE_FILES = (
     "css/error.css",
     "css/glaze-polish.css",
     "css/glaze.css",
+    "css/glaze-v1.3.0.css",
     "css/homepage-v6.css",
     "css/how-it-works.css",
     "css/platform.css",
