@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Exercise GoreeCloud Projects in a real headless browser session.
 
-The smoke test intentionally uses only Python's standard library plus the browser
-and WebDriver binaries already present on GitHub's pinned ubuntu-24.04 runner
-image. It detects navigation hangs, renderer crashes, missing card rendering,
-broken local search/filter behavior, Glaze UI material regressions, and loss of
-responsiveness under repeated UI updates in both Chrome and Firefox.
+The smoke test uses only Python's standard library plus browser/WebDriver binaries
+available on the GitHub runner. It validates the current GLAZE UI V1.3 publication,
+the authoritative 45-product Suite projection, local search/filter behavior, and
+renderer health without claiming production acceptance.
 """
 
 from __future__ import annotations
@@ -30,7 +29,8 @@ DRIVER_BASE = ""
 HTTP_TIMEOUT = 20
 FIREFOX_SESSION_TIMEOUT = 45
 STARTUP_TIMEOUT = 15
-MIN_PROJECT_CARDS = 30
+MIN_PROJECT_CARDS = 45
+EXPECTED_SUITE_PRODUCTS = 45
 MAX_STRESS_LOOP_MS = 5_000
 
 
@@ -193,18 +193,18 @@ def exercise_page(session_id: str, target_url: str, browser: str) -> None:
         session_id,
         """
         const card=document.querySelector('#projects .card');
-        const header=document.querySelector('.topbar');
         const cardStyle=card?getComputedStyle(card):null;
-        const headerStyle=header?getComputedStyle(header):null;
         return {
-          ready: document.readyState,
-          title: document.title,
-          cards: document.querySelectorAll('#projects .card').length,
-          result: document.querySelector('#result-count')?.textContent || '',
-          resources: performance.getEntriesByType('resource').map(entry => entry.name),
-          glazeVersion: document.querySelector('meta[name="goreecloud-glaze-ui"]')?.content || '',
-          cardBackdrop: cardStyle?.backdropFilter || cardStyle?.webkitBackdropFilter || 'none',
-          headerBackdrop: headerStyle?.backdropFilter || headerStyle?.webkitBackdropFilter || 'none',
+          ready:document.readyState,
+          title:document.title,
+          cards:document.querySelectorAll('#projects .card').length,
+          result:document.querySelector('#result-count')?.textContent||'',
+          resources:performance.getEntriesByType('resource').map(entry=>entry.name),
+          glazeVersion:document.querySelector('meta[name="goreecloud-glaze-ui"]')?.content||'',
+          suiteCount:document.querySelector('#app-count')?.textContent||'',
+          platformCount:document.querySelector('#foundation-count')?.textContent||'',
+          suiteFilter:Boolean([...document.querySelectorAll('#filters .filter')].find(node=>node.textContent.trim()==='Suite products')),
+          cardBackdrop:cardStyle?.backdropFilter||cardStyle?.webkitBackdropFilter||'none',
         };
         """,
     )
@@ -212,48 +212,67 @@ def exercise_page(session_id: str, target_url: str, browser: str) -> None:
     require(initial.get("ready") == "complete", f"Projects document did not finish loading in {browser}: {initial}")
     require(initial.get("title") == "Projects — GoreeCloud", f"Unexpected Projects title in {browser}: {initial.get('title')!r}")
     require(int(initial.get("cards", 0)) >= MIN_PROJECT_CARDS, f"Projects rendered too few cards in {browser}: {initial}")
-    require(initial.get("glazeVersion") == "2.1.0", f"Projects did not expose the Glaze UI 2.1 document contract in {browser}: {initial}")
-    require(str(initial.get("cardBackdrop", "none")) in ("none", ""), f"Durable Projects content cards must remain solid under Glaze UI 2.1 in {browser}: {initial}")
+    require(initial.get("glazeVersion") == "1.3.0", f"Projects did not expose the Glaze UI V1.3 document contract in {browser}: {initial}")
+    require(initial.get("suiteCount") == "45", f"Projects did not expose the authoritative 45-product Suite count in {browser}: {initial}")
+    require(initial.get("platformCount") == "7", f"Projects did not expose the seven Integral Platform Systems in {browser}: {initial}")
+    require(initial.get("suiteFilter") is True, f"Projects Suite products filter is missing in {browser}: {initial}")
+    require(str(initial.get("cardBackdrop", "none")) in ("none", ""), f"Durable Projects content cards must remain solid under Glaze UI V1.3 in {browser}: {initial}")
 
     resources = initial.get("resources") or []
-    require(any("/assets/app.js?v=20260831-source-native" in resource for resource in resources), f"Headless {browser} did not load the source-native Projects app.js resource.")
+    require(any("/assets/app.js?v=20260910-v13" in resource for resource in resources), f"Headless {browser} did not load the Projects app.js V1.3 resource.")
+    require(any("/assets/suite-portfolio.js?v=20260910-v45" in resource for resource in resources), f"Headless {browser} did not load the authoritative Suite portfolio projection.")
+    require(any("/assets/icon-refresh.js?v=20260910-portfolio45" in resource for resource in resources), f"Headless {browser} did not load the reconciled Projects branding resource.")
+    require(any("/assets/glaze-v1.3-consumer.css?v=20260910-v13" in resource for resource in resources), f"Headless {browser} did not load the Glaze UI V1.3 consumer layer.")
     require(not any("/assets/public-refresh.js" in resource for resource in resources), f"Headless {browser} still loaded the superseded Projects public-refresh overlay.")
-    require(any("/assets/glaze-ui-2.1.0.css" in resource for resource in resources), f"Headless {browser} did not load the Glaze UI 2.1 stylesheet.")
-    require(not any("/assets/glaze-ui-2.0.0.css" in resource for resource in resources), f"Headless {browser} still loaded the superseded Glaze UI 2.0 stylesheet.")
+    require(not any("glaze-ui-2.1.0.css" in resource or "glaze-ui-2.0.0.css" in resource for resource in resources), f"Headless {browser} loaded a superseded Glaze stylesheet.")
 
     searched = execute(
         session_id,
         """
         const input=document.querySelector('#search');
-        if(!input) throw new Error('Projects search input is missing');
-        input.value='GoreeCloud AI';
+        if(!input)throw new Error('Projects search input is missing');
+        input.value='GoreeCloud Health';
         input.dispatchEvent(new Event('input',{bubbles:true}));
         return {
-          cards: document.querySelectorAll('#projects .card').length,
-          names: [...document.querySelectorAll('#projects .card h3')].map(node=>node.textContent.trim()),
-          result: document.querySelector('#result-count')?.textContent || '',
+          cards:document.querySelectorAll('#projects .card').length,
+          names:[...document.querySelectorAll('#projects .card h3')].map(node=>node.textContent.trim()),
         };
         """,
     )
     require(isinstance(searched, dict), f"Projects search did not return state in {browser}: {searched!r}")
-    require("GoreeCloud AI" in (searched.get("names") or []), f"Projects search failed to retain GoreeCloud AI in {browser}: {searched}")
-    require(int(searched.get("cards", 0)) >= 1, f"Projects search rendered no cards in {browser}: {searched}")
+    require("GoreeCloud Health" in (searched.get("names") or []), f"Projects search failed to retain GoreeCloud Health in {browser}: {searched}")
 
-    foundations = execute(
+    suite = execute(
         session_id,
         """
         const input=document.querySelector('#search');
         input.value='';
         input.dispatchEvent(new Event('input',{bubbles:true}));
-        const button=[...document.querySelectorAll('#filters .filter')].find(node=>node.textContent.trim()==='Foundations');
-        if(!button) throw new Error('Foundations filter is missing');
+        const button=[...document.querySelectorAll('#filters .filter')].find(node=>node.textContent.trim()==='Suite products');
+        if(!button)throw new Error('Suite products filter is missing');
         button.click();
         const cards=[...document.querySelectorAll('#projects .card')];
         return {
-          cards: cards.length,
-          kinds: cards.map(card=>card.dataset.kind),
-          result: document.querySelector('#result-count')?.textContent || '',
+          cards:cards.length,
+          suiteFlags:cards.map(card=>card.dataset.suiteMember),
+          names:cards.map(card=>card.querySelector('h3')?.textContent.trim()||''),
         };
+        """,
+    )
+    require(isinstance(suite, dict), f"Projects Suite filter did not return state in {browser}: {suite!r}")
+    require(int(suite.get("cards", 0)) == EXPECTED_SUITE_PRODUCTS, f"Suite filter must render exactly 45 products in {browser}: {suite}")
+    require(all(flag == "true" for flag in (suite.get("suiteFlags") or [])), f"Suite filter leaked a non-Suite entry in {browser}: {suite}")
+    for name in ("GoreeCloud Index", "GoreeVault", "GoreeCloud Health", "GoreeCloud Reader", "GoreeCloud Router OS", "GoreeCloud Social", "GoreeCloud Home", "GoreeCloud Home Security"):
+        require(name in (suite.get("names") or []), f"Suite filter is missing {name} in {browser}: {suite}")
+
+    foundations = execute(
+        session_id,
+        """
+        const button=[...document.querySelectorAll('#filters .filter')].find(node=>node.textContent.trim()==='Foundations');
+        if(!button)throw new Error('Foundations filter is missing');
+        button.click();
+        const cards=[...document.querySelectorAll('#projects .card')];
+        return {cards:cards.length,kinds:cards.map(card=>card.dataset.kind)};
         """,
     )
     require(isinstance(foundations, dict), f"Projects filter did not return state in {browser}: {foundations!r}")
@@ -266,7 +285,7 @@ def exercise_page(session_id: str, target_url: str, browser: str) -> None:
         const input=document.querySelector('#search');
         const buttons=[...document.querySelectorAll('#filters .filter')];
         const all=buttons.find(node=>node.textContent.trim()==='All');
-        if(!input || !buttons.length || !all) throw new Error('Projects controls are incomplete');
+        if(!input||!buttons.length||!all)throw new Error('Projects controls are incomplete');
         const start=performance.now();
         for(let i=0;i<60;i+=1){
           input.value=i%3===0?'GoreeCloud':(i%3===1?'Native':'');
@@ -276,21 +295,13 @@ def exercise_page(session_id: str, target_url: str, browser: str) -> None:
         input.value='';
         input.dispatchEvent(new Event('input',{bubbles:true}));
         all.click();
-        return {
-          elapsed: performance.now()-start,
-          cards: document.querySelectorAll('#projects .card').length,
-          result: document.querySelector('#result-count')?.textContent || '',
-          responsive: 6*7,
-        };
+        return {elapsed:performance.now()-start,cards:document.querySelectorAll('#projects .card').length,ping:42};
         """,
     )
     require(isinstance(stressed, dict), f"Projects stress exercise did not return state in {browser}: {stressed!r}")
-    require(stressed.get("responsive") == 42, f"Projects renderer stopped responding in {browser}: {stressed}")
+    require(stressed.get("ping") == 42, f"Projects renderer stopped responding in {browser}: {stressed}")
     require(int(stressed.get("cards", 0)) >= MIN_PROJECT_CARDS, f"Projects did not recover after repeated interactions in {browser}: {stressed}")
     require(float(stressed.get("elapsed", MAX_STRESS_LOOP_MS + 1)) <= MAX_STRESS_LOOP_MS, f"Projects repeated render loop was unexpectedly slow in {browser}: {stressed}")
-
-    final_ping = execute(session_id, "return {cards:document.querySelectorAll('#projects .card').length, title:document.title, ping:Date.now()};")
-    require(isinstance(final_ping, dict) and int(final_ping.get("cards", 0)) >= MIN_PROJECT_CARDS, f"Projects {browser} renderer became unhealthy after interaction exercise: {final_ping}")
 
 
 def driver_command(browser: str, port: int) -> list[str]:
@@ -316,7 +327,7 @@ def run(target: str, browser: str) -> int:
         wait_for_driver(browser)
         session_id = create_session(browser)
         exercise_page(session_id, target_url, browser)
-        print(f"Projects headless {browser} Glaze UI 2.1 runtime smoke passed for {target}: {target_url}")
+        print(f"Projects headless {browser} Glaze UI V1.3 / Suite-45 smoke passed for {target}: {target_url}")
         return 0
     except (WebDriverError, OSError, ValueError, json.JSONDecodeError) as error:
         print(f"Projects headless {browser} runtime smoke failed for {target}: {target_url}")
