@@ -76,6 +76,7 @@ h1 { margin: 0; max-width: 800px; font-size: clamp(3rem, 8vw, 6.7rem); line-heig
 .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; }
 .app-card, .capability-card { position: relative; display: flex; flex-direction: column; min-height: 290px; padding: 28px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow); }
 .app-card img, .capability-card img { border-radius: 15px; margin-bottom: 22px; }
+.neutral-product-mark { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 22px; border: 1px solid var(--line); border-radius: 15px; background: color-mix(in srgb, var(--accent) 8%, var(--surface-solid)); color: var(--accent); font-size: .9rem; font-weight: 900; letter-spacing: -.02em; }
 .app-card h4, .capability-card h3 { margin: 0 0 10px; font-size: 1.35rem; }
 .app-card p, .capability-card p { margin: 0 0 18px; color: var(--muted); }
 .badge { align-self: flex-start; margin-top: auto; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); font-size: .8rem; font-weight: 800; }
