@@ -18,7 +18,13 @@ for needle in (
     "GoreeCloud/goreecloud-static-websites",
     "Seven systems, seven authority boundaries",
     "GoreeCloud Manager, Privacy Shield, Wardveil Security, Everkeep, GLAZE UI, GoreeCloud Mesh, and GoreeCloud Identity",
-    "27 Suite applications across seven functional groups",
+    "45 verified GoreeCloud products across nine functional product groups",
+    "GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security",
+    "Portfolio membership does not establish Stable or production acceptance for any product",
+    "nine current Suite product groups",
+    "developer and intelligence",
+    "home, health, and personal systems",
+    "infrastructure and edge products",
     "Privacy Shield durable authorization",
     "Wardveil shared security plane",
     "Everkeep recovery assurance",
@@ -41,6 +47,9 @@ for stale in (
     "Ten independently deployed public destinations",
     "Identity Center is the eleventh",
     "identity.goreecloud.com",
+    "27 Suite applications across seven functional groups",
+    "27 Suite applications",
+    "across seven functional groups",
 ):
     if stale in html:
         raise SystemExit(f"superseded current-state roadmap claim remains public: {stale}")
@@ -52,4 +61,9 @@ for prohibited in ("google-analytics", "googletagmanager", "fonts.googleapis.com
     if prohibited in html.lower():
         raise SystemExit(f"prohibited runtime dependency: {prohibited}")
 
-print("GoreeCloud Roadmap current V1.3, seven-system, 27-application, and 13-package public direction validated")
+if html.count('id="now"') != 1 or html.count('id="next"') != 1 or html.count('id="later"') != 1 or html.count('id="principles"') != 1:
+    raise SystemExit("roadmap section structure is incomplete or duplicated")
+if html.count('<div class="principle-grid">') != 1:
+    raise SystemExit("roadmap principle-grid structure is missing or duplicated")
+
+print("GoreeCloud Roadmap current V1.3, seven-system, 45-product, nine-group, and 13-package public direction validated")
