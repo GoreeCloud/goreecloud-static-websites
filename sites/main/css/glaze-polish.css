@@ -1,4 +1,8 @@
-/* Glaze UI 1.1 — GoreeCloud website. */
+/*
+ * GoreeCloud Main — GLAZE UI V1.3 / 1.3.0 consumer layer.
+ * Canonical Glaze revision: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+ * Source migration only; rendered/accessibility/deployment acceptance remains separate.
+ */
 :root {
   --glaze-on-accent:#fff;
   --glaze-info:var(--cyan);
@@ -18,6 +22,8 @@
   --glaze-gutter-expanded:32px;
   --glaze-gutter-wide:40px;
   --glaze-font-sans:"Roboto","Noto Sans","Segoe UI",Arial,sans-serif;
+  --goreecloud-v13-touch:48px;
+  --goreecloud-v13-touch-assisted:56px;
 }
 :root[data-theme="light"] {
   --glaze-info:#315ed6;
@@ -34,8 +40,10 @@ h1,h2,h3,.eyebrow,.glaze-chip{font-weight:800;}
   padding-left:env(safe-area-inset-left);
   padding-right:env(safe-area-inset-right);
 }
+:where(.button,.glaze-button,.theme-toggle,.nav-toggle,.site-nav a,.website-link,.social-card){min-height:var(--goreecloud-v13-touch);}
 .button.primary {color:var(--glaze-on-accent);}
 .glaze-scrim {background:var(--glaze-scrim);}
+:where(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-info);outline-offset:3px;}
 
 .theme-toggle {
   transition:background-color var(--glaze-motion-fast) var(--glaze-ease-standard),border-color var(--glaze-motion-fast) var(--glaze-ease-standard),box-shadow var(--glaze-motion-fast) var(--glaze-ease-standard),transform var(--glaze-motion-fast) var(--glaze-ease-standard);
@@ -58,8 +66,8 @@ h1,h2,h3,.eyebrow,.glaze-chip{font-weight:800;}
   transform:scaleX(.45);
   transition:opacity var(--glaze-motion-fast) var(--glaze-ease-standard),transform var(--glaze-motion-fast) var(--glaze-ease-standard);
 }
-.site-nav a[aria-current="location"] {color:var(--text);}
-.site-nav a[aria-current="location"]:not(.nav-cta)::after {opacity:1;transform:scaleX(1);}
+.site-nav a[aria-current="location"],.site-nav a[aria-current="page"] {color:var(--text);}
+.site-nav a[aria-current="location"]:not(.nav-cta)::after,.site-nav a[aria-current="page"]:not(.nav-cta)::after {opacity:1;transform:scaleX(1);}
 .site-nav .nav-cta[aria-current="location"] {
   color:var(--text);
   border-color:var(--border-strong);
@@ -72,9 +80,12 @@ h1,h2,h3,.eyebrow,.glaze-chip{font-weight:800;}
     box-shadow:0 8px 22px color-mix(in srgb,var(--blue) 12%,transparent);
   }
 }
+@media (pointer:coarse) {
+  :where(.button,.glaze-button,.theme-toggle,.nav-toggle,.site-nav a,.website-link,.social-card){min-height:var(--goreecloud-v13-touch-assisted);}
+}
 @media (max-width:720px) {
   .site-nav a:not(.nav-cta)::after {display:none;}
-  .site-nav a[aria-current="location"]:not(.nav-cta) {
+  .site-nav a[aria-current="location"]:not(.nav-cta),.site-nav a[aria-current="page"]:not(.nav-cta) {
     color:var(--text);
     background:color-mix(in srgb,var(--cyan) 7%,var(--surface));
   }
@@ -96,6 +107,13 @@ h1,h2,h3,.eyebrow,.glaze-chip{font-weight:800;}
     box-shadow:var(--shadow-soft);
   }
   html:not([data-js="true"]) .nav-toggle {display:none;}
+}
+@media (prefers-reduced-transparency: reduce) {
+  .site-header,.site-footer,.glaze-material,.glaze-material-soft,.glaze-surface,.glaze-surface-raised,.glaze-callout,.site-nav {
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+    background:var(--panel-strong,var(--surface))!important;
+  }
 }
 @media (prefers-contrast: more) {
   :root {
@@ -127,7 +145,7 @@ h1,h2,h3,.eyebrow,.glaze-chip{font-weight:800;}
   }
   .button,.theme-toggle,.nav-toggle,.glaze-chip,.badge,.platform-state,.roadmap-state {border:1px solid currentColor;box-shadow:none;}
   .button.primary {background:Highlight;color:HighlightText;}
-  .site-nav a[aria-current="location"] {outline:2px solid LinkText;outline-offset:2px;}
+  .site-nav a[aria-current="location"],.site-nav a[aria-current="page"] {outline:2px solid LinkText;outline-offset:2px;}
   .site-nav a:not(.nav-cta)::after {display:none;}
 }
 @media print {
@@ -168,13 +186,11 @@ h1,h2,h3,.eyebrow,.glaze-chip{font-weight:800;}
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
   }
-  .hero-lede,.section-heading>p:last-child,.about-copy>p,.timeline p,.contact-card p:last-child,.service-card p:not(.service-kicker),.platform-description,.roadmap-card>p:not(.roadmap-kicker):not(.roadmap-current),.social-card span:not(.social-icon),.social-card small,.principle-grid span,.platform-role,.platform-legal,.roadmap-current,.roadmap-details li {color:#222!important;}
-  .service-grid,.platform-grid,.roadmap-grid,.principle-grid {gap:.65rem;}
   a {color:#000;text-decoration:underline;}
   .badge,.platform-state,.roadmap-state,.glaze-chip {color:#000!important;background:#fff!important;border-color:#777!important;}
   .site-footer {padding-block:1rem;}
 }
 @media (prefers-reduced-motion: reduce) {
   html {scroll-behavior:auto;}
-  .theme-toggle,.site-nav a,.site-nav a::after {transition:none!important;}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}
 }
