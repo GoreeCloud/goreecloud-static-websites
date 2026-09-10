@@ -79,18 +79,24 @@ jobs:
           from pathlib import Path
           root=Path('sites/security')
           dist=root/'website'/'dist'
-          expected={'index.html','404.html','_headers','assets/site.css','assets/site.js','assets/glaze-ui-v1.1.0.css','assets/wardveil-security-icon.svg'}
+          expected={'index.html','404.html','_headers','assets/site.css','assets/site.js','v1.3-site.css','assets/wardveil-security-icon.svg'}
           actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
           assert actual==expected,(actual,expected)
           assert (dist/'assets/wardveil-security-icon.svg').read_bytes()==(root/'branding/wardveil-security-icon.svg').read_bytes()
           html=(dist/'index.html').read_text()
           nf=(dist/'404.html').read_text()
           headers=(dist/'_headers').read_text()
-          assert 'content="1.1.0"' in html and 'data-glaze-ui="1.1.0"' in html
-          assert '/assets/glaze-ui-v1.1.0.css' in html+nf
+          for page in (html,nf):
+              assert 'name="goreecloud-glaze-ui" content="1.3.0"' in page
+              assert 'name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72"' in page
+              assert 'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"' in page
+              assert 'data-glaze-version="1.3.0"' in page
+              assert '/v1.3-site.css' in page
+              for stale in ('glaze-ui-v1.1.0.css','data-glaze-ui="1.1.0"','data-glaze-version="1.1"','GLAZE UI V1.1'):
+                  assert stale not in page,stale
           for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Permissions-Policy:'):
               assert marker in headers,marker
-          print('Security Center central source/build validation passed')
+          print('Security Center central V1.3 source/build validation passed; rendered and production acceptance remain separate')
           PY
 
   everkeep:
