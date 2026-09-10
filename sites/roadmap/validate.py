@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import hashlib
 
 ROOT = Path(__file__).resolve().parent
-for name in ("index.html", "404.html", "site.css", "site.js", "glaze-ui-2.1.0.css", "_headers"):
+for name in ("index.html", "404.html", "site.css", "site.js", "glaze-ui-2.1.0.css", "_headers", "assets/goreecloud-logo.svg"):
     if not (ROOT / name).is_file():
         raise SystemExit(f"missing roadmap site file: {name}")
 
@@ -50,6 +51,21 @@ for page_name, page in (("index", html), ("404", error_html)):
             raise SystemExit(f"{page_name} missing Glaze UI 2.1 marker: {needle}")
     if 'data-glaze-ui="1.5.0"' in page or 'data-glaze-ui="2.0.0"' in page:
         raise SystemExit(f"{page_name} still activates a superseded Glaze UI bundle")
+    if '<link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">' not in page:
+        raise SystemExit(f"{page_name} missing canonical GoreeCloud favicon")
+
+for needle in (
+    '<img src="/assets/goreecloud-logo.svg" width="32" height="32" alt="">',
+    '<span class="brand-name">GoreeCloud <span>Roadmap</span></span>',
+):
+    if needle not in html:
+        raise SystemExit(f"roadmap visible canonical identity missing: {needle}")
+
+logo = ROOT / "assets/goreecloud-logo.svg"
+raw = logo.read_bytes()
+actual_blob = hashlib.sha1(f"blob {len(raw)}\0".encode("ascii") + raw).hexdigest()
+if actual_blob != "082936062de7839148db89ea3ab4e86ff71341b0":
+    raise SystemExit(f"roadmap GoreeCloud logo drifted from canonical branding asset: {actual_blob}")
 
 for needle in (
     "Glaze UI 2.1.0 Stable integration",
@@ -88,4 +104,4 @@ for prohibited in ("google-analytics", "googletagmanager", "fonts.googleapis.com
     if prohibited in html.lower():
         raise SystemExit(f"prohibited runtime dependency: {prohibited}")
 
-print("GoreeCloud roadmap current portfolio, six-system model, Facet identity, and Glaze UI 2.1 public-site validation passed")
+print("GoreeCloud roadmap current portfolio, canonical GoreeCloud identity, six-system model, Facet identity, and Glaze UI 2.1 public-site validation passed")

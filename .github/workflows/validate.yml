@@ -25,5 +25,7 @@ jobs:
           persist-credentials: false
       - name: Validate migration registry
         run: python scripts/validate_manifest.py
+      - name: Validate canonical visual identity
+        run: python scripts/validate_visual_identity.py
       - name: Compile repository validation tools
-        run: python -m py_compile scripts/validate_manifest.py
+        run: python -m py_compile scripts/validate_manifest.py scripts/validate_visual_identity.py

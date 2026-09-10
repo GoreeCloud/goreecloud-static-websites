@@ -1,0 +1,4 @@
+# Keep the new product center out of search indexes until Cloudflare Pages,
+# custom-domain DNS/TLS, human mobile review, and production acceptance are complete.
+User-agent: *
+Disallow: /
