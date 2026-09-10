@@ -1,0 +1,14 @@
+/* GoreeCloud Mesh — GLAZE UI V1.3 consumer adaptation.
+ * Source migration only. Rendered, accessibility, performance, rollback,
+ * deployment, runtime, and production acceptance remain independent gates.
+ * Canonical Glaze source revision: 8354308445da9ac35ced2b37a7f503a08a0aaf72.
+ */
+:root{--mesh-v13-control:48px;--mesh-v13-control-coarse:56px}
+:is(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-accent,currentColor);outline-offset:3px}
+.header-row nav a,.theme-group button,.footer-row nav a,.actions .glaze-button,.status-card .glaze-button{min-height:var(--mesh-v13-control)}
+@media(pointer:coarse){.header-row nav a,.theme-group button,.footer-row nav a,.actions .glaze-button,.status-card .glaze-button{min-height:var(--mesh-v13-control-coarse);min-width:var(--mesh-v13-control-coarse)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-transparency:reduce){.site-header,.principle-panel,.hero,.status-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--glaze-surface-strong)!important}.hero:before{opacity:.2}}
+@media(prefers-contrast:more){.site-header,.hero,.cap-grid article,.boundary-list article,.principle-grid article,.status-card,.status-grid article,.mesh-orbit,.node{border-width:2px}.truth-note{border-left-width:4px}}
+@media(forced-colors:active){.site-header,.hero,.cap-grid article,.boundary-list article,.principle-grid article,.principle-panel,.status-card,.status-grid article,.mesh-orbit,.node,.theme-group{forced-color-adjust:auto;border:1px solid CanvasText}.mesh-orbit:before,.mesh-orbit:after,.hero:before{display:none}:is(a,button,[tabindex]):focus-visible{outline:3px solid Highlight}}
+@media print{.site-header,.theme-group,.actions,footer{display:none!important}body{background:#fff!important;color:#000!important}.hero,.cap-grid article,.boundary-list article,.principle-grid article,.principle-panel,.status-card,.status-grid article{box-shadow:none!important;background:#fff!important;color:#000!important;border:1px solid #000!important}.hero{grid-template-columns:1fr}.mesh-visual{display:none}.section-block{break-inside:avoid;padding-top:32px}}
