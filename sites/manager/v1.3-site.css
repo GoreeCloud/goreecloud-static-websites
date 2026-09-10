@@ -1,0 +1,15 @@
+/* GoreeCloud Manager public site — GLAZE UI V1.3 consumer adaptation.
+ * Canonical Glaze revision: 8354308445da9ac35ced2b37a7f503a08a0aaf72.
+ * Source/build migration only; rendered, accessibility, deployment, Manager
+ * application/runtime, platform-integration, and production acceptance remain separate.
+ */
+:root{--manager-v13-control:48px;--manager-v13-control-assisted:56px}
+:is(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-accent,currentColor);outline-offset:3px}
+.site-header a,.site-header button,.actions a,.footer-row a{min-height:var(--manager-v13-control)}
+.glaze-card,.status-card,.manager-visual{border-color:var(--glaze-line,currentColor)}
+@media(pointer:coarse){.site-header a,.site-header button,.actions a,.footer-row a{min-height:var(--manager-v13-control-assisted);min-width:var(--manager-v13-control-assisted)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-transparency:reduce){.site-header,.manager-visual,.glaze-material-soft,.glaze-material-deep{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--glaze-surface-strong)!important}}
+@media(prefers-contrast:more){.site-header,.hero,.glaze-card,.status-card,.manager-visual,.theme-group{border-width:2px!important}.truth-note{border-left-width:4px!important}}
+@media(forced-colors:active){.site-header,.hero,.glaze-card,.status-card,.manager-visual,.theme-group,.glaze-button{forced-color-adjust:auto;border:1px solid CanvasText}:is(a,button,[tabindex]):focus-visible{outline:3px solid Highlight}}
+@media print{.site-header,.theme-group,footer{display:none!important}body{background:#fff!important;color:#000!important}.hero,.glaze-card,.status-card,.manager-visual{box-shadow:none!important;background:#fff!important;color:#000!important;border:1px solid #000!important}.manager-visual{display:none!important}.hero{grid-template-columns:1fr!important}.actions{display:none!important}}
