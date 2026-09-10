@@ -163,12 +163,15 @@ def main() -> int:
         if stale in html:
             errors.append(f"superseded Suite directory or Glaze marker remains active: {stale}")
 
-    if html.count('class="app-card"') != 27:
-        errors.append(f"expected 27 authoritative Suite application cards; found {html.count('class=\"app-card\"')}")
-    if html.count('class="product-group"') != 7:
-        errors.append(f"expected 7 authoritative Suite functional groups; found {html.count('class=\"product-group\"')}")
-    if html.count('class="capability-card"') != 3:
-        errors.append(f"expected 3 application-centered capability identities; found {html.count('class=\"capability-card\"')}")
+    app_card_count = html.count('class="app-card"')
+    group_count = html.count('class="product-group"')
+    capability_count = html.count('class="capability-card"')
+    if app_card_count != 27:
+        errors.append(f"expected 27 authoritative Suite application cards; found {app_card_count}")
+    if group_count != 7:
+        errors.append(f"expected 7 authoritative Suite functional groups; found {group_count}")
+    if capability_count != 3:
+        errors.append(f"expected 3 application-centered capability identities; found {capability_count}")
     for app in CURRENT_APPS:
         if html.count(f"<h4>{app}</h4>") != 1:
             errors.append(f"authoritative Suite application must appear exactly once: {app}")
