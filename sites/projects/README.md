@@ -15,6 +15,16 @@ Canonical static source for `projects.goreecloud.com`.
 
 The site is static, dependency-free, tracking-free, and uses only local browser runtime code. `_headers` defines the public security-header baseline.
 
+## Current Glaze UI consumer target
+
+- Required design-system version: **GLAZE UI V1.3 / `1.3.0`**.
+- Exact canonical Glaze revision used for this source migration: `8354308445da9ac35ced2b37a7f503a08a0aaf72`.
+- Canonical Glaze repository: `GoreeCloud/goreecloud-glaze-ui`.
+- Projects consumer layer: `assets/glaze-v1.3-consumer.css`.
+- Current consumer state: **source migrated; rendered/browser, accessibility, performance, rollback, and production acceptance pending**.
+
+GLAZE UI V1.3 being Official Stable and consumer-eligible does not grant Projects conformance. This repository must independently validate the actual Projects surface and bind acceptance to the exact consumer revision before any production-complete V1.3 claim is made.
+
 ## Branding authority
 
 - Canonical GoreeCloud branding repository: `GoreeCloud/goreecloud-branding-assets`.
@@ -28,6 +38,6 @@ The site is static, dependency-free, tracking-free, and uses only local browser 
 
 ## Production boundary
 
-Source validation does not itself authorize production claims. Branch-preview and production verification must confirm that the deployed Projects surface matches the reviewed source. Platform artwork identifies the relevant system but does not establish technical runtime acceptance, protection, privacy, recovery, or coordination state.
+Source validation does not itself authorize production claims. Branch-preview and production verification must confirm that the deployed Projects surface matches the reviewed source. Platform artwork identifies the relevant system but does not establish technical runtime acceptance, protection, privacy, recovery, identity, management, or coordination state.
 
 Cloudflare Pages source cutover and legacy-source retirement remain separate migration gates after central validation.

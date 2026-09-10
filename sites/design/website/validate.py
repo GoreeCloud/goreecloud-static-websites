@@ -11,7 +11,7 @@ DIST = SITE / "dist"
 IDENTITY = ROOT / "assets" / "identity" / "official" / "facet"
 GLAZE_VERSION = "1.3.0"
 GLAZE_REVISION = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
-CANONICAL_SHA256 = "3c9566bf21c5bed4121547c3d5c79c34e4f3e60105179b7f2342c4b60ae91a61"
+CANONICAL_SHA256 = "82d3bdc331a96593873ca4d327e3b46d561d1ca96e653cef71e0c5e42fa1a31c"
 
 for name in (
     "index.html", "404.html", "site.css", "identity.css", "site.js",
@@ -73,8 +73,6 @@ for text in (
     if text not in html:
         raise SystemExit(f"required V1.3 Design Center content missing: {text}")
 
-# A current publication must not actively identify an older or invented release
-# as current. Historical discussion is allowed only outside these active HTML surfaces.
 for stale in (
     "Current Stable · GLAZE UI V1.1",
     "GLAZE UI V1.1 is GoreeCloud's current Stable",
@@ -100,7 +98,6 @@ for marker in (
     if marker not in v13:
         raise SystemExit(f"V1.3 consumer presentation marker missing: {marker}")
 
-# Local published assets referenced by entry surfaces must exist.
 for surface_name, surface in (("index", html), ("404", not_found)):
     for asset in re.findall(r'(?:src|href)=["\'](/assets/[^"\']+)', surface):
         if not (DIST / asset.removeprefix("/")).is_file():
@@ -120,8 +117,6 @@ for directive in (
 if "localStorage" not in js or "data-theme-choice" not in html:
     raise SystemExit("local appearance preference contract missing")
 
-# Source migration is intentionally not production acceptance. Guard against a
-# future edit silently converting this page into an unsupported conformance claim.
 for forbidden in (
     "Design Center V1.3 conformance passed",
     "production visually accepted",
@@ -132,6 +127,6 @@ for forbidden in (
 
 print(
     "GLAZE UI V1.3 Design Center source validation passed: exact Stable source anchor, "
-    "current public release identity, accessibility/responsive consumer layer, synchronized Facet identity, "
+    "current public release identity, accessibility/responsive consumer layer, current canonical Facet identity, "
     "and explicit rendered/production acceptance boundary"
 )

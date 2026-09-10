@@ -1,0 +1,167 @@
+/*
+ * GoreeCloud Projects — GLAZE UI V1.3 / 1.3.0 consumer layer.
+ * Canonical Glaze revision: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+ *
+ * This layer adapts the existing Projects information architecture to the
+ * current Stable Adaptive Resonance contract. It is repository-local consumer
+ * source and does not grant rendered, accessibility, performance, rollback,
+ * or production acceptance by itself.
+ */
+:root{
+  --projects-v13-accent:#2f7cf6;
+  --projects-v13-accent-2:#5b5ce2;
+  --projects-v13-teal:#10a6a0;
+  --projects-v13-touch:48px;
+  --projects-v13-touch-assisted:56px;
+  --projects-v13-glass:rgba(255,255,255,.72);
+  --projects-v13-panel:rgba(255,255,255,.96);
+  --projects-v13-line:rgba(15,23,42,.10);
+  --projects-v13-shadow:0 18px 55px rgba(22,34,57,.11);
+}
+[data-theme="dark"]{
+  --projects-v13-glass:rgba(10,21,36,.72);
+  --projects-v13-panel:rgba(12,24,40,.97);
+  --projects-v13-line:rgba(255,255,255,.11);
+  --projects-v13-shadow:0 22px 58px rgba(0,0,0,.30);
+}
+body.glaze-canvas{
+  background-image:
+    radial-gradient(circle at 12% -6%,rgba(47,124,246,.13),transparent 31rem),
+    radial-gradient(circle at 88% 3%,rgba(16,166,160,.10),transparent 27rem);
+  background-attachment:fixed;
+}
+.topbar.glaze-material-soft{
+  background:var(--projects-v13-glass);
+  backdrop-filter:blur(22px) saturate(135%);
+  -webkit-backdrop-filter:blur(22px) saturate(135%);
+  border-bottom:1px solid var(--projects-v13-line);
+}
+.topbar nav,.theme-group,.filters{
+  border-color:var(--projects-v13-line);
+}
+.topbar nav a,.theme-group button,.filter,.glaze-button,.card footer a{
+  min-height:var(--projects-v13-touch);
+  touch-action:manipulation;
+}
+.hero .summary-panel,.panel,.card,.notice{
+  background:var(--projects-v13-panel);
+  border-color:var(--projects-v13-line);
+  box-shadow:var(--projects-v13-shadow);
+}
+.hero{
+  position:relative;
+  isolation:isolate;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  right:-7rem;
+  top:-8rem;
+  width:24rem;
+  height:24rem;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(91,92,226,.16),transparent 68%);
+  pointer-events:none;
+}
+.summary-panel{overflow:hidden}
+.summary-panel::before{
+  content:"Adaptive Resonance";
+  display:inline-flex;
+  width:max-content;
+  max-width:100%;
+  padding:6px 10px;
+  margin-bottom:10px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--projects-v13-accent) 12%,transparent);
+  color:var(--projects-v13-accent);
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.foundation-strip{
+  border-color:var(--projects-v13-line);
+  background:var(--projects-v13-glass);
+  backdrop-filter:blur(18px) saturate(125%);
+  -webkit-backdrop-filter:blur(18px) saturate(125%);
+}
+.foundation-strip a{min-height:var(--projects-v13-touch)}
+.card{
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.card:hover{
+  transform:translateY(-2px);
+  border-color:color-mix(in srgb,var(--projects-v13-accent) 28%,var(--projects-v13-line));
+  box-shadow:0 20px 48px rgba(28,46,76,.14);
+}
+.search input{
+  min-height:var(--projects-v13-touch);
+  border-color:var(--projects-v13-line);
+  background:var(--projects-v13-panel);
+}
+.search input:focus-visible,.filter:focus-visible,.glaze-button:focus-visible,.theme-group button:focus-visible,.topbar a:focus-visible,.card footer a:focus-visible{
+  outline:3px solid var(--projects-v13-accent);
+  outline-offset:3px;
+}
+.glaze-button,.primary-link{
+  border-radius:999px;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.primary-link{
+  background:linear-gradient(135deg,var(--projects-v13-accent),var(--projects-v13-accent-2));
+}
+.v13-boundary{
+  margin-top:18px;
+  padding:14px 16px;
+  border:1px solid var(--projects-v13-line);
+  border-radius:16px;
+  background:var(--projects-v13-panel);
+  font-size:.9rem;
+}
+.v13-boundary strong{display:block;margin-bottom:3px}
+.v13-boundary code{overflow-wrap:anywhere}
+@media(max-width:860px){
+  .foundation-strip{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .topbar nav{scroll-snap-type:x proximity}
+  .topbar nav a{scroll-snap-align:start}
+}
+@media(max-width:560px){
+  .hero::after{width:17rem;height:17rem;right:-8rem;top:-4rem}
+  .card:hover{transform:none}
+}
+@media(pointer:coarse){
+  .topbar nav a,.theme-group button,.filter,.glaze-button,.card footer a,.foundation-strip a,.search input{
+    min-height:var(--projects-v13-touch-assisted);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .card:hover{transform:none}
+}
+@media(prefers-reduced-transparency:reduce){
+  .topbar.glaze-material-soft,.foundation-strip,.glaze-button{
+    background:var(--projects-v13-panel);
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+  }
+}
+@media(prefers-contrast:more){
+  .topbar,.foundation-strip,.panel,.card,.summary-panel,.notice,.search input,.filter,.glaze-button{border:2px solid currentColor;box-shadow:none}
+}
+@media(forced-colors:active){
+  .topbar,.foundation-strip,.panel,.card,.summary-panel,.notice,.search input,.filter,.glaze-button,.primary-link{
+    forced-color-adjust:auto;
+    background:Canvas;
+    color:CanvasText;
+    border:1px solid CanvasText;
+    box-shadow:none;
+  }
+  .primary-link{background:Highlight;color:HighlightText}
+}
+@media print{
+  .topbar,.controls,.hero-links{display:none!important}
+  body.glaze-canvas{background:#fff;color:#000}
+  .foundation-strip,.panel,.card,.summary-panel,.notice{background:#fff;box-shadow:none;border:1px solid #bbb;backdrop-filter:none}
+}
