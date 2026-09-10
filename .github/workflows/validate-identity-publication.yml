@@ -1,0 +1,79 @@
+name: Validate Identity Center publication contract
+
+on:
+  pull_request:
+    paths:
+      - 'sites/identity/**'
+      - '.github/workflows/validate-identity-publication.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/identity/**'
+      - '.github/workflows/validate-identity-publication.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  identity-publication:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Validate Identity Center production publication contract
+        shell: python
+        run: |
+          from pathlib import Path
+
+          root = Path('sites/identity')
+          version = '1.3.0'
+          revision = '8354308445da9ac35ced2b37a7f503a08a0aaf72'
+
+          required = (
+              'index.html',
+              '404.html',
+              'app.js',
+              'style.css',
+              'glaze-v1.3-consumer.css',
+              '_headers',
+              'robots.txt',
+              'sitemap.xml',
+              'assets/identity.svg',
+          )
+          for name in required:
+              if not (root / name).is_file():
+                  raise SystemExit(f'missing Identity Center publication file: {name}')
+
+          index = (root / 'index.html').read_text(encoding='utf-8')
+          error = (root / '404.html').read_text(encoding='utf-8')
+          sitemap = (root / 'sitemap.xml').read_text(encoding='utf-8')
+          headers = (root / '_headers').read_text(encoding='utf-8')
+
+          if 'https://id.goreecloud.com/' not in sitemap:
+              raise SystemExit('Identity Center sitemap does not declare the approved canonical public URL')
+          if 'identity.goreecloud.com' in sitemap:
+              raise SystemExit('Identity Center sitemap contains the superseded hostname')
+
+          for html_name, html in (('index.html', index), ('404.html', error)):
+              for marker in (
+                  f'name="goreecloud-glaze-ui" content="{version}"',
+                  f'name="goreecloud-glaze-source-revision" content="{revision}"',
+                  'data-glaze-version="1.3.0"',
+              ):
+                  if marker not in html:
+                      raise SystemExit(f'{html_name} missing V1.3 publication marker: {marker}')
+
+          for marker in ('noindex,nofollow', 'Page not found.', 'No identity, authorization, session, credential, recovery, or production-runtime state is implied'):
+              if marker not in error:
+                  raise SystemExit(f'Identity Center 404 missing required truth/safety marker: {marker}')
+
+          for marker in ('Content-Security-Policy:', 'X-Content-Type-Options: nosniff', 'X-Frame-Options: DENY'):
+              if marker not in headers:
+                  raise SystemExit(f'Identity Center security header contract missing: {marker}')
+
+          print('Identity Center publication contract validated, including explicit 404 surface')
+      - run: node --check sites/identity/app.js
