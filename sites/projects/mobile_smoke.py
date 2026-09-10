@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate GoreeCloud Projects mobile layout, Glaze UI targets, and branding identity."""
+"""Validate GoreeCloud Projects mobile layout, V1.3 targets, and branding identity."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def inspect_mobile(session_id: str, browser: str, width: int) -> None:
         const nav=[...document.querySelectorAll('.topbar nav a')];
         const visibleThemes=[...document.querySelectorAll('.theme-group button')].filter(node=>getComputedStyle(node).display!=='none');
         const foundation=[...document.querySelectorAll('.foundation-strip>a')];
-        const mesh=[...foundation].find(node=>node.textContent.includes('GoreeCloud Mesh'));
+        const byText=text=>foundation.find(node=>node.textContent.includes(text));
         return {
           viewport,
           scrollWidth:document.documentElement.scrollWidth,
@@ -50,14 +50,18 @@ def inspect_mobile(session_id: str, browser: str, width: int) -> None:
           filterMinHeight:filters.length?Math.min(...filters.map(node=>rect(node).height)):0,
           navMinHeight:nav.length?Math.min(...nav.map(node=>rect(node).height)):0,
           themeMinHeight:visibleThemes.length?Math.min(...visibleThemes.map(node=>rect(node).height)):0,
+          foundationCount:foundation.length,
           foundationRight:foundation.length?Math.max(...foundation.map(node=>rect(node).right)):0,
           foundationLeft:foundation.length?Math.min(...foundation.map(node=>rect(node).left)):0,
           statusAlign:getComputedStyle(document.querySelector('.card .status')).textAlign,
-          cardBackdrop:getComputedStyle(document.querySelector('.card')).backdropFilter || getComputedStyle(document.querySelector('.card')).webkitBackdropFilter || 'none',
-          meshArtwork:mesh?.querySelector('img')?.getAttribute('src')||'',
-          meshLabel:mesh?.querySelector('small')?.textContent.trim()||'',
+          cardBackdrop:getComputedStyle(document.querySelector('.card')).backdropFilter||getComputedStyle(document.querySelector('.card')).webkitBackdropFilter||'none',
+          managerArtwork:byText('GoreeCloud Manager')?.querySelector('img')?.getAttribute('src')||'',
+          meshArtwork:byText('GoreeCloud Mesh')?.querySelector('img')?.getAttribute('src')||'',
+          meshLabel:byText('GoreeCloud Mesh')?.querySelector('small')?.textContent.trim()||'',
           wardveilLabel:document.querySelector('a[href="https://security.goreecloud.com/"] small')?.textContent.trim()||'',
           everkeepStatic:document.querySelector('a[href="https://everkeep.goreecloud.com/"] img')?.getAttribute('src')||'',
+          suiteCount:document.querySelector('#app-count')?.textContent||'',
+          platformCount:document.querySelector('#foundation-count')?.textContent||'',
         };
         """,
     )
@@ -66,16 +70,20 @@ def inspect_mobile(session_id: str, browser: str, width: int) -> None:
     require(int(state.get("bodyScrollWidth",99999))<=int(state.get("viewport",0))+1,f"Projects body overflows horizontally in {browser} at {width}px: {state}")
     require(int(state.get("cardCount",0))>=browser_smoke.MIN_PROJECT_CARDS,f"Projects mobile card render incomplete in {browser} at {width}px: {state}")
     require(float(state.get("cardRight",99999))<=int(state.get("viewport",0))+1 and float(state.get("cardLeft",-1))>=-1,f"Projects cards escape the viewport in {browser} at {width}px: {state}")
-    require(float(state.get("foundationRight",99999))<=int(state.get("viewport",0))+1 and float(state.get("foundationLeft",-1))>=-1,f"Projects foundation cards escape the viewport in {browser} at {width}px: {state}")
-    require(float(state.get("filterMinHeight",0))>=47.5,f"Projects mobile filter targets are below the Glaze UI 2.1 48px floor in {browser} at {width}px: {state}")
-    require(float(state.get("navMinHeight",0))>=47.5,f"Projects mobile navigation targets are below the Glaze UI 2.1 48px floor in {browser} at {width}px: {state}")
-    require(float(state.get("themeMinHeight",0))>=47.5,f"Projects mobile appearance targets are below the Glaze UI 2.1 48px floor in {browser} at {width}px: {state}")
+    require(float(state.get("foundationRight",99999))<=int(state.get("viewport",0))+1 and float(state.get("foundationLeft",-1))>=-1,f"Projects platform-system cards escape the viewport in {browser} at {width}px: {state}")
+    require(float(state.get("filterMinHeight",0))>=47.5,f"Projects mobile filter targets are below the Glaze UI V1.3 48px floor in {browser} at {width}px: {state}")
+    require(float(state.get("navMinHeight",0))>=47.5,f"Projects mobile navigation targets are below the Glaze UI V1.3 48px floor in {browser} at {width}px: {state}")
+    require(float(state.get("themeMinHeight",0))>=47.5,f"Projects mobile appearance targets are below the Glaze UI V1.3 48px floor in {browser} at {width}px: {state}")
     require(state.get("statusAlign") in ("left","start"),f"Projects mobile status text is not left-aligned in {browser} at {width}px: {state}")
     require(str(state.get("cardBackdrop","none")) in ("none",""),f"Projects durable mobile cards must remain solid in {browser} at {width}px: {state}")
+    require(int(state.get("foundationCount",0))==7,f"Projects must present exactly seven Integral Platform Systems in {browser} at {width}px: {state}")
+    require(state.get("managerArtwork")=="/assets/manager.svg",f"Projects mobile Manager must use approved local artwork in {browser} at {width}px: {state}")
     require(state.get("meshArtwork")=="/assets/goreecloud-mesh-mark.svg",f"Projects mobile Mesh must use the approved Weave artwork in {browser} at {width}px: {state}")
     require(state.get("meshLabel")=="Mesh Center · Weave",f"Projects mobile Mesh identity label is stale in {browser} at {width}px: {state}")
     require(state.get("wardveilLabel")=="Security Center · Sentinel Fold",f"Projects mobile Wardveil identity label is stale in {browser} at {width}px: {state}")
     require(state.get("everkeepStatic")=="/assets/everkeep.svg",f"Projects mobile Everkeep artwork is incorrect in {browser} at {width}px: {state}")
+    require(state.get("suiteCount")=="45",f"Projects mobile Suite count is not 45 in {browser} at {width}px: {state}")
+    require(state.get("platformCount")=="7",f"Projects mobile platform-system count is not 7 in {browser} at {width}px: {state}")
 
 
 def inspect_touch_assistance(session_id: str, browser: str, width: int) -> None:
@@ -125,10 +133,18 @@ def inspect_identities(session_id: str, browser: str) -> None:
               wardveil:icon('Wardveil Security'),
               everkeep:icon('Everkeep'),
               mesh:icon('GoreeCloud Mesh'),
+              manager:icon('GoreeCloud Manager'),
+              index:iconAbsolute('GoreeCloud Index'),
+              goreeVault:iconAbsolute('GoreeVault'),
+              healthNoIcon:noIcon('GoreeCloud Health'),
+              readerNoIcon:noIcon('GoreeCloud Reader'),
+              routerNoIcon:noIcon('GoreeCloud Router OS'),
+              socialNoIcon:noIcon('GoreeCloud Social'),
+              homeNoIcon:noIcon('GoreeCloud Home'),
+              homeSecurityNoIcon:noIcon('GoreeCloud Home Security'),
               suiteNoIcon:noIcon('GoreeCloud Suite'),
               githubDashboardNoIcon:noIcon('GoreeCloud GitHub Dashboard'),
               waypointNoIcon:noIcon('GoreeCloud Waypoint'),
-              manager:iconAbsolute('GoreeCloud Manager'),
               browser:iconAbsolute('GoreeCloud Browser'),
               generatedData:images.filter(img=>img.src.startsWith('data:')).length,
             };
@@ -147,9 +163,11 @@ def inspect_identities(session_id: str, browser: str) -> None:
     require(state.get("wardveil")=="/assets/wardveil-security-icon.svg",f"Projects Wardveil card uses the wrong artwork in {browser}: {state}")
     require(state.get("everkeep")=="/assets/everkeep.svg",f"Projects Everkeep card uses the wrong artwork in {browser}: {state}")
     require(state.get("mesh")=="/assets/goreecloud-mesh-mark.svg",f"Projects Mesh card uses the wrong artwork in {browser}: {state}")
-    for field in ("suiteNoIcon","githubDashboardNoIcon","waypointNoIcon"):
+    require(state.get("manager")=="/assets/manager.svg",f"Projects Manager card uses the wrong local approved artwork in {browser}: {state}")
+    require("/assets/suite/index.svg" in str(state.get("index","")),f"Projects Index card is not using its approved derivative in {browser}: {state}")
+    require("/assets/suite/vault.svg" in str(state.get("goreeVault","")),f"Projects GoreeVault card is not using the approved vault-family derivative in {browser}: {state}")
+    for field in ("healthNoIcon","readerNoIcon","routerNoIcon","socialNoIcon","homeNoIcon","homeSecurityNoIcon","suiteNoIcon","githubDashboardNoIcon","waypointNoIcon"):
         require(state.get(field) is True,f"Projects entry without approved catalog artwork must be text-only ({field}) in {browser}: {state}")
-    require("/assets/suite/manager.svg" in str(state.get("manager","")),f"Projects Manager card is not using its approved derivative in {browser}: {state}")
     require("/assets/suite/browser.svg" in str(state.get("browser","")),f"Projects Browser card is not using its approved derivative in {browser}: {state}")
 
 
@@ -176,7 +194,7 @@ def run(target: str,browser: str) -> int:
             time.sleep(.2)
             inspect_mobile(session_id,browser,width)
             inspect_touch_assistance(session_id,browser,width)
-        print(f"Projects mobile {browser} branding/layout/Glaze UI 2.1 smoke passed for {target}: {target_url}")
+        print(f"Projects mobile {browser} branding/layout/Glaze UI V1.3 smoke passed for {target}: {target_url}")
         return 0
     except (browser_smoke.WebDriverError,OSError,ValueError) as error:
         print(f"Projects mobile {browser} branding/layout smoke failed for {target}: {target_url}")
