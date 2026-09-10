@@ -1,0 +1,53 @@
+/* Wardveil Security Center — GLAZE UI V1.3 / 1.3.0 consumer adaptation.
+ * Canonical Glaze source revision: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+ * Source migration only. Rendered, accessibility, performance, rollback, deployment,
+ * security-runtime, and production acceptance remain independent fail-closed gates.
+ */
+:root{
+  --v13-accent:#4f68f6;
+  --v13-accent-2:#7b55d9;
+  --v13-danger:#b42318;
+  --v13-warning:#a15c00;
+  --v13-success:#177245;
+  --v13-line:rgba(15,23,42,.11);
+  --v13-glass:rgba(248,250,252,.76);
+  --v13-panel:rgba(255,255,255,.97);
+  --v13-shadow:0 22px 64px rgba(20,34,58,.12);
+  --v13-radius:22px;
+  --v13-control:48px;
+  --v13-control-coarse:56px;
+}
+[data-theme="dark"],html[data-theme="dark"]{
+  --v13-line:rgba(255,255,255,.12);
+  --v13-glass:rgba(8,16,30,.78);
+  --v13-panel:rgba(12,22,38,.97);
+  --v13-shadow:0 22px 64px rgba(0,0,0,.34);
+}
+.site-header{
+  background:var(--v13-glass)!important;
+  border-bottom:1px solid var(--v13-line);
+  backdrop-filter:blur(24px) saturate(138%);
+  -webkit-backdrop-filter:blur(24px) saturate(138%);
+}
+.site-header nav a,.theme-button,.glaze-button,.action-link{min-height:var(--v13-control);touch-action:manipulation}
+.glass-card,.card-grid article,.state-grid article,.split>div{
+  background:var(--v13-panel)!important;
+  border:1px solid var(--v13-line)!important;
+  box-shadow:var(--v13-shadow);
+  border-radius:var(--v13-radius);
+}
+.hero{position:relative;isolation:isolate;overflow:hidden}
+.hero::after{
+  content:"";position:absolute;z-index:-1;inset:auto -7rem -9rem auto;width:25rem;height:25rem;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--v13-accent) 18%,transparent),transparent 68%);pointer-events:none
+}
+.v13-note{margin-top:18px;padding:14px 16px;border:1px solid var(--v13-line);border-radius:16px;background:var(--v13-panel);font-size:.92rem;line-height:1.55}
+.v13-note code{overflow-wrap:anywhere}.chips span:last-child{border-color:color-mix(in srgb,var(--v13-accent) 35%,var(--v13-line))}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--v13-accent);outline-offset:3px}
+@media(pointer:coarse){.site-header nav a,.theme-button,.glaze-button,.action-link{min-height:var(--v13-control-coarse)}}
+@media(max-width:760px){.site-header nav{overflow-x:auto;scroll-snap-type:x proximity}.site-header nav a{scroll-snap-align:start}.hero::after{width:18rem;height:18rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-transparency:reduce){.site-header{background:var(--v13-panel)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
+@media(prefers-contrast:more){.site-header,.glass-card,.card-grid article,.state-grid article,.split>div,.glaze-button,.action-link{border:2px solid currentColor!important;box-shadow:none!important}}
+@media(forced-colors:active){.site-header,.glass-card,.card-grid article,.state-grid article,.split>div,.glaze-button,.action-link{forced-color-adjust:auto;background:Canvas!important;color:CanvasText!important;border:1px solid CanvasText!important;box-shadow:none!important}}
+@media print{.site-header,.hero .chips{display:none!important}.glass-card,.card-grid article,.state-grid article,.split>div{background:#fff!important;color:#000!important;box-shadow:none!important;border:1px solid #bbb!important}}

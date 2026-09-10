@@ -9,20 +9,16 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "website"
 DIST = SITE / "dist"
 IDENTITY = ROOT / "assets" / "identity" / "official" / "facet"
-CANONICAL_SHA256 = "3c9566bf21c5bed4121547c3d5c79c34e4f3e60105179b7f2342c4b60ae91a61"
+GLAZE_VERSION = "1.3.0"
+GLAZE_REVISION = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
+CANONICAL_SHA256 = "82d3bdc331a96593873ca4d327e3b46d561d1ca96e653cef71e0c5e42fa1a31c"
 
-for name in ("index.html", "404.html", "site.css", "identity.css", "site.js", "_headers", "build.py"):
-    if not (SITE / name).is_file():
-        raise SystemExit(f"missing website source: {name}")
-
-for forbidden in (
-    ROOT / "assets" / "identity" / "candidates" / "round-4",
-    ROOT / "assets" / "identity" / "official" / "fold",
+for name in (
+    "index.html", "404.html", "site.css", "identity.css", "site.js",
+    "v1.3-site.css", "_headers", "build.py"
 ):
-    if forbidden.exists():
-        raise SystemExit(
-            f"non-canonical identity path must not exist: {forbidden.relative_to(ROOT)}"
-        )
+    if not (SITE / name).is_file():
+        raise SystemExit(f"missing Design Center source: {name}")
 
 mark = IDENTITY / "glaze-ui-mark.svg"
 if not mark.is_file() or hashlib.sha256(mark.read_bytes()).hexdigest() != CANONICAL_SHA256:
@@ -31,148 +27,88 @@ if not mark.is_file() or hashlib.sha256(mark.read_bytes()).hexdigest() != CANONI
 subprocess.run([sys.executable, str(SITE / "build.py")], cwd=ROOT, check=True)
 
 required = (
-    "index.html",
-    "404.html",
-    "_headers",
-    "reference/v1-system-shell.html",
-    "assets/site.css",
-    "assets/identity.css",
-    "assets/site.js",
-    "assets/glaze-ui-mark.svg",
-    "assets/glaze.css",
-    "assets/glaze.controls.css",
-    "assets/glaze.expressive.css",
-    "assets/glaze.formfactors.css",
-    "assets/glaze.accessibility.css",
-    "assets/glaze.color.css",
-    "assets/glaze.motion.css",
-    "assets/glaze.materials.css",
-    "assets/glaze.layout.css",
-    "assets/glaze.states.css",
-    "assets/glaze-v1.1.0.css",
-    "assets/glaze-v1.1.css",
-    "assets/glaze-v1.1-appearance.css",
-    "assets/glaze-v1.0.0.css",
-    "assets/glaze-v1.foundation.css",
-    "assets/glaze-v1.components.css",
-    "assets/glaze-v1.components.adaptive.css",
-    "assets/glaze-v1.components.runtime.css",
-    "assets/glaze-v1.structure.css",
-    "assets/glaze-v1.overlay.css",
-    "assets/glaze-v1.advanced.css",
-    "assets/glaze-v1.visual-refinement.css",
-    "assets/glaze-v1.optical-reachability.css",
+    "index.html", "404.html", "_headers", "reference/v1-system-shell.html",
+    "assets/site.css", "assets/identity.css", "assets/site.js",
+    "assets/v1.3-site.css", "assets/glaze-ui-mark.svg", "assets/glaze.css",
+    "assets/glaze.controls.css", "assets/glaze.expressive.css",
+    "assets/glaze.formfactors.css", "assets/glaze.accessibility.css",
+    "assets/glaze.color.css", "assets/glaze.motion.css", "assets/glaze.materials.css",
+    "assets/glaze.layout.css", "assets/glaze.states.css",
 )
 for name in required:
     if not (DIST / name).is_file():
-        raise SystemExit(f"missing build artifact: {name}")
+        raise SystemExit(f"missing Design Center build artifact: {name}")
 
 if (DIST / "assets" / "glaze-ui-mark.svg").read_bytes() != mark.read_bytes():
-    raise SystemExit("public identity asset drifted from Facet source")
-
-# The public artifact may contain generic shared foundations and V1 assets only.
-# Former product-release/candidate namespaces are not valid current publication
-# inputs, even when Git history retains them for audit and rollback purposes.
-legacy_filename_markers = (
-    "glaze-2.",
-    "glaze-2-",
-    "glaze-2_",
-    "candidate",
-    "2.2.0",
-    "2.1.0",
-    "2.0.0",
-)
-for path in DIST.rglob("*"):
-    if path.is_file():
-        rel = path.relative_to(DIST).as_posix().lower()
-        if any(marker in rel for marker in legacy_filename_markers):
-            raise SystemExit(f"former release namespace published in V1 artifact: {rel}")
+    raise SystemExit("public Design Center identity asset drifted from Facet source")
 
 html = (DIST / "index.html").read_text(encoding="utf-8")
 not_found = (DIST / "404.html").read_text(encoding="utf-8")
 headers = (DIST / "_headers").read_text(encoding="utf-8")
 js = (DIST / "assets" / "site.js").read_text(encoding="utf-8")
-entrypoint = (DIST / "assets" / "glaze-v1.1.0.css").read_text(encoding="utf-8")
-base_entrypoint = (DIST / "assets" / "glaze-v1.0.0.css").read_text(encoding="utf-8")
+v13 = (DIST / "assets" / "v1.3-site.css").read_text(encoding="utf-8")
+
+for surface_name, surface in (("index", html), ("404", not_found)):
+    for marker in (
+        f'name="goreecloud-glaze-ui" content="{GLAZE_VERSION}"',
+        f'name="goreecloud-glaze-source-revision" content="{GLAZE_REVISION}"',
+        'data-glaze-version="1.3.0"',
+        'data-glaze-ui="1.3.0"',
+    ):
+        if marker not in surface:
+            raise SystemExit(f"{surface_name} missing V1.3 source anchor: {marker}")
 
 for text in (
-    "GLAZE UI V1.1",
-    "Machine version <strong>1.1.0</strong>",
-    "Solid where you read. Glazed where you interact.",
-    "Workspace → Application → System Overlay → System Panel → Critical System",
-    "one dominant Glaze panel plus one to three small floating Glaze controls",
-    "32 bounded contracts across five tiers.",
-    "Universal Search",
-    "Control Center",
-    "current Stable",
-    "exact source revision",
-    "GoreeCloud/goreecloud-glaze-ui",
-    "Skip to content",
+    "GLAZE UI V1.3 — Adaptive Resonance",
+    "Current Official Stable · 1.3.0",
+    "Neutral glass remains the material foundation",
+    "Adaptive Expression",
+    "Human Ergonomics",
+    "Living Material 2.0",
+    "Accessibility outranks expression.",
+    "Design Center rendered acceptance pending",
+    "source-migrated-rendered-acceptance-pending",
+    GLAZE_REVISION,
 ):
     if text not in html:
-        raise SystemExit(f"required V1 Design Center content missing: {text}")
+        raise SystemExit(f"required V1.3 Design Center content missing: {text}")
 
-# Fail closed if a former numbered Glaze product identity leaks into the current
-# public HTML. Constructing the check generically also keeps this validator from
-# embedding a former product label as active source text itself.
-former_product_re = re.compile(r"\bglaze ui\s+v?(?:[2-9]\d*)(?:\.\d+){1,2}\b", re.IGNORECASE)
-for surface_name, surface in (("index", html), ("404", not_found)):
-    if former_product_re.search(surface):
-        raise SystemExit(f"former Glaze product identity leaked into V1 {surface_name} surface")
-    if ("glz" + "22") in surface.lower():
-        raise SystemExit(f"former internal release namespace leaked into V1 {surface_name} surface")
-    if ("glaze-" + "2" + ".") in surface.lower():
-        raise SystemExit(f"former stylesheet release namespace leaked into V1 {surface_name} surface")
-    if "/assets/glaze-v1.0.css" in surface:
-        raise SystemExit(f"pre-reset V1-alias asset leaked into current {surface_name} surface")
-
-for text in (
-    "GLAZE UI V1.1",
-    "404 · GLAZE UI V1.1",
-    "/assets/glaze-v1.1.0.css",
+for stale in (
+    "Current Stable · GLAZE UI V1.1",
+    "GLAZE UI V1.1 is GoreeCloud's current Stable",
+    "Glaze UI 2.1",
+    "glaze-ui-2.1.0.css",
+    "data-glaze-ui=\"2.1.0\"",
 ):
-    if text not in not_found:
-        raise SystemExit(f"V1 404 surface missing: {text}")
+    if stale in html + not_found:
+        raise SystemExit(f"stale active Glaze publication marker remains: {stale}")
 
 for marker in (
-    '@import url("./glaze-v1.0.0.css")',
-    '@import url("./glaze-v1.1.css")',
-    '@import url("./glaze-v1.1-appearance.css")',
+    "--v13-touch:48px",
+    "--v13-touch-assisted:56px",
+    "prefers-reduced-motion:reduce",
+    "prefers-reduced-transparency:reduce",
+    "prefers-contrast:more",
+    "forced-colors:active",
+    "pointer:coarse",
+    "focus-visible",
+    "grid-template-columns",
+    "backdrop-filter",
 ):
-    if marker not in entrypoint:
-        raise SystemExit(f"V1.1 Stable entrypoint missing required source layer: {marker}")
+    if marker not in v13:
+        raise SystemExit(f"V1.3 consumer presentation marker missing: {marker}")
 
-for marker in (
-    '@import url("./glaze-v1.foundation.css")',
-    '@import url("./glaze-v1.components.css")',
-    '@import url("./glaze-v1.components.adaptive.css")',
-    '@import url("./glaze-v1.components.runtime.css")',
-    '@import url("./glaze-v1.structure.css")',
-    '@import url("./glaze-v1.overlay.css")',
-    '@import url("./glaze-v1.advanced.css")',
-    '@import url("./glaze-v1.visual-refinement.css")',
-    '@import url("./glaze-v1.optical-reachability.css")',
-):
-    if marker not in base_entrypoint:
-        raise SystemExit(f"inherited V1 structural entrypoint missing required layer: {marker}")
-
-# Every local published asset referenced by the two HTML entry surfaces must exist.
 for surface_name, surface in (("index", html), ("404", not_found)):
     for asset in re.findall(r'(?:src|href)=["\'](/assets/[^"\']+)', surface):
         if not (DIST / asset.removeprefix("/")).is_file():
             raise SystemExit(f"{surface_name} references missing public asset: {asset}")
 
-if "/reference/v1-system-shell.html" not in html:
-    raise SystemExit("V1 System Shell public reference link missing")
-
 for remote in re.findall(r'(?:src|href)=["\'](https?://[^"\']+)', html + not_found):
-    if "github.com/GoreeCloud/goreecloud-glaze-ui" not in remote:
-        raise SystemExit(f"unexpected remote browser resource/link: {remote}")
+    if not remote.startswith("https://github.com/GoreeCloud/goreecloud-glaze-ui"):
+        raise SystemExit(f"unexpected remote Design Center link/resource: {remote}")
 
 for directive in (
-    "Content-Security-Policy:",
-    "frame-ancestors 'none'",
-    "Permissions-Policy:",
+    "Content-Security-Policy:", "frame-ancestors 'none'", "Permissions-Policy:",
     "X-Content-Type-Options: nosniff",
 ):
     if directive not in headers:
@@ -181,8 +117,19 @@ for directive in (
 if "localStorage" not in js or "data-theme-choice" not in html:
     raise SystemExit("local appearance preference contract missing")
 
+# The pending consumer-state marker above is the positive acceptance-state guard.
+# Reject only unambiguously affirmative completion claims; do not reject truthful
+# negative disclosures such as “not production visually accepted.”
+for forbidden in (
+    "Design Center V1.3 conformance passed",
+    "production acceptance complete",
+    'name="goreecloud-glaze-consumer-state" content="accepted"',
+):
+    if forbidden in html:
+        raise SystemExit(f"unsupported Design Center acceptance claim: {forbidden}")
+
 print(
-    "GLAZE UI V1.1 Design Center validation passed: isolated Stable V1.1 publication, "
-    "synchronized Facet identity, required security headers, and exact-reset "
-    "production-revalidation disclosure"
+    "GLAZE UI V1.3 Design Center source validation passed: exact Stable source anchor, "
+    "current public release identity, accessibility/responsive consumer layer, current canonical Facet identity, "
+    "and explicit rendered/production acceptance boundary"
 )

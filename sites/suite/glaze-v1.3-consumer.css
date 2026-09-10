@@ -1,0 +1,13 @@
+/* GoreeCloud Suite — GLAZE UI V1.3 consumer adaptation.
+ * Canonical Glaze revision: 8354308445da9ac35ced2b37a7f503a08a0aaf72.
+ * Source migration does not establish rendered or production acceptance.
+ */
+:root{--suite-v13-control:48px;--suite-v13-control-assisted:56px}
+:is(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-accent,currentColor);outline-offset:3px}
+.site-header a,.hero-actions .button,.footer-grid a{min-height:var(--suite-v13-control)}
+@media(pointer:coarse){.site-header a,.hero-actions .button,.footer-grid a{min-height:var(--suite-v13-control-assisted);min-width:var(--suite-v13-control-assisted)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-transparency:reduce){.site-header,.hero-panel,.app-card,.capability-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--glaze-surface-strong)!important}}
+@media(prefers-contrast:more){.site-header,.hero-panel,.app-card,.capability-card,.principle-grid>div{border-width:2px!important}.badge{outline:1px solid currentColor}}
+@media(forced-colors:active){.site-header,.hero-panel,.app-card,.capability-card,.principle-grid>div,.badge{forced-color-adjust:auto;border:1px solid CanvasText}:is(a,button,[tabindex]):focus-visible{outline:3px solid Highlight}}
+@media print{.site-header,.hero-actions,footer{display:none!important}body{background:#fff!important;color:#000!important}.hero-panel,.app-card,.capability-card,.principle-grid>div{box-shadow:none!important;background:#fff!important;color:#000!important;border:1px solid #000!important}.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}

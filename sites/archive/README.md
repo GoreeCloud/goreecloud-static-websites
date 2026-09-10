@@ -1,18 +1,21 @@
-# GoreeCloud Archive Public Website
+# GoreeCloud Archive
 
-Canonical static source for `https://archive.goreecloud.com`.
+Canonical static website source for `archive.goreecloud.com`.
 
-## Repository contract
+The Archive is a curated public historical record of major GoreeCloud milestones, architectural eras, product transitions, superseded decisions, and platform evolution. It is not an automatic mirror of internal change logs or operational records.
 
-- Canonical repository: `GoreeCloud/goreecloud-static-websites`
-- Site root: `sites/archive`
-- Production branch target: `main`
-- Build command: none
-- Build output directory: `.`
-- Custom domain: `archive.goreecloud.com`
-- Migration source: `GoreeCloud/goreecloud-website` at `sites/archive`
-- Reviewed legacy source tree: `261f21095d912d0ee915553f52d41c3861a4cff1`
+## Current design target
 
-The inactive Glaze UI 1.5.0 and 2.0.0 bundles from the legacy directory are intentionally not promoted into the new authority. The current Archive activates Glaze UI 2.1.0.
+- GLAZE UI: **V1.3 / 1.3.0 Stable**
+- Exact Stable source revision: `8354308445da9ac35ced2b37a7f503a08a0aaf72`
+- Consumer state: `source-migrated-rendered-acceptance-pending`
 
-Cloudflare source cutover, exact production acceptance, and legacy-source retirement remain separate migration gates after central validation.
+Historical Glaze UI 1.x and 2.x milestones may remain in Archive content when clearly described as historical. They do not override the current V1.3 lifecycle authority and must never be activated as current stylesheet dependencies.
+
+## Curation boundary
+
+Public history may preserve approved context, including superseded technical or product direction. It must not publish credentials, private topology, administrative interfaces, sensitive operational details, personal information that was not deliberately approved for release, or internal records simply because they exist.
+
+## Acceptance boundary
+
+The exact-source V1.3 build and validation establish static source/build state only. Rendered/accessibility acceptance, Cloudflare source cutover, custom-domain verification, and exact production acceptance remain independent. Current project records govern current engineering state when they differ from historical Archive entries.

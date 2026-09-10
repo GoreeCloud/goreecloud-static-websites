@@ -4,12 +4,14 @@ Canonical source repository: `GoreeCloud/goreecloud-static-websites`
 
 - Site root: `sites/everkeep`
 - Canonical domain: `everkeep.goreecloud.com`
-- Legacy source repository: `GoreeCloud/goreecloud-everkeep`
-- Reviewed source commit: `684ee5567392446e00df8e7f94139db51704a9e3`
-- Exact legacy `website/` tree: `82263e30f90810133b7f8ad0847efe7bce966798`
+- Canonical Everkeep implementation repository: `GoreeCloud/goreecloud-everkeep`
+- Current Glaze source target: **GLAZE UI V1.3 / 1.3.0 Stable**
+- Exact Glaze source revision: `8354308445da9ac35ced2b37a7f503a08a0aaf72`
+- Glaze consumer state: `source-migrated-rendered-acceptance-pending`
+- Current Everkeep repository main observed during this migration: `37f77a2c330a60c116aca107661a852bb8b5f031`
 
-This package contains the Continuity Center public static source, approved Everkeep public mark, deterministic public-site build script, and public responsive validator. Generated `dist/`, Everkeep runtime/service code, recovery/failover implementation, contracts, persistence, continuity-control logic, and unrelated repository governance remain outside static-site authority.
+This package contains the Continuity Center public static source, approved Everkeep public mark, exact-source Glaze consumer lock, deterministic public-site build script, and responsive/accessibility source validator. Generated `dist/`, Everkeep runtime/service code, recovery/failover implementation, contracts, persistence, continuity-control logic, and unrelated repository governance remain outside static-site authority.
 
-The central source preserves the current Glaze UI 2.1.0 Stable presentation. Historical adoption records remain preserved in the legacy repository history and are not required to reproduce the public artifact.
+The approved Everkeep mark under `sites/everkeep/assets/` is synchronized with the canonical `GoreeCloud/goreecloud-branding-assets/systems/everkeep` asset tree. Website presentation cannot manufacture resilience or recovery state.
 
-Cloudflare Pages source cutover, DNS/HTTPS validation, production acceptance, and legacy-source retirement remain separate gates. Centralizing this public site does not authorize or imply production recovery/failover acceptance.
+The V1.3 migration is a source/build migration only. Rendered visual review, accessibility acceptance, performance, rollback, Cloudflare source cutover, DNS/HTTPS verification, exact production verification, Everkeep recovery-effect authority, and application-specific production continuity acceptance remain separate gates. Centralizing or modernizing this public site does not authorize production failover, traffic switching, data movement, rollback, or a global Recovery Ready state.

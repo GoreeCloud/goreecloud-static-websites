@@ -4,11 +4,13 @@ import hashlib
 import re
 
 SITE = Path(__file__).resolve().parent
+GLAZE_VERSION = "1.3.0"
+GLAZE_REVISION = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
 
 required = [
     "index.html", "404.html", "README.md", "_headers",
     "assets/app.js", "assets/icon-refresh.js",
-    "assets/styles.css", "assets/mobile-refresh.css", "assets/glaze-ui-2.1.0.css",
+    "assets/styles.css", "assets/mobile-refresh.css", "assets/glaze-v1.3-consumer.css",
     "assets/goreecloud-logo.svg", "assets/glaze-ui-mark.svg", "assets/everkeep.svg",
     "assets/privacy-shield-icon.svg", "assets/wardveil-security-icon.svg",
     "assets/goreecloud-mesh-mark.svg", "assets/identity.svg",
@@ -17,13 +19,17 @@ for name in required:
     if not (SITE / name).is_file():
         raise SystemExit(f"missing Projects site file: {name}")
 
+for obsolete in ("assets/glaze-ui-2.1.0.css",):
+    if (SITE / obsolete).exists():
+        raise SystemExit(f"obsolete Projects Glaze runtime asset must be absent: {obsolete}")
+
 html = (SITE / "index.html").read_text(encoding="utf-8")
 error_html = (SITE / "404.html").read_text(encoding="utf-8")
 js = (SITE / "assets/app.js").read_text(encoding="utf-8")
 icons = (SITE / "assets/icon-refresh.js").read_text(encoding="utf-8")
 mobile = (SITE / "assets/mobile-refresh.css").read_text(encoding="utf-8")
 readme = (SITE / "README.md").read_text(encoding="utf-8")
-glaze = (SITE / "assets/glaze-ui-2.1.0.css").read_text(encoding="utf-8")
+glaze = (SITE / "assets/glaze-v1.3-consumer.css").read_text(encoding="utf-8")
 headers = (SITE / "_headers").read_text(encoding="utf-8")
 combined = html + js + icons + readme
 active_direction = html + js + readme
@@ -35,7 +41,7 @@ def git_blob_sha(path: Path) -> str:
 
 
 for needle in [
-    "Suite applications", "Shared foundations", "Glaze UI 2.1", "Privacy Shield",
+    "Suite applications", "Shared foundations", "GLAZE UI V1.3", "Privacy Shield",
     "Wardveil Security", "Everkeep", "GoreeCloud Mesh", "GoreeCloud Identity",
     "GoreeCloud AI", "GoreeCloud Code", "GoreeCloud Documents", "GoreeCloud Messenger",
     "GoreeCloud Gateway", "GoreeCloud Quill", "GoreeCloud File Manager", "GoreeCloud Maps",
@@ -47,34 +53,42 @@ for needle in [
 
 for page_name, page in (("index", html), ("404", error_html)):
     for marker in (
-        'name="goreecloud-glaze-ui" content="2.1.0"',
-        'data-glaze-ui="2.1.0"',
+        'data-glaze-version="1.3.0"',
+        'name="goreecloud-glaze-ui" content="1.3.0"',
+        f'name="goreecloud-glaze-source-revision" content="{GLAZE_REVISION}"',
+        'data-glaze-ui="1.3.0"',
         "glaze-canvas",
     ):
         if marker not in page:
-            raise SystemExit(f"{page_name} missing Glaze UI 2.1 marker: {marker}")
-    for stale in ('data-glaze-ui="1.5.0"', 'data-glaze-ui="2.0.0"'):
-        if stale in page:
-            raise SystemExit(f"{page_name} still activates superseded Glaze UI: {stale}")
+            raise SystemExit(f"{page_name} missing Glaze UI V1.3 marker: {marker}")
+
+for stale in (
+    'data-glaze-ui="2.1.0"',
+    'name="goreecloud-glaze-ui" content="2.1.0"',
+    "Glaze UI 2.1</strong><span>Current Stable baseline",
+    "Design Center · Stable 2.1",
+    "2.1.0 current Stable",
+    "Glaze UI 2.1.0 Stable",
+):
+    if stale in active_direction + error_html:
+        raise SystemExit(f"superseded active Glaze UI direction remains: {stale}")
 
 for marker in (
-    "Glaze UI 2.1.0 Stable integration",
-    "c49113eb8b93c267613fdf1bbca1f814495acad7",
-    "Content is solid. Interaction is glazed.",
-    "--glaze-touch-min:48px",
-    "--glaze-touch-assisted:56px",
-    "data-glaze-density=compact",
-    "data-glaze-performance=reduced",
-    "data-glaze-large-text=true",
-    "prefers-reduced-motion",
-    "prefers-reduced-transparency",
+    "GLAZE UI V1.3 / 1.3.0 consumer layer",
+    GLAZE_REVISION,
+    "--projects-v13-touch:48px",
+    "--projects-v13-touch-assisted:56px",
+    "prefers-reduced-motion:reduce",
+    "prefers-reduced-transparency:reduce",
+    "prefers-contrast:more",
     "forced-colors:active",
+    "pointer:coarse",
+    "focus-visible",
+    "backdrop-filter",
 ):
     if marker not in glaze:
-        raise SystemExit(f"Projects Glaze UI 2.1 web-layer marker missing: {marker}")
+        raise SystemExit(f"Projects V1.3 consumer-layer marker missing: {marker}")
 
-# The primary app catalog is now the current source of truth. A secondary
-# public-refresh overlay must not be required to correct stale portfolio data.
 for current in [
     "GoreeCloud AI", "GoreeCloud Code", "GoreeCloud Documents", "GoreeCloud Messenger",
     "GoreeCloud Gateway", "GoreeCloud Quill", "GoreeCloud Mesh", "GoreeCloud File Manager",
@@ -82,10 +96,13 @@ for current in [
 ]:
     if f"name:'{current}'" not in js:
         raise SystemExit(f"Projects source-native portfolio missing: {current}")
+
 for required_truth in [
-    "2.1.0 current Stable",
+    "1.3.0 current Official Stable",
+    "Adaptive Resonance",
     "Identity platform · active development",
     "Recursive resolution remains a separate responsibility",
+    "Foundation 0.9 active · production runtime acceptance separate",
     "addCurrentPortfolioEntries();",
     "entry.status=update[0]",
     "entry.role=update[1]",
@@ -93,8 +110,11 @@ for required_truth in [
 ]:
     if required_truth not in js:
         raise SystemExit(f"current Projects source truth boundary missing: {required_truth}")
+
 if "public-refresh.js" in html:
     raise SystemExit("Projects still depends on the superseded public-refresh overlay")
+if "MutationObserver" in js:
+    raise SystemExit("Projects current source must not depend on a DOM MutationObserver for portfolio truth")
 
 for stale in [
     "Gitea is the planned permanent",
@@ -102,9 +122,6 @@ for stale in [
     "1.5.0 current Stable",
     "2.0.0 current Stable",
     "2.1 remains Candidate",
-    "Glaze UI 1.4</strong><span>Current Stable baseline",
-    "Glaze UI 1.5</strong><span>Current Stable baseline",
-    "Glaze UI 2.0</strong><span>Current Stable baseline",
     "Mesh Center · artwork pending approval",
     "GoreeCloud Mesh has no approved canonical artwork",
     "text-only-pending-approved-artwork",
@@ -122,7 +139,7 @@ for needle in [branding_repo, "catalog.json", "synchronized publication derivati
 
 system_blobs = {
     "assets/goreecloud-logo.svg": "082936062de7839148db89ea3ab4e86ff71341b0",
-    "assets/glaze-ui-mark.svg": "7756ca8f04a588286e05e37e9a141dbea7f1965d",
+    "assets/glaze-ui-mark.svg": "af8b70387bdaedb8d8388a1660b2d2ca29548fe2",
     "assets/privacy-shield-icon.svg": "62b10029d4104d0235afe634c21f55d0a826a63d",
     "assets/wardveil-security-icon.svg": "fb3d643cca5477c3f8d4e03ce10a3458fd12f407",
     "assets/everkeep.svg": "5f70a483e06147193944c816291d42774a8648b2",
@@ -174,17 +191,25 @@ if "localStorage" not in js or "data-theme-choice" not in html:
 release_boundary = "Public source, a successful build, active development, a release candidate, or a platform identity does not automatically establish production acceptance or protection."
 if release_boundary not in html:
     raise SystemExit("source-versus-production boundary missing")
-if "MutationObserver" in js:
-    raise SystemExit("Projects current source must not depend on a DOM MutationObserver for portfolio truth")
+for pending in (
+    "source-migrated-rendered-acceptance-pending",
+    "Rendered, accessibility, performance, rollback, and production approval remain independently acceptance-gated.",
+):
+    if pending not in html:
+        raise SystemExit(f"V1.3 consumer acceptance boundary missing: {pending}")
+
 for needle in ["min-height:48px", "overflow-x:hidden", ".card-meta{flex-wrap:wrap", "@media(max-width:380px)"]:
     if needle not in mobile:
         raise SystemExit(f"Projects mobile hardening marker missing: {needle}")
 
-for stylesheet in ["/assets/mobile-refresh.css?v=20260827-mobile2", "/assets/glaze-ui-2.1.0.css"]:
+for stylesheet in [
+    "/assets/mobile-refresh.css?v=20260827-mobile2",
+    "/assets/glaze-v1.3-consumer.css?v=20260910-v13",
+]:
     if stylesheet not in html:
         raise SystemExit(f"Projects stylesheet reference missing: {stylesheet}")
 for script in [
-    "/assets/app.js?v=20260831-source-native",
+    "/assets/app.js?v=20260910-v13",
     "/assets/icon-refresh.js?v=20260828-identities1",
 ]:
     if script not in html:
@@ -195,4 +220,16 @@ for stale_cache in ["max-age=86400", "stale-while-revalidate"]:
     if stale_cache in headers:
         raise SystemExit(f"Projects stale asset cache policy remains: {stale_cache}")
 
-print("GoreeCloud Projects source-native current portfolio, Glaze UI 2.1, responsive hardening, and unified branding validation passed")
+for forbidden in (
+    "Projects V1.3 conformance passed",
+    "production visually accepted",
+    "production acceptance complete",
+):
+    if forbidden in active_direction:
+        raise SystemExit(f"unsupported Projects acceptance claim: {forbidden}")
+
+print(
+    "GoreeCloud Projects source-native portfolio validation passed for GLAZE UI V1.3 source migration: "
+    "exact Stable source anchor, responsive/accessibility consumer layer, current Facet derivative, "
+    "unified branding checks, and explicit production acceptance boundary"
+)
