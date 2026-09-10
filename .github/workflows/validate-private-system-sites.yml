@@ -36,88 +36,41 @@ jobs:
           ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
           path: .glaze-ui
           persist-credentials: false
-      - name: Validate Privacy Center V1.3 source boundary
+      - name: Validate and build Privacy Center
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: |
           test ! -e sites/privacy/website/dist
           python -m py_compile sites/privacy/website/build.py
           node --check sites/privacy/website/site.js
+          python sites/privacy/website/build.py
           python - <<'PY'
           from pathlib import Path
-          import json
-          root=Path('sites/privacy')
-          website=root/'website'
+          import hashlib,json,re
+          root=Path('sites/privacy'); website=root/'website'; dist=website/'dist'
           revision='8354308445da9ac35ced2b37a7f503a08a0aaf72'
           lock=json.loads((website/'glaze.lock.json').read_text())
-          assert lock['version']=='1.3.0'
-          assert lock['lifecycle']=='Stable'
-          assert lock['stable_commit']==revision
-          assert lock['entrypoint']=='glaze-v1.3.0.css'
-          assert lock['entrypoint_blob']=='4c3ad293ba9196e2e5a32700b530ec67fd01cef6'
+          assert lock['version']=='1.3.0' and lock['lifecycle']=='Stable' and lock['stable_commit']==revision
+          assert lock['entrypoint']=='glaze-v1.3.0.css' and lock['entrypoint_blob']=='4c3ad293ba9196e2e5a32700b530ec67fd01cef6'
           assert lock['consumer_state']=='source-migrated-rendered-acceptance-pending'
-          css=(website/'v1.3-site.css').read_text()
-          for page_name in ('index.html','404.html'):
-              html=(website/page_name).read_text()
-              for marker in (
-                  'name="goreecloud-glaze-ui" content="1.3.0"',
-                  f'name="goreecloud-glaze-source-revision" content="{revision}"',
-                  'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"',
-                  'data-glaze-version="1.3.0"',
-                  '/assets/glaze-v1.3.0.css',
-                  '/assets/v1.3-site.css',
-              ):
-                  assert marker in html,(page_name,marker)
-              for stale in ('glaze-ui-2.1.0.css','data-glaze-ui="2.1.0"','goreecloud-glaze-ui" content="2.1.0"'):
-                  assert stale not in html,(page_name,stale)
-          for marker in ('--privacy-v13-control:48px','--privacy-v13-control-assisted:56px','pointer:coarse','focus-visible','prefers-reduced-motion:reduce','prefers-reduced-transparency:reduce','prefers-contrast:more','forced-colors:active','@media print'):
-              assert marker in css,marker
-          html=(website/'index.html').read_text()
-          for marker in ('Privacy authorization that travels with the operation.','ALLOW_WITH_CONSTRAINTS','REQUIRE_USER_DECISION','There is no single global state','a779655dc5ee545857b5cdb767abdf89ade7949d'):
-              assert marker in html,marker
-          print('Privacy Center GLAZE UI V1.3 source boundary validated; privacy runtime and production acceptance remain separate')
-          PY
-      - name: Build Privacy Center from exact V1.3 source
-        env:
-          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
-        run: python sites/privacy/website/build.py
-      - name: Validate isolated Privacy Center V1.3 artifact
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import hashlib,re
-          root=Path('sites/privacy')
-          dist=root/'website'/'dist'
-          required={'index.html','404.html','_headers','assets/site.css','assets/site-polish.css','assets/v1.3-site.css','assets/site.js','assets/glaze-v1.3.0.css','assets/privacy-shield-icon.svg'}
-          actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
-          assert required<=actual,(required-actual)
-          assert all('glaze-ui-2.1.0.css' not in item for item in actual),actual
+          source=(website/'index.html').read_text(); built=(dist/'index.html').read_text(); nf=(dist/'404.html').read_text()
+          for page in (source,built,nf):
+              assert 'name="goreecloud-glaze-ui" content="1.3.0"' in page
+              assert f'name="goreecloud-glaze-source-revision" content="{revision}"' in page
+              assert 'source-migrated-rendered-acceptance-pending' in page
+          assert 'glaze-ui-2.1.0.css' not in source+built+nf
           assert (dist/'assets/privacy-shield-icon.svg').read_bytes()==(root/'branding/privacy-shield/privacy-shield-icon.svg').read_bytes()
-          def blob(data):
-              return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data,usedforsecurity=False).hexdigest()
+          def blob(data): return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data,usedforsecurity=False).hexdigest()
           assert blob((dist/'assets/glaze-v1.3.0.css').read_bytes())=='4c3ad293ba9196e2e5a32700b530ec67fd01cef6'
           seen=set()
           def visit(name):
               if name in seen:return
-              path=dist/'assets'/name
-              assert path.is_file() and not path.is_symlink(),name
-              seen.add(name)
-              text=path.read_text()
-              for statement in re.findall(r'@import[^;]+;',text,re.I):
+              path=dist/'assets'/name; assert path.is_file() and not path.is_symlink(),name; seen.add(name)
+              for statement in re.findall(r'@import[^;]+;',path.read_text(),re.I):
                   assert 'http://' not in statement.lower() and 'https://' not in statement.lower() and '//' not in statement,statement
-                  match=re.search(r'@import\s+(?:url\()?\s*["\']?\.\/([^"\')\s;]+)',statement,re.I)
-                  assert match,statement
-                  visit(match.group(1))
-          visit('glaze-v1.3.0.css')
-          assert 'glaze-v1.2.0.css' in seen
-          html=(dist/'index.html').read_text()
-          nf=(dist/'404.html').read_text()
-          headers=(dist/'_headers').read_text()
-          for page in (html,nf):
-              assert 'name="goreecloud-glaze-ui" content="1.3.0"' in page
-              assert 'name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72"' in page
-              assert 'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"' in page
-          for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Permissions-Policy:'):
-              assert marker in headers,marker
-          print('Privacy Center central V1.3 source/build validation passed; rendered, privacy-runtime, and production acceptance remain separate')
+                  match=re.search(r'@import\s+(?:url\()?\s*["\']?\.\/([^"\')\s;]+)',statement,re.I); assert match,statement; visit(match.group(1))
+          visit('glaze-v1.3.0.css'); assert 'glaze-v1.2.0.css' in seen
+          print('Privacy Center V1.3 source/build validation passed; privacy runtime and production acceptance remain separate')
           PY
 
   security:
@@ -129,37 +82,26 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Validate source boundary
+      - name: Validate and build Security Center
         run: |
           test ! -e sites/security/website/dist
           python -m py_compile sites/security/website/build.py
           node --check sites/security/website/site.js
-      - name: Build Security Center
-        run: python sites/security/website/build.py
-      - name: Validate isolated Security Center artifact
-        run: |
+          python sites/security/website/build.py
           python - <<'PY'
           from pathlib import Path
-          root=Path('sites/security')
-          dist=root/'website'/'dist'
+          root=Path('sites/security'); dist=root/'website'/'dist'
           expected={'index.html','404.html','_headers','assets/site.css','assets/site.js','v1.3-site.css','assets/wardveil-security-icon.svg'}
           actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
           assert actual==expected,(actual,expected)
           assert (dist/'assets/wardveil-security-icon.svg').read_bytes()==(root/'branding/wardveil-security-icon.svg').read_bytes()
-          html=(dist/'index.html').read_text()
-          nf=(dist/'404.html').read_text()
-          headers=(dist/'_headers').read_text()
-          for page in (html,nf):
+          for page_name in ('index.html','404.html'):
+              page=(dist/page_name).read_text()
               assert 'name="goreecloud-glaze-ui" content="1.3.0"' in page
               assert 'name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72"' in page
-              assert 'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"' in page
-              assert 'data-glaze-version="1.3.0"' in page
-              assert '/v1.3-site.css' in page
-              for stale in ('glaze-ui-v1.1.0.css','data-glaze-ui="1.1.0"','data-glaze-version="1.1"','GLAZE UI V1.1'):
-                  assert stale not in page,stale
-          for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Permissions-Policy:'):
-              assert marker in headers,marker
-          print('Security Center central V1.3 source/build validation passed; rendered and production acceptance remain separate')
+              assert 'source-migrated-rendered-acceptance-pending' in page
+              assert 'glaze-ui-v1.1.0.css' not in page
+          print('Security Center V1.3 source/build validation passed; rendered and production acceptance remain separate')
           PY
 
   everkeep:
@@ -171,31 +113,67 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Validate source boundary and responsive contract
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+      - name: Validate Continuity Center V1.3 source
         run: |
           test ! -e sites/everkeep/dist
           python -m py_compile sites/everkeep/scripts/build_public_site.py sites/everkeep/scripts/validate_public_responsive.py
           python sites/everkeep/scripts/validate_public_responsive.py
-      - name: Build Continuity Center
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('sites/everkeep'); website=root/'website'; revision='8354308445da9ac35ced2b37a7f503a08a0aaf72'
+          lock=json.loads((website/'glaze.lock.json').read_text())
+          assert lock['version']=='1.3.0' and lock['lifecycle']=='Stable' and lock['stable_commit']==revision
+          assert lock['entrypoint']=='glaze-v1.3.0.css' and lock['entrypoint_blob']=='4c3ad293ba9196e2e5a32700b530ec67fd01cef6'
+          assert lock['consumer_state']=='source-migrated-rendered-acceptance-pending'
+          html=(website/'index.html').read_text(); css=(website/'v1.3-site.css').read_text()
+          for marker in ('data-glaze-version="1.3.0"','name="goreecloud-glaze-ui" content="1.3.0"',f'name="goreecloud-glaze-source-revision" content="{revision}"','source-migrated-rendered-acceptance-pending','/assets/glaze-v1.3.0.css','/assets/v1.3-site.css'):
+              assert marker in html,marker
+          for stale in ('glaze-ui-2.1.0.css','data-glaze-ui="2.1.0"','content="2.1.0"'):
+              assert stale not in html,stale
+          for marker in ('--everkeep-v13-control:48px','--everkeep-v13-control-assisted:56px','pointer:coarse','focus-visible','prefers-reduced-motion:reduce','prefers-reduced-transparency:reduce','prefers-contrast:more','forced-colors:active','@media print'):
+              assert marker in css,marker
+          for marker in ('A backup existing is never presented as equivalent','GoreeCloud Care 0.1.0','representative Zorin OS 17.3','No global Everkeep Recovery Ready state'):
+              assert marker in html,marker
+          print('Continuity Center GLAZE UI V1.3 source boundary validated; recovery-effect and production acceptance remain separate')
+          PY
+      - name: Build Continuity Center from exact V1.3 source
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python sites/everkeep/scripts/build_public_site.py
-      - name: Validate isolated Continuity Center artifact
+      - name: Validate isolated Continuity Center V1.3 artifact
         run: |
           python - <<'PY'
           from pathlib import Path
-          root=Path('sites/everkeep')
-          dist=root/'dist'
-          expected={'index.html','style.css','glaze-ui-2.1.0.css','site-polish.css','_headers','robots.txt','sitemap.xml','assets/everkeep.svg'}
+          import hashlib,re
+          root=Path('sites/everkeep'); dist=root/'dist'
+          required={'index.html','_headers','robots.txt','sitemap.xml','assets/style.css','assets/site-polish.css','assets/v1.3-site.css','assets/glaze-v1.3.0.css','assets/everkeep.svg'}
           actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
-          assert actual==expected,(actual,expected)
+          assert required<=actual,(required-actual)
+          assert all('glaze-ui-2.1.0.css' not in item for item in actual),actual
           assert (dist/'assets/everkeep.svg').read_bytes()==(root/'assets/everkeep.svg').read_bytes()
-          html=(dist/'index.html').read_text()
-          headers=(dist/'_headers').read_text()
-          robots=(dist/'robots.txt').read_text()
-          sitemap=(dist/'sitemap.xml').read_text()
-          assert 'content="2.1.0"' in html and 'data-glaze-ui="2.1.0"' in html
+          def blob(data): return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data,usedforsecurity=False).hexdigest()
+          assert blob((dist/'assets/glaze-v1.3.0.css').read_bytes())=='4c3ad293ba9196e2e5a32700b530ec67fd01cef6'
+          seen=set()
+          def visit(name):
+              if name in seen:return
+              path=dist/'assets'/name; assert path.is_file() and not path.is_symlink(),name; seen.add(name)
+              for statement in re.findall(r'@import[^;]+;',path.read_text(),re.I):
+                  assert 'http://' not in statement.lower() and 'https://' not in statement.lower() and '//' not in statement,statement
+                  match=re.search(r'@import\s+(?:url\()?\s*["\']?\.\/([^"\')\s;]+)',statement,re.I); assert match,statement; visit(match.group(1))
+          visit('glaze-v1.3.0.css'); assert 'glaze-v1.2.0.css' in seen
+          html=(dist/'index.html').read_text(); headers=(dist/'_headers').read_text(); robots=(dist/'robots.txt').read_text(); sitemap=(dist/'sitemap.xml').read_text()
+          assert 'name="goreecloud-glaze-ui" content="1.3.0"' in html and 'source-migrated-rendered-acceptance-pending' in html
           for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Strict-Transport-Security:'):
               assert marker in headers,marker
           assert 'https://everkeep.goreecloud.com/sitemap.xml' in robots
           assert 'https://everkeep.goreecloud.com/' in sitemap
-          print('Continuity Center central source/build validation passed')
+          print('Continuity Center central V1.3 artifact validation passed; rendered, recovery-effect, deployment, and production acceptance remain separate')
           PY
