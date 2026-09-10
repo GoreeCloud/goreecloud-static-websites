@@ -6,15 +6,17 @@
 **Verified Security production revision:** `256daf235066b4fd1f931e50e45e366fa92f45e7`  
 **Verified Privacy production revision:** `80379f6962a5ded6c01317542941a2c55aedd922`  
 **Verified Identity production revision:** `43141921a2c4915dd6e536dfa7af8d5da70a3319`  
-**Verified Suite production revision:** `f03b0c5d62f870a52fda286636771db2a34d3aaf`
+**Prior verified Suite revision:** `f03b0c5d62f870a52fda286636771db2a34d3aaf` — historical 27-product publication; corrected 45-product source requires reverification
 
 ## Current state
 
 Source consolidation and GLAZE UI V1.3 source/build reconciliation are complete for the thirteen authoritative static website packages on canonical `main`.
 
-Production deployment migration is proceeding site by site. **Security Center, Privacy Center, Identity Center, and GoreeCloud Suite are now `production-verified`.** The other nine packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
+Production deployment migration is proceeding site by site. **Security Center, Privacy Center, and Identity Center are `production-verified`.** GoreeCloud Suite has been returned to **`deployment-cutover-pending`** because a material portfolio correction expands the public directory from an incomplete 27-product publication to the reconciled 45-product authority. The other nine packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
 
-Production verification is independent per site. A central source build, CI pass, or another site's successful cutover never establishes production acceptance for a different site.
+The earlier Suite deployment at revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` remains valid historical evidence for that exact publication, but it must not be used as acceptance evidence for the corrected 45-product source.
+
+Production verification is independent per site and per materially changed publication revision. A central source build, CI pass, another site's successful cutover, or an older accepted revision never establishes production acceptance for changed public bytes.
 
 ## Mandatory consolidation rule
 
@@ -33,7 +35,7 @@ No legacy repository may remain a second website source authority after its site
 | Roadmap | `roadmap.goreecloud.com` | `sites/roadmap` | `validated-in-central-repo` | `legacy-source` |
 | Blog | `blog.goreecloud.com` | `sites/blog` | `validated-in-central-repo` | `legacy-source` |
 | Archive | `archive.goreecloud.com` | `sites/archive` | `validated-in-central-repo` | `legacy-source` |
-| Suite | `suite.goreecloud.com` | `sites/suite` | `validated-in-central-repo` | **`production-verified`** |
+| Suite | `suite.goreecloud.com` | `sites/suite` | `validated-in-central-repo` | **`deployment-cutover-pending`** |
 | Design Center | `design.goreecloud.com` | `sites/design` | `validated-in-central-repo` | `legacy-source` |
 | Privacy Center | `privacy.goreecloud.com` | `sites/privacy` | `validated-in-central-repo` | **`production-verified`** |
 | Security Center / Wardveil | `security.goreecloud.com` | `sites/security` | `validated-in-central-repo` | **`production-verified`** |
@@ -43,6 +45,16 @@ No legacy repository may remain a second website source authority after its site
 | Mesh Center | `mesh.goreecloud.com` | `sites/mesh` | `validated-in-central-repo` | `legacy-source` |
 
 The manifest remains the machine-readable controlling registry for these states.
+
+## Suite portfolio correction
+
+The prior V1.3 migration incorrectly treated an older 27-application “Initial Suite Registry” as a complete current portfolio. A newer authoritative Suite specification preserves a September 1 baseline of 38 application/service cards, and later project specifications establish additional Suite products. The canonical Drive inventory has now been reconciled to **45 verified products across 9 functional product groups**.
+
+The corrected current directory restores the products that were wrongly dropped from the recorded baseline—such as GoreeCloud Documents, Drive, File Manager, Mail, Messenger, Maps, Terminal, App Store, Gateway, AI, Index, and Code—and includes later verified products GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security. GoreeCloud Website remains part of the broader Suite portfolio.
+
+Shared Integral Platform Systems and application-centered capability identities retain their separate authority boundaries and are not inflated into the 45-product count merely because they integrate with the Suite. Products without approved canonical artwork use neutral identity treatment rather than fabricated official marks.
+
+Because this changes public bytes materially, the corrected Suite revision must pass source/build/CI and then be independently deployed and live-verified before Suite can return to `production-verified`.
 
 ## Production-verification evidence
 
@@ -66,58 +78,37 @@ See `docs/production-verification-privacy-2026-09-10.md`.
 
 Identity Center was verified after Cloudflare Pages was cut over to the central repository using `main` with root `sites/identity` and no build step. The successful Cloudflare Pages deployment was tied to exact central revision `43141921a2c4915dd6e536dfa7af8d5da70a3319` by the Cloudflare GitHub App deployment check.
 
-Public DNS at both `1.1.1.1` and `8.8.8.8` resolved the canonical `id.goreecloud.com` CNAME to `goreecloud-identity.pages.dev`. The Cloudflare custom domain was observed Active with SSL enabled. Live verification through the current public-DNS-resolved Cloudflare address established HTTP 200 for the canonical root, HTTP 404 with `Cache-Control: no-store` for an intentionally missing path, committed security headers, GLAZE UI `1.3.0`, exact Glaze source revision `8354308445da9ac35ced2b37a7f503a08a0aaf72`, and a live sitemap containing `https://id.goreecloud.com/`. Rendered review confirmed the current Identity Center V1.3 surface loaded successfully.
-
-The explicit 404 behavior was corrected during acceptance after the initial centralized package returned SPA-style HTTP 200 for missing paths. The resulting 404 publication contract is now guarded by dedicated CI.
+Public DNS at both `1.1.1.1` and `8.8.8.8` resolved the canonical `id.goreecloud.com` CNAME to `goreecloud-identity.pages.dev`. The Cloudflare custom domain was observed Active with SSL enabled. Live verification established HTTP 200 for the canonical root, HTTP 404 with `Cache-Control: no-store` for an intentionally missing path, committed security headers, GLAZE UI `1.3.0`, exact Glaze source revision `8354308445da9ac35ced2b37a7f503a08a0aaf72`, and a live sitemap containing `https://id.goreecloud.com/`.
 
 See `docs/production-verification-identity-2026-09-10.md`.
 
-### GoreeCloud Suite
+### GoreeCloud Suite — historical exact-revision evidence
 
-GoreeCloud Suite was verified after Cloudflare Pages was cut over to the central repository using `main`, root `sites/suite`, build command `python3 scripts/build_public_site.py`, and output `dist`. The Cloudflare GitHub App tied the successful production deployment to exact central revision `f03b0c5d62f870a52fda286636771db2a34d3aaf`.
+GoreeCloud Suite was previously verified at exact central revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` after Cloudflare Pages was cut over to `main`, root `sites/suite`, build command `python3 scripts/build_public_site.py`, and output `dist`. That live result passed HTTP 200, true HTTP 404 with `no-store`, committed response headers, GLAZE UI V1.3 metadata, canonical sitemap, exact Glaze CSS blob integrity, and rendered review.
 
-Live verification established HTTP 200 for `https://suite.goreecloud.com/`, HTTP 404 with `Cache-Control: no-store` for an intentionally missing path, the committed Suite response-header contract, GLAZE UI `1.3.0`, exact Glaze source revision `8354308445da9ac35ced2b37a7f503a08a0aaf72`, canonical sitemap output for `https://suite.goreecloud.com/`, and exact production Git blob SHA `4c3ad293ba9196e2e5a32700b530ec67fd01cef6` for `/assets/glaze-v1.3.0.css`. Rendered review confirmed the current Suite V1.3 directory surface loaded successfully.
-
-The Suite 404 behavior was hardened before cutover by PR #34 and is guarded by dedicated publication-contract CI.
-
-See `docs/production-verification-suite-2026-09-10.md`.
+That evidence remains historical and exact-revision scoped. It covered the incomplete 27-product directory and therefore does not accept the corrected 45-product publication. See `docs/production-verification-suite-2026-09-10.md`.
 
 ## Authority boundaries
 
-These production decisions apply only to the public website deployments.
-
-Security Center production verification does not establish Wardveil runtime protection, scan, detect, quarantine, response, incident, or other execution success. Privacy Center production verification does not establish any Privacy Shield authorization decision, consent state, purpose grant, durable authorization state, or runtime acceptance. Identity Center production verification does not establish production authentication, SSO, account, session, device, credential, authorization, recovery, delegated-authority, or backend-runtime acceptance. Suite production verification does not establish production readiness, release promotion, or runtime acceptance for any application or capability identity listed by the Suite directory.
-
-None of these website decisions transfers Everkeep, Mesh, Manager, or other platform authority.
+These production decisions apply only to public website deployments. They do not establish Wardveil runtime protection, Privacy Shield authorization, Identity runtime acceptance, Suite product runtime readiness, Everkeep recovery state, Mesh authority, Manager state, or any other platform execution claim.
 
 ## Legacy-source retirement remains separate
 
-`production-verified` does not mean `legacy-source-retired`.
-
-For Security, `GoreeCloud/goreecloud-wardveil-security` remains the Wardveil project/runtime authority. For Privacy, `GoreeCloud/goreecloud-privacy-shield` remains the Privacy Shield project/runtime authority. For Identity, `GoreeCloud/goreecloud-identity` remains the Identity project/runtime authority. For Suite, `GoreeCloud/goreecloud-suite` remains a GoreeCloud project source and is not deleted or retired by the public website cutover. Before removing former website subtrees or related deployment references, verify that no Cloudflare, automation, rollback, documentation, preservation, or other governed dependency still requires those legacy website materials.
-
-The same rule applies to every other site after its future production cutover.
+`production-verified` does not mean `legacy-source-retired`. GoreeCloud's Wardveil, Privacy Shield, Identity, and Suite project repositories retain their non-site project/runtime authority. Former website subtrees or deployment references may be removed only after Cloudflare, automation, rollback, documentation, and preservation dependencies are independently cleared.
 
 ## Remaining production migration sequence
 
-For each of the remaining nine sites:
+Ten production acceptance actions remain: Suite reverification for the corrected 45-product publication plus initial production verification for the nine sites that still show `legacy-source`.
 
-1. pause automatic production deployments before source reassignment when appropriate;
-2. connect the existing Cloudflare Pages project to `GoreeCloud/goreecloud-static-websites`;
-3. keep production branch `main` and configure the site's exact central root/build/output contract;
-4. verify the custom production domain remains attached;
-5. deploy the reviewed central revision;
-6. verify HTTP status, headers, 404 behavior, GLAZE UI V1.3 markers, assets, navigation, and rendered behavior;
-7. bind the result to the exact deployed central Git revision;
-8. only then advance that site's manifest deployment state to `production-verified`;
-9. retire legacy website source only after its separate dependency/rollback/preservation review passes.
+For each site or materially changed publication:
 
-## Next site
+1. use the exact centralized source/build/output contract;
+2. verify the custom production domain and successful deployment of the exact reviewed central revision;
+3. verify HTTP status, security headers, explicit 404 behavior, GLAZE UI V1.3 markers, assets, navigation, and rendered behavior;
+4. bind the result to the exact deployed central Git revision;
+5. only then advance that publication to `production-verified`;
+6. retire any legacy website source only after its separate dependency/rollback/preservation review passes.
 
-Continuity Center / Everkeep remains a good next controlled cutover because it uses the same public-system-site family and already has a current V1.3 central package:
+## Immediate next action
 
-- domain: `everkeep.goreecloud.com`
-- central path: `sites/everkeep`
-- legacy website source: `GoreeCloud/goreecloud-everkeep`
-
-Do not batch the remaining sites into a single unverified cutover. Preserve per-site deployment and acceptance evidence.
+Finish Suite's 45-product source reconciliation, pass CI, deploy the reviewed corrected revision to the already-centralized `goreecloud-suite` Pages project, and reverify `suite.goreecloud.com`. Only after that should the next site's production cutover resume.
