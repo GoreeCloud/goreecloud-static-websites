@@ -1,41 +1,39 @@
-# GoreeCloud Website — Glaze UI 2.1.0 Conformance
+# GoreeCloud Main Website — GLAZE UI V1.3 Source Contract
 
-## Conformance record
+## Current contract
 
-- Target Glaze UI version: **2.1.0**
+- Target GLAZE UI version: **V1.3 / 1.3.0 Stable**
 - Canonical design-system repository: `GoreeCloud/goreecloud-glaze-ui`
-- Stable promotion reference used for this alignment: `c49113eb8b93c267613fdf1bbca1f814495acad7`
-- Conformance state: **Source-aligned — Glaze UI 2.1.0 Stable web contract prepared across all independently deployed GoreeCloud website surfaces in this repository**
-- Rendered/production acceptance: **Separate gate; preview and production evidence must pass before the deployment is used as proof of portfolio-wide rendered conformance.**
+- Canonical source revision: `8354308445da9ac35ced2b37a7f503a08a0aaf72`
+- Stable web entrypoint: `glaze-v1.3.0.css`
+- Entrypoint Git blob: `4c3ad293ba9196e2e5a32700b530ec67fd01cef6`
+- Consumer source state: **source-migrated-rendered-acceptance-pending**
+- Rendered, accessibility, deployment, and production acceptance: **Separate gates**
 
-## Scope
+## Source and build model
 
-This record covers the Main, Projects, Roadmap, Blog, and Archive public surfaces. Each deployment carries a same-origin Glaze UI 2.1.0 web layer so design-system availability does not depend on another GoreeCloud domain at runtime.
+The Main website authors its five public HTML surfaces directly against GLAZE UI V1.3. The exact Stable entrypoint is committed byte-identical to the canonical source for reviewability. The isolated build then resolves the entrypoint's complete relative CSS import graph from the exact pinned Glaze revision and vendors that dependency closure into the deployment artifact under `css/`.
 
-The Main deployment uses the isolated build pipeline to normalize all deployable HTML onto the current Stable contract. Projects, Roadmap, Blog, and Archive carry their own same-origin 2.1.0 asset because they are independently deployed Cloudflare Pages surfaces.
+The browser therefore receives only same-origin design-system assets. The build fails closed on an unexpected version, lifecycle, source revision, entrypoint name, entrypoint blob, unsafe dependency path, remote CSS import, or missing pinned dependency.
 
-## Glaze UI 2.1 web contract
+## Consumer adaptation
 
-The current source target follows the 2.1 material hierarchy: Canvas → Surface → Soft Glaze → Glaze → Deep Glaze → Live Glaze. The governing material rule is **Content is solid. Interaction is glazed.** Durable reading, repository, project, timeline, policy, and status content therefore resolves to solid Surface material, while navigation, controls, focal hero interaction, and transient/live surfaces may use appropriate glaze levels.
+Main preserves its consumer-specific layout and interaction requirements while using the V1.3 design-system foundation. The consumer layer includes a 48px general interaction floor, a 56px coarse-pointer/Touch Assistance floor, visible keyboard focus, safe-area handling, bounded mobile navigation, reduced-motion behavior, reduced-transparency behavior, increased-contrast treatment, forced-colors operability, and print fallbacks.
 
-The web contract supports Clear, Balanced, and Solid clarity; Comfortable, Standard, Compact, and Far View density; a 48px general interaction floor; a 56px Touch Assistance floor; large-text compact-density fallback; keyboard and pointer interaction; responsive navigation; and safe-area-aware compact layouts.
+Source validation proves that these adaptation contracts are present. It does not substitute for representative rendered review or accessibility acceptance.
 
-## Accessibility and resilience
+## Public information boundary
 
-Reduced Motion removes nonessential transformation and travel. Reduced Transparency resolves optical material to solid hierarchy. Increased Contrast strengthens borders and non-color cues. Forced Colors preserves operability without authored glass effects. Large Text cannot reduce Compact controls below the normal touch floor. Browsers without backdrop-filter support receive opaque surfaces. Deterministic reduced-material/performance modes can remove blur and depth without changing task or state semantics.
+The Main homepage identifies the thirteen authoritative GoreeCloud static website packages and the seven Integral Platform Systems. Repository totals are intentionally not published as live facts because repository creation is continuous; the connected GitHub organization is authoritative for the current inventory. The public repository page is a reviewed source-role guide rather than a complete count snapshot.
 
-## Privacy boundary
-
-The design-system layer is served same-origin. It adds no analytics, advertising, trackers, remote fonts, runtime UI framework, or cross-domain stylesheet dependency.
+Public product direction uses first-party GoreeCloud identities. GoreeCloud Home and GoreeCloud Home Security replace upstream applications as product-level roadmap identities; any mature third-party technology used underneath them remains a bounded implementation detail.
 
 ## Authority boundary
 
-Glaze UI controls presentation and interaction only. Public presentation cannot upgrade application, Privacy Shield, Wardveil Security, Everkeep, Mesh, or GoreeCloud Identity implementation/evidence state.
+GLAZE UI governs presentation and interaction. It does not grant privacy authorization, security protection, continuity state, identity authority, coordination authority, administrative authority, or application production acceptance. Privacy Shield, Wardveil Security, Everkeep, GoreeCloud Identity, GoreeCloud Mesh, GoreeCloud Manager, and each application retain their own applicable evidence and acceptance boundaries.
 
-## Release boundary
+## Deployment boundary
 
-Glaze UI 2.1.0 is the current Stable design-system target. Glaze UI 2.0.0 and 1.x are historical baselines and must not remain active production dependencies after these public surfaces earn 2.1 deployment acceptance. Historical references may remain only when explicitly presented as dated history rather than current guidance.
+This record establishes only the reviewed source/build target in `GoreeCloud/goreecloud-static-websites`. It does not prove that Cloudflare Pages is reading from the centralized repository, does not change DNS or TLS, and does not establish the exact deployed V1.3 revision at `www.goreecloud.com`.
 
-## Exceptions
-
-No production Glaze UI exception is recorded for these website surfaces. Each independently deployed surface still requires its own rendered/production acceptance for the exact deployed revision.
+Historical Glaze 1.x and 2.x production records remain exact-revision evidence for their time. They are not current consumer-target authority.
