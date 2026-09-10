@@ -4,11 +4,15 @@ on:
   pull_request:
     paths:
       - 'sites/roadmap/**'
+      - 'scripts/build_simple_static_site.py'
+      - 'scripts/validate_simple_static_site.py'
       - '.github/workflows/validate-roadmap-site.yml'
   push:
     branches: [main]
     paths:
       - 'sites/roadmap/**'
+      - 'scripts/build_simple_static_site.py'
+      - 'scripts/validate_simple_static_site.py'
       - '.github/workflows/validate-roadmap-site.yml'
   workflow_dispatch:
 
@@ -25,9 +29,24 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Compile validator
-        run: python -m py_compile sites/roadmap/validate.py
-      - name: Validate source contract
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+      - name: Compile validators and builder
+        run: python -m py_compile sites/roadmap/validate.py scripts/build_simple_static_site.py scripts/validate_simple_static_site.py
+      - name: Validate Roadmap content contract
         run: python sites/roadmap/validate.py
+      - name: Validate Roadmap V1.3 source contract
+        run: python scripts/validate_simple_static_site.py sites/roadmap
+      - name: Build exact Roadmap V1.3 artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python scripts/build_simple_static_site.py sites/roadmap
+      - name: Validate Roadmap built artifact
+        run: python scripts/validate_simple_static_site.py sites/roadmap --dist
       - name: Validate JavaScript syntax
         run: node --check sites/roadmap/site.js
