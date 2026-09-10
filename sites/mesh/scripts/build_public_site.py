@@ -12,7 +12,7 @@ SOURCE = ROOT / "website"
 DIST = ROOT / "dist"
 LOCK = json.loads((SOURCE / "glaze.lock.json").read_text(encoding="utf-8"))
 PUBLIC_FILES = ("index.html", "404.html", "_headers", "robots.txt")
-LOCAL_ASSETS = ("site.css", "site.js")
+LOCAL_ASSETS = ("site.css", "v1.3-site.css", "site.js")
 EXPECTED_VERSION = "1.3.0"
 EXPECTED_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
 EXPECTED_ENTRYPOINT = "glaze-v1.3.0.css"
