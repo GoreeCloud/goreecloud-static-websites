@@ -63,7 +63,7 @@ jobs:
               'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"',
               'data-glaze-version="1.3.0"',
               'glaze-v1.3-consumer.css',
-              'GLAZE UI V1.3 consumer acceptance',
+              'GLAZE UI V1.3 source target.',
           ):
               if marker not in html: raise SystemExit(f'missing Identity Center V1.3 marker: {marker}')
           for stale in ('data-glaze-ui="2.1.0"','glaze-ui-2.1.0.css','Glaze UI 2.1.0 Stable consumer acceptance'):
