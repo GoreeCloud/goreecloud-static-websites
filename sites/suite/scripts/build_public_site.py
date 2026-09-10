@@ -10,6 +10,7 @@ import os
 import re
 import shutil
 import sys
+import urllib.error
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
