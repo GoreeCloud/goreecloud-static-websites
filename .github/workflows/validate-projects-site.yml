@@ -30,4 +30,4 @@ jobs:
       - name: Validate Projects source contract
         run: python sites/projects/validate.py
       - name: Validate Projects JavaScript syntax
-        run: node --check sites/projects/assets/app.js && node --check sites/projects/assets/icon-refresh.js
+        run: node --check sites/projects/assets/app.js && node --check sites/projects/assets/suite-portfolio.js && node --check sites/projects/assets/icon-refresh.js
