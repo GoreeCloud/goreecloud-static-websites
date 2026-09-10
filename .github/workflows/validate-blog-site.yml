@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - 'sites/blog/**'
+      - 'scripts/build_simple_static_site.py'
       - 'scripts/validate_simple_static_site.py'
       - '.github/workflows/validate-blog-site.yml'
   push:
     branches: [main]
     paths:
       - 'sites/blog/**'
+      - 'scripts/build_simple_static_site.py'
       - 'scripts/validate_simple_static_site.py'
       - '.github/workflows/validate-blog-site.yml'
   workflow_dispatch:
@@ -27,9 +29,22 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Compile central validator
-        run: python -m py_compile scripts/validate_simple_static_site.py
-      - name: Validate Blog source contract
-        run: python scripts/validate_simple_static_site.py sites/blog --glaze 2.1.0
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+      - name: Compile central builder and validator
+        run: python -m py_compile scripts/build_simple_static_site.py scripts/validate_simple_static_site.py
+      - name: Validate Blog V1.3 source contract
+        run: python scripts/validate_simple_static_site.py sites/blog
+      - name: Build exact Blog V1.3 artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python scripts/build_simple_static_site.py sites/blog
+      - name: Validate Blog built artifact
+        run: python scripts/validate_simple_static_site.py sites/blog --dist
       - name: Validate Blog JavaScript syntax
         run: node --check sites/blog/site.js

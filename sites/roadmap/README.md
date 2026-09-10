@@ -1,33 +1,20 @@
-# GoreeCloud Roadmap Public Website
+# GoreeCloud Roadmap
 
-Canonical static source for `https://roadmap.goreecloud.com`.
+Canonical static website source for `roadmap.goreecloud.com`.
 
-## Repository contract
+The Roadmap is a public, evidence-scoped view of GoreeCloud development direction. It does not replace internal project specifications, roadmaps, tasks, release evidence, governance, or change logs, and published dates are not promises.
 
-- Canonical repository: `GoreeCloud/goreecloud-static-websites`
-- Site root: `sites/roadmap`
-- Production branch target: `main`
-- Build command: none
-- Build output directory: `.`
-- Custom domain: `roadmap.goreecloud.com`
-- Migration source: `GoreeCloud/goreecloud-website` at `sites/roadmap`
-- Reviewed legacy source tree: `918281e90cc886938b7bdfd341e151fd841391c5`
+## Current design and portfolio boundary
 
-The inactive Glaze UI 1.5.0 and 2.0.0 bundles from the legacy directory are intentionally not carried forward. The current site activates Glaze UI 2.1.0 and the site validator requires that current bundle.
+- GLAZE UI: **V1.3 / 1.3.0 Stable**
+- Exact Stable source revision: `8354308445da9ac35ced2b37a7f503a08a0aaf72`
+- Consumer state: `source-migrated-rendered-acceptance-pending`
+- Canonical static-site repository: `GoreeCloud/goreecloud-static-websites`
+- Current authoritative registered package scope: **13 websites**
+- Labs: separate candidate scope, not part of the accepted 13-package manifest unless later governed integration is verified
 
-## Public-information boundary
+The current public roadmap uses the seven integral platform-system model and the authoritative Suite Inventory rather than publishing fast-changing repository-count snapshots.
 
-The roadmap is deliberately broader and less detailed than internal task trackers, project specifications, change logs, infrastructure plans, and security records. It communicates public direction without exposing private topology, operational details, sensitive remediation work, credentials, private hostnames, internal addresses, or unpublished project information.
+## Acceptance boundary
 
-Roadmap states describe direction and maturity, not guaranteed delivery dates. Dates and commitments must not be inferred from ordering alone.
-
-## Validation
-
-Run:
-
-```bash
-python3 sites/roadmap/validate.py
-node --check sites/roadmap/site.js
-```
-
-Cloudflare source cutover, custom-domain verification, exact production acceptance, and legacy-source retirement remain separate migration gates after central validation.
+The isolated V1.3 build and source validation establish website source/build state only. Representative rendering, accessibility/adaptive behavior, Cloudflare source cutover, deployment, custom-domain verification, and exact production acceptance remain separate gates. The Roadmap must not convert planned work, source progress, or one component's accepted state into a broader GoreeCloud production claim.
