@@ -7,7 +7,6 @@ from collections import Counter
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlparse
 import re
 import sys
 
@@ -39,7 +38,7 @@ REQUIRED_MARKERS = (
     "mesh.goreecloud.com",
     "id.goreecloud.com",
     "manage.goreecloud.com",
-    "source migration does not establish Cloudflare source cutover",
+    "Source migration does not establish Cloudflare source cutover",
     "GoreeCloud Home",
     "GoreeCloud Home Security",
     "GoreeCloud AI",
