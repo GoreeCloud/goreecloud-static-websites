@@ -15,6 +15,18 @@ Canonical static source for `projects.goreecloud.com`.
 
 The site is static, dependency-free, tracking-free, and uses only local browser runtime code. `_headers` defines the public security-header baseline.
 
+## Portfolio authority
+
+Projects is a broader project directory, not the authoritative definition of Suite membership. The authoritative portfolio registry is the current GoreeCloud `Inventory — Suite Applications` record in Google Drive, reconciled on September 10, 2026 to **45 verified Suite products across 9 functional product groups**.
+
+`assets/suite-portfolio.js` is the publication projection of that verified portfolio for this website. It marks exactly those 45 product identities as Suite members, adds current products that are not present in the older Projects data file, and provides the dedicated **Suite products** filter. Additional GoreeCloud repository-level projects may remain visible in Projects without being counted as Suite products.
+
+The current Suite projection includes later products such as GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security; restores GoreeCloud Index to the directory; and presents GoreeVault as the Suite-level credential-management product while GoreeCloud Vault Server remains a separately governed server component/project.
+
+The seven Integral Platform Systems are GoreeCloud Manager, GoreeCloud Identity, Glaze UI, Wardveil Security, Privacy Shield, Everkeep, and GoreeCloud Mesh. Manager and Identity may also have Suite product surfaces without transferring or duplicating their distinct platform authority. Quill, Waypoint, and Resonance remain application-centered capability identities rather than standalone Suite products unless later governing architecture changes that classification.
+
+Portfolio membership does not establish Stable, production, security, privacy, recovery, platform-conformance, or deployment acceptance for a listed product. Detailed lifecycle truth remains controlled by each product's authoritative specification, repository, validation, and acceptance evidence.
+
 ## Current Glaze UI consumer target
 
 - Required design-system version: **GLAZE UI V1.3 / `1.3.0`**.
@@ -30,7 +42,8 @@ GLAZE UI V1.3 being Official Stable and consumer-eligible does not grant Project
 - Canonical GoreeCloud branding repository: `GoreeCloud/goreecloud-branding-assets`.
 - Canonical discovery and approval registry: `catalog.json` in that repository.
 - Website `assets/suite/*.svg` files are synchronized publication derivatives of approved `products/*/app-icon.svg` sources; they are not independent branding authorities.
-- Projects-local Glaze UI, Privacy Shield, Wardveil Security, Everkeep, GoreeCloud Mesh, and GoreeCloud platform artwork are synchronized publication derivatives of approved branding-repository sources.
+- Projects-local Manager, Glaze UI, Privacy Shield, Wardveil Security, Everkeep, GoreeCloud Mesh, and GoreeCloud Identity artwork are synchronized publication derivatives of approved branding-repository sources.
+- GoreeCloud Index uses the approved canonical `products/index/app-icon.svg` identity through the synchronized Suite publication derivative.
 - Wardveil Security uses the approved standalone **Sentinel Fold** emblem from `systems/wardveil-security/wardveil-security-icon.svg` as its primary visual mark. Wardveil wordmark and Security Center text are supporting identity, not part of the emblem.
 - GoreeCloud Mesh uses the approved **Weave** mark from `systems/goreecloud-mesh/goreecloud-mesh-mark.svg`; Projects must not revert Mesh to the former text-only pending-artwork state while that canonical approval remains current.
 - A project without approved catalog artwork remains text-only rather than inheriting the GoreeCloud platform logo or receiving a fabricated placeholder mark.
