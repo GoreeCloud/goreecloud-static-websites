@@ -85,7 +85,12 @@ for name in PUBLIC_FILES:
 if (SOURCE / "sitemap.xml").exists():
     shutil.copy2(require_file(SOURCE / "sitemap.xml"), DIST / "sitemap.xml")
 for name in LOCAL_ASSETS:
-    shutil.copy2(require_file(SOURCE / name), DIST / "assets" / name)
+    source_path = require_file(SOURCE / name)
+    destination = DIST / "assets" / name
+    if name == "site.css":
+        destination.write_bytes(b'@import url("./v1.3-site.css");\n' + source_path.read_bytes())
+    else:
+        shutil.copy2(source_path, destination)
 for asset in sorted((SOURCE / "assets").iterdir()):
     if asset.is_symlink() or not asset.is_file():
         raise SystemExit(f"unsafe public asset: {asset.relative_to(ROOT)}")
