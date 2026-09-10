@@ -66,8 +66,8 @@ jobs:
               'GLAZE UI V1.3 source target.',
           ):
               if marker not in html: raise SystemExit(f'missing Identity Center V1.3 marker: {marker}')
-          if 'https://identity.goreecloud.com/' not in sitemap:
-              raise SystemExit('Identity Center sitemap does not declare the canonical public URL')
+          if 'https://id.goreecloud.com/' not in sitemap:
+              raise SystemExit('Identity Center sitemap does not declare the approved canonical public URL')
           for stale in ('data-glaze-ui="2.1.0"','glaze-ui-2.1.0.css','Glaze UI 2.1.0 Stable consumer acceptance'):
               if stale in html: raise SystemExit(f'superseded active Identity Center Glaze target: {stale}')
           for marker in ('--identity-v13-touch:48px','--identity-v13-touch-assisted:56px','prefers-reduced-motion:reduce','prefers-reduced-transparency:reduce','prefers-contrast:more','forced-colors:active','focus-visible'):
