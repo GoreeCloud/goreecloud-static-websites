@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the GoreeCloud Projects deployment against the reviewed source tree."""
+"""Verify the GoreeCloud Projects deployment against the reviewed V1.3 source tree."""
 
 from __future__ import annotations
 
@@ -26,11 +26,13 @@ REMOTE_FILES = (
     "index.html",
     "404.html",
     "assets/app.js",
+    "assets/suite-portfolio.js",
     "assets/icon-refresh.js",
     "assets/styles.css",
     "assets/mobile-refresh.css",
-    "assets/glaze-ui-2.1.0.css",
+    "assets/glaze-v1.3-consumer.css",
     "assets/goreecloud-logo.svg",
+    "assets/manager.svg",
     "assets/glaze-ui-mark.svg",
     "assets/everkeep.svg",
     "assets/privacy-shield-icon.svg",
@@ -40,9 +42,10 @@ REMOTE_FILES = (
 )
 CRITICAL_ASSET_PATHS = (
     "/assets/app.js",
+    "/assets/suite-portfolio.js",
     "/assets/icon-refresh.js",
     "/assets/mobile-refresh.css",
-    "/assets/glaze-ui-2.1.0.css",
+    "/assets/glaze-v1.3-consumer.css",
 )
 
 
@@ -175,34 +178,49 @@ def verify_root_contract(base_url: str, errors: list[str]) -> None:
     text = response.body.decode("utf-8", errors="replace")
     for marker in (
         "<title>Projects — GoreeCloud</title>",
-        'name="goreecloud-glaze-ui" content="2.1.0"',
-        'data-glaze-ui="2.1.0"',
-        "/assets/app.js?v=20260831-source-native",
-        "/assets/icon-refresh.js?v=20260828-identities1",
+        'name="goreecloud-glaze-ui" content="1.3.0"',
+        'data-glaze-ui="1.3.0"',
+        'name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72"',
+        "/assets/app.js?v=20260910-v13",
+        "/assets/suite-portfolio.js?v=20260910-v45",
+        "/assets/icon-refresh.js?v=20260910-portfolio45",
         "/assets/mobile-refresh.css?v=20260827-mobile2",
-        "/assets/glaze-ui-2.1.0.css",
+        "/assets/glaze-v1.3-consumer.css?v=20260910-v13",
+        "/assets/manager.svg",
         "/assets/everkeep.svg",
         "/assets/privacy-shield-icon.svg",
         "/assets/wardveil-security-icon.svg",
         "/assets/goreecloud-mesh-mark.svg",
         "/assets/identity.svg",
+        '<strong id="app-count">45</strong><span>Suite products</span>',
+        '<strong id="foundation-count">7</strong><span>Integral platform systems</span>',
+        "GoreeCloud Health",
+        "GoreeCloud Reader",
+        "GoreeCloud Router OS",
+        "GoreeCloud Social",
+        "GoreeCloud Home Security",
+        "GoreeCloud Index",
+        "GoreeVault",
         "Security Center · Sentinel Fold",
         "Mesh Center · Weave",
-        "GoreeCloud Identity",
+        "GoreeCloud Manager",
         "Identity Center",
         "GoreeCloud software portfolio",
-        "Glaze UI 2.1",
+        "GLAZE UI V1.3",
     ):
         if marker not in text:
             errors.append(f"Projects root is missing production marker: {marker}")
     for forbidden in (
         "/assets/public-refresh.js",
+        "/assets/glaze-ui-2.1.0.css",
+        "/assets/glaze-ui-2.0.0.css",
         "Mesh Center · artwork pending approval",
         "data:image/svg+xml",
         'data-glaze-ui="1.5.0"',
         'data-glaze-ui="2.0.0"',
-        "/assets/glaze-ui-2.0.0.css",
+        'data-glaze-ui="2.1.0"',
         "2.1 remains Candidate",
+        "27 current Suite applications",
     ):
         if forbidden in text:
             errors.append(f"Projects root still publishes superseded or generated artwork/design marker: {forbidden}")
@@ -267,7 +285,7 @@ def verify(target: str) -> int:
         for error in errors:
             print(f"- {error}")
         return 1
-    print(f"Projects remote deployment verification passed for {target}: {base_url}")
+    print(f"Projects V1.3 / Suite-45 remote deployment verification passed for {target}: {base_url}")
     return 0
 
 

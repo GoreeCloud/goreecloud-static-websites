@@ -16,6 +16,7 @@ const canonicalProductBranding={
   'goreecloud-gallery':['products/gallery/app-icon.svg','gallery.svg'],
   'goreecloud-gateway':['products/gateway/app-icon.svg','gateway.svg'],
   'goreecloud-identity':['products/identity/app-icon.svg','identity.svg'],
+  'goreecloud-index':['products/index/app-icon.svg','index.svg'],
   'goreecloud-keyboard':['products/keyboard/app-icon.svg','keyboard.svg'],
   'goreecloud-launcher':['products/launcher/app-icon.svg','launcher.svg'],
   'goreecloud-location':['products/location/app-icon.svg','location.svg'],
@@ -37,6 +38,7 @@ const canonicalProductBranding={
   'goreecloud-video':['products/video/app-icon.svg','video.svg']
 };
 const canonicalSystemBranding={
+  'goreecloud-manager':['products/manager/app-icon.svg','/assets/manager.svg','approved'],
   'goreecloud-glaze-ui':['systems/glaze-ui/glaze-ui-mark.svg','/assets/glaze-ui-mark.svg','approved'],
   'goreecloud-privacy-shield':['systems/privacy-shield/privacy-shield-icon.svg','/assets/privacy-shield-icon.svg','approved'],
   'goreecloud-wardveil-security':['systems/wardveil-security/wardveil-security-icon.svg','/assets/wardveil-security-icon.svg','approved'],
