@@ -1,0 +1,89 @@
+name: Validate Suite publication contract
+
+on:
+  pull_request:
+    paths:
+      - 'sites/suite/**'
+      - '.github/workflows/validate-suite-publication.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/suite/**'
+      - '.github/workflows/validate-suite-publication.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  suite-publication:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+
+      - name: Validate Suite source publication boundary
+        shell: python
+        run: |
+          from pathlib import Path
+          root = Path('sites/suite')
+          required = (
+              'index.html', '404.html', '_headers', 'robots.txt', 'sitemap.xml',
+              'site.webmanifest', 'styles.css', 'glaze-v1.3-consumer.css',
+              'glaze.lock.json', 'scripts/build_public_site.py', 'scripts/validate_site.py',
+          )
+          for name in required:
+              if not (root / name).is_file():
+                  raise SystemExit(f'missing Suite publication source: {name}')
+          error = (root / '404.html').read_text(encoding='utf-8')
+          for marker in (
+              '<meta name="robots" content="noindex, nofollow">',
+              '<title>Page not found — GoreeCloud Suite</title>',
+              'data-glaze-version="1.3.0"',
+              'name="goreecloud-glaze-ui" content="1.3.0"',
+              'name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72"',
+              'This error does not imply that an application, capability, lifecycle state, service, deployment, or production-acceptance state exists or has changed.',
+          ):
+              if marker not in error:
+                  raise SystemExit(f'missing Suite 404 publication marker: {marker}')
+          build = (root / 'scripts/build_public_site.py').read_text(encoding='utf-8')
+          if '"404.html"' not in build:
+              raise SystemExit('Suite builder does not package 404.html')
+          headers = (root / '_headers').read_text(encoding='utf-8')
+          if 'Cache-Control: public, max-age=300' in headers:
+              raise SystemExit('Suite HTML/404 responses must not retain legacy five-minute cache policy')
+          print('Suite source publication contract validated')
+
+      - run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/validate_site.py sites/suite/scripts/validate_responsive_layout.py
+      - run: python sites/suite/scripts/validate_site.py
+
+      - name: Build Suite public artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/suite/scripts/build_public_site.py
+
+      - run: python sites/suite/scripts/validate_site.py --dist
+
+      - name: Validate built 404 artifact
+        shell: python
+        run: |
+          from pathlib import Path
+          error = Path('sites/suite/dist/404.html')
+          if not error.is_file():
+              raise SystemExit('built Suite artifact is missing 404.html')
+          text = error.read_text(encoding='utf-8')
+          for marker in ('Page not found — GoreeCloud Suite', 'noindex, nofollow', 'data-glaze-version="1.3.0"'):
+              if marker not in text:
+                  raise SystemExit(f'built Suite 404 marker missing: {marker}')
+          print('Suite built 404 publication contract validated; production acceptance remains separate')

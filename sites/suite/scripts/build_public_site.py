@@ -53,6 +53,7 @@ SUITE_ICON_FILES = (
 
 PUBLIC_FILES = (
     "index.html",
+    "404.html",
     "styles.css",
     "glaze-v1.3-consumer.css",
     "_headers",
