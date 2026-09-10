@@ -19,6 +19,10 @@ for name in required:
     if not (SITE / name).is_file():
         raise SystemExit(f"missing Projects site file: {name}")
 
+for obsolete in ("assets/glaze-ui-2.1.0.css",):
+    if (SITE / obsolete).exists():
+        raise SystemExit(f"obsolete Projects Glaze runtime asset must be absent: {obsolete}")
+
 html = (SITE / "index.html").read_text(encoding="utf-8")
 error_html = (SITE / "404.html").read_text(encoding="utf-8")
 js = (SITE / "assets/app.js").read_text(encoding="utf-8")
