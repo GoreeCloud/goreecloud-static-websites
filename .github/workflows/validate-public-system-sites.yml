@@ -6,6 +6,7 @@ on:
       - 'sites/design/**'
       - 'sites/identity/**'
       - 'sites/mesh/**'
+      - 'sites/security/**'
       - 'sites/suite/**'
       - '.github/workflows/validate-public-system-sites.yml'
   push:
@@ -14,6 +15,7 @@ on:
       - 'sites/design/**'
       - 'sites/identity/**'
       - 'sites/mesh/**'
+      - 'sites/security/**'
       - 'sites/suite/**'
       - '.github/workflows/validate-public-system-sites.yml'
   workflow_dispatch:
@@ -74,6 +76,47 @@ jobs:
               if forbidden in html.lower(): raise SystemExit(f'forbidden/upstream Identity Center dependency: {forbidden}')
           print('Identity Center GLAZE UI V1.3 source boundary validated; rendered/production acceptance remains separate')
       - run: node --check sites/identity/app.js
+
+  security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Validate Wardveil Security Center GLAZE UI V1.3 source boundary
+        shell: python
+        run: |
+          from pathlib import Path
+          root=Path('sites/security/website')
+          version='1.3.0'
+          revision='8354308445da9ac35ced2b37a7f503a08a0aaf72'
+          for name in ('index.html','404.html','v1.3-site.css','site.css','site.js','build.py','_headers'):
+              if not (root/name).is_file(): raise SystemExit(f'missing Security Center source: {name}')
+          index=(root/'index.html').read_text(encoding='utf-8')
+          error=(root/'404.html').read_text(encoding='utf-8')
+          css=(root/'v1.3-site.css').read_text(encoding='utf-8')
+          build=(root/'build.py').read_text(encoding='utf-8')
+          for html in (index,error):
+              for marker in (
+                  f'name="goreecloud-glaze-ui" content="{version}"',
+                  f'name="goreecloud-glaze-source-revision" content="{revision}"',
+                  'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"',
+                  'data-glaze-version="1.3.0"',
+                  'v1.3-site.css',
+              ):
+                  if marker not in html: raise SystemExit(f'missing Security Center V1.3 marker: {marker}')
+              for stale in ('data-glaze-version="1.1"','data-glaze-ui="1.1.0"','glaze-ui-v1.1.0.css','GLAZE UI V1.1'):
+                  if stale in html: raise SystemExit(f'superseded active Security Center Glaze target: {stale}')
+          for marker in ('--v13-control:48px','--v13-control-coarse:56px','prefers-reduced-motion:reduce','prefers-reduced-transparency:reduce','prefers-contrast:more','forced-colors:active','focus-visible'):
+              if marker not in css: raise SystemExit(f'missing Security Center V1.3 accessibility/adaptation marker: {marker}')
+          if 'GLAZE UI V1.3 / 1.3.0' not in build or 'glaze-ui-v1.1.0.css' in build:
+              raise SystemExit('Security Center build contract is not V1.3-only')
+          print('Wardveil Security Center GLAZE UI V1.3 source boundary validated; rendered/security-runtime/production acceptance remains separate')
+      - run: python -m py_compile sites/security/website/build.py
+      - run: python sites/security/website/build.py
+      - run: node --check sites/security/website/site.js
 
   mesh:
     runs-on: ubuntu-24.04
