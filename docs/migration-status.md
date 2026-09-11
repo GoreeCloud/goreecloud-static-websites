@@ -6,16 +6,18 @@
 **Verified Security production revision:** `256daf235066b4fd1f931e50e45e366fa92f45e7`  
 **Verified Privacy production revision:** `80379f6962a5ded6c01317542941a2c55aedd922`  
 **Verified Identity production revision:** `43141921a2c4915dd6e536dfa7af8d5da70a3319`  
-**Prior verified Suite revision:** `f03b0c5d62f870a52fda286636771db2a34d3aaf` — historical 27-product publication  
-**Latest corrected Suite Cloudflare deployment candidate:** `0f35e3145e31a7f79950040db6a875b32374c54e` — provider deployment successful; custom-domain/rendered reverification pending
+**Verified Suite production revision:** `807adc08c955e37711ec6ba2c64a656d3bff0bfb` — corrected 45-product / 9-group publication  
+**Historical Suite production revision:** `f03b0c5d62f870a52fda286636771db2a34d3aaf` — incomplete 27-product publication
 
 ## Current state
 
 Source consolidation and GLAZE UI V1.3 source/build reconciliation are complete for the thirteen authoritative static website packages on canonical `main`.
 
-Production deployment migration is proceeding site by site. **Security Center, Privacy Center, and Identity Center are `production-verified`.** GoreeCloud Suite remains **`deployment-cutover-pending`** because a material portfolio correction expands the public directory from an incomplete 27-product publication to the reconciled 45-product authority. The corrected source and CI are complete, and the Cloudflare GitHub App reports a successful deployment of exact central revision `0f35e3145e31a7f79950040db6a875b32374c54e`; independent custom-domain delivery, rendered review, and exact public-response verification remain pending. The other nine packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
+Production deployment migration is proceeding site by site. **Security Center, Privacy Center, Identity Center, and GoreeCloud Suite are `production-verified`.** The other nine packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
 
-The earlier Suite deployment at revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` remains valid historical evidence for that exact publication, but it must not be used as acceptance evidence for the corrected 45-product source.
+The corrected Suite publication is accepted at exact central revision `807adc08c955e37711ec6ba2c64a656d3bff0bfb`. The Cloudflare GitHub App reported a successful deployment for that exact revision, and the repository's independent read-only production workflow waited until `suite.goreecloud.com` matched the exact reviewed artifact before accepting the live result. The live HTTP and Chrome gates then passed for the reconciled 45-product / 9-group publication, including the corrected 320-pixel responsive behavior.
+
+The earlier Suite deployment at revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` remains valid historical evidence for that exact 27-product publication, but it is not the current accepted Suite revision.
 
 Production verification is independent per site and per materially changed publication revision. A central source build, CI pass, another site's successful cutover, a deployment-provider success check, or an older accepted revision never establishes production acceptance for changed public bytes.
 
@@ -36,7 +38,7 @@ No legacy repository may remain a second website source authority after its site
 | Roadmap | `roadmap.goreecloud.com` | `sites/roadmap` | `validated-in-central-repo` | `legacy-source` |
 | Blog | `blog.goreecloud.com` | `sites/blog` | `validated-in-central-repo` | `legacy-source` |
 | Archive | `archive.goreecloud.com` | `sites/archive` | `validated-in-central-repo` | `legacy-source` |
-| Suite | `suite.goreecloud.com` | `sites/suite` | `validated-in-central-repo` | **`deployment-cutover-pending`** |
+| Suite | `suite.goreecloud.com` | `sites/suite` | `validated-in-central-repo` | **`production-verified`** |
 | Design Center | `design.goreecloud.com` | `sites/design` | `validated-in-central-repo` | `legacy-source` |
 | Privacy Center | `privacy.goreecloud.com` | `sites/privacy` | `validated-in-central-repo` | **`production-verified`** |
 | Security Center / Wardveil | `security.goreecloud.com` | `sites/security` | `validated-in-central-repo` | **`production-verified`** |
@@ -47,15 +49,17 @@ No legacy repository may remain a second website source authority after its site
 
 The manifest remains the machine-readable controlling registry for these states.
 
-## Suite portfolio correction
+## Suite portfolio correction and reacceptance
 
-The prior V1.3 migration incorrectly treated an older 27-application “Initial Suite Registry” as a complete current portfolio. A newer authoritative Suite specification preserves a September 1 baseline of 38 application/service cards, and later project specifications establish additional Suite products. The canonical Drive inventory has now been reconciled to **45 verified products across 9 functional product groups**.
+The prior V1.3 migration incorrectly treated an older 27-application “Initial Suite Registry” as a complete current portfolio. A newer authoritative Suite specification preserves a September 1 baseline of 38 application/service cards, and later project specifications establish additional Suite products. The canonical Drive inventory was reconciled to **45 verified products across 9 functional product groups**.
 
-The corrected current directory restores the products that were wrongly dropped from the recorded baseline—such as GoreeCloud Documents, Drive, File Manager, Mail, Messenger, Maps, Terminal, App Store, Gateway, AI, Index, and Code—and includes later verified products GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security. GoreeCloud Website remains part of the broader Suite portfolio.
+The corrected directory restores products that were wrongly dropped from the recorded baseline—such as GoreeCloud Documents, Drive, File Manager, Mail, Messenger, Maps, Terminal, App Store, Gateway, AI, Index, and Code—and includes later verified products GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security. GoreeCloud Website remains part of the broader Suite portfolio.
 
 Shared Integral Platform Systems and application-centered capability identities retain their separate authority boundaries and are not inflated into the 45-product count merely because they integrate with the Suite. Products without approved canonical artwork use neutral identity treatment rather than fabricated official marks.
 
-Because this changes public bytes materially, the corrected Suite revision must pass source/build/CI and then be independently deployed and live-verified before Suite can return to `production-verified`. Source/build/CI and Cloudflare provider deployment are now complete for the current corrected candidate; custom-domain and rendered verification remain outstanding.
+PR #42 added a stronger production browser gate and exposed a real 320-pixel horizontal-overflow defect. The defect was corrected by allowing the hero grid to shrink and the exact Glaze revision token to wrap safely. The exact PR candidate passed local Chrome validation at 1180, 768, 390, and 320 pixels before merge.
+
+After PR #42 merged as `807adc08c955e37711ec6ba2c64a656d3bff0bfb`, the production workflow initially detected stale live consumer CSS and failed closed for six polling attempts. It then observed exact byte convergence, passed the full canonical-domain HTTP verifier, and passed the live Chrome smoke at all four viewport widths. Suite is therefore restored to `production-verified` for the corrected 45-product publication.
 
 ## Production-verification evidence
 
@@ -83,15 +87,17 @@ Public DNS at both `1.1.1.1` and `8.8.8.8` resolved the canonical `id.goreecloud
 
 See `docs/production-verification-identity-2026-09-10.md`.
 
+### GoreeCloud Suite — current accepted revision
+
+GoreeCloud Suite is production-verified at exact central revision `807adc08c955e37711ec6ba2c64a656d3bff0bfb` using `main`, root `sites/suite`, build command `python3 scripts/build_public_site.py`, output `dist`, and Cloudflare Pages project `goreecloud-suite`.
+
+The Cloudflare GitHub App reported a successful deployment for that exact revision. Independent live verification established exact equality for the reviewed root, 404, sitemap, robots, consumer CSS, and Glaze bytes; committed response headers; true HTTP 404 with `no-store`; GLAZE UI V1.3 metadata and exact Glaze blob integrity; canonical Suite URLs; 45 products in 9 groups; and successful live Chrome rendering at 1180, 768, 390, and 320 pixels with all images loaded and no 320-pixel horizontal overflow.
+
+See `docs/production-verification-suite-2026-09-10.md`.
+
 ### GoreeCloud Suite — historical exact-revision evidence
 
-GoreeCloud Suite was previously verified at exact central revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` after Cloudflare Pages was cut over to `main`, root `sites/suite`, build command `python3 scripts/build_public_site.py`, and output `dist`. That live result passed HTTP 200, true HTTP 404 with `no-store`, committed response headers, GLAZE UI V1.3 metadata, canonical sitemap, exact Glaze CSS blob integrity, and rendered review.
-
-That evidence remains historical and exact-revision scoped. It covered the incomplete 27-product directory and therefore does not accept the corrected 45-product publication. See `docs/production-verification-suite-2026-09-10.md`.
-
-### GoreeCloud Suite — corrected deployment candidate
-
-Cloudflare's GitHub App reports a successful deployment for exact central `main` revision `0f35e3145e31a7f79950040db6a875b32374c54e`, which includes the reconciled 45-product Suite source. This proves provider-side deployment success for that revision. It does **not** yet establish `suite.goreecloud.com` custom-domain delivery, HTTP/security-header behavior, exact public-response equivalence, rendered/accessibility acceptance, or production verification. The manifest therefore correctly remains `deployment-cutover-pending`.
+The earlier Suite result at exact revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` remains historical evidence for the incomplete 27-product publication. It must not be used as the current acceptance revision.
 
 ## Authority boundaries
 
@@ -103,7 +109,7 @@ These production decisions apply only to public website deployments. They do not
 
 ## Remaining production migration sequence
 
-Ten production acceptance actions remain: Suite reverification for the corrected 45-product publication plus initial production verification for the nine sites that still show `legacy-source`.
+Nine initial production acceptance actions remain for the nine sites that still show `legacy-source`.
 
 For each site or materially changed publication:
 
@@ -116,6 +122,4 @@ For each site or materially changed publication:
 
 ## Immediate next action
 
-Independently reverify the corrected 45-product publication at `https://suite.goreecloud.com/` against exact deployed revision `0f35e3145e31a7f79950040db6a875b32374c54e`. Require canonical-domain HTTP behavior, committed security headers, true 404 behavior, GLAZE UI V1.3 markers and exact source revision, canonical sitemap, representative 45-product rendering, and exact deployment binding before restoring Suite to `production-verified`.
-
-If Suite reverification passes, proceed next with the Continuity Center / Everkeep Cloudflare cutover using central root `sites/everkeep`, build command `python3 scripts/build_public_site.py`, and output directory `dist`; then independently verify `everkeep.goreecloud.com` before changing its deployment state.
+Proceed with the Continuity Center / Everkeep Cloudflare cutover using central root `sites/everkeep`, build command `python3 scripts/build_public_site.py`, and output directory `dist`; then independently verify `everkeep.goreecloud.com` before changing its deployment state.
