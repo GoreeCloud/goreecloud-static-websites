@@ -1,0 +1,102 @@
+name: Validate Continuity Center publication
+
+on:
+  pull_request:
+    paths:
+      - 'sites/everkeep/**'
+      - '.github/workflows/validate-everkeep-publication.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  everkeep-publication:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Check out exact verification candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+
+      - name: Compile Continuity Center build and verification tools
+        run: >-
+          python -m py_compile
+          sites/everkeep/scripts/build_public_site.py
+          sites/everkeep/scripts/validate_public_responsive.py
+          sites/everkeep/scripts/browser_responsive_smoke.py
+          sites/everkeep/scripts/browser_production_smoke.py
+          sites/everkeep/scripts/verify_production.py
+
+      - name: Validate Continuity Center source contract
+        run: python sites/everkeep/scripts/validate_public_responsive.py
+
+      - name: Build reviewed Continuity Center artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/everkeep/scripts/build_public_site.py
+
+      - name: Validate reviewed Continuity Center artifact
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          root=Path('sites/everkeep')
+          dist=root/'dist'
+          required={
+              'index.html','404.html','_headers','robots.txt','sitemap.xml',
+              'assets/style.css','assets/site-polish.css','assets/v1.3-site.css',
+              'assets/glaze-v1.3.0.css','assets/everkeep.svg'
+          }
+          actual={str(p.relative_to(dist)).replace('\\','/') for p in dist.rglob('*') if p.is_file()}
+          missing=required-actual
+          if missing: raise SystemExit(f'missing Continuity Center artifact files: {sorted(missing)}')
+          if (dist/'assets/everkeep.svg').read_bytes() != (root/'assets/everkeep.svg').read_bytes():
+              raise SystemExit('Continuity Center Everkeep identity differs from canonical packaged asset')
+          def blob(data):
+              return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data,usedforsecurity=False).hexdigest()
+          glaze=(dist/'assets/glaze-v1.3.0.css').read_bytes()
+          if blob(glaze) != '4c3ad293ba9196e2e5a32700b530ec67fd01cef6':
+              raise SystemExit('Continuity Center Glaze V1.3 entrypoint integrity mismatch')
+          revision='8354308445da9ac35ced2b37a7f503a08a0aaf72'
+          for page_name in ('index.html','404.html'):
+              page=(dist/page_name).read_text(encoding='utf-8')
+              for marker in (
+                  'data-glaze-version="1.3.0"',
+                  'name="goreecloud-glaze-ui" content="1.3.0"',
+                  f'name="goreecloud-glaze-source-revision" content="{revision}"',
+                  'source-migrated-rendered-acceptance-pending',
+              ):
+                  if marker not in page: raise SystemExit(f'{page_name} missing {marker}')
+          error=(dist/'404.html').read_text(encoding='utf-8')
+          if 'name="robots" content="noindex, nofollow"' not in error:
+              raise SystemExit('Continuity Center 404 is not noindex/nofollow')
+          headers=(dist/'_headers').read_text(encoding='utf-8')
+          for marker in ('Content-Security-Policy:','frame-ancestors \'none\'','X-Content-Type-Options: nosniff','Strict-Transport-Security:'):
+              if marker not in headers: raise SystemExit(f'Continuity Center headers missing {marker}')
+          if 'https://everkeep.goreecloud.com/sitemap.xml' not in (dist/'robots.txt').read_text(encoding='utf-8'):
+              raise SystemExit('Continuity Center robots.txt lacks canonical sitemap')
+          if 'https://everkeep.goreecloud.com/' not in (dist/'sitemap.xml').read_text(encoding='utf-8'):
+              raise SystemExit('Continuity Center sitemap lacks canonical domain')
+          print('Continuity Center publication artifact contract passed; deployment and recovery-effect acceptance remain separate.')
+
+      - name: Exercise exact candidate responsive rendering
+        run: python sites/everkeep/scripts/browser_responsive_smoke.py
+
+      - name: Verify canonical Continuity Center production publication
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/everkeep/scripts/verify_production.py
+
+      - name: Verify canonical Continuity Center production rendering
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/everkeep/scripts/browser_production_smoke.py
