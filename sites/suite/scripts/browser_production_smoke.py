@@ -6,11 +6,11 @@ from __future__ import annotations
 from pathlib import Path
 import subprocess
 import tempfile
-import time
 
 import browser_responsive_smoke as smoke
 
 PRODUCTION_URL = "https://suite.goreecloud.com/"
+EXPECTED_TITLE = "GoreeCloud Suite — Applications & Capabilities"
 EXPECTED_PRODUCT_COUNT = 45
 EXPECTED_GROUP_COUNT = 9
 REQUIRED_PRODUCTS = (
@@ -53,7 +53,7 @@ def verify_live_content(session_id: str) -> None:
           glazeRevision:document.querySelector('meta[name="goreecloud-glaze-source-revision"]')?.content||'',
           productCount:cards.length,
           groupCount:groups.length,
-          names:cards.map(card=>card.querySelector('h3')?.textContent.trim()||'').filter(Boolean),
+          names:cards.map(card=>card.querySelector('h4')?.textContent.trim()||'').filter(Boolean),
           imageCount:images.length,
           loadedImages:images.filter(image=>image.complete&&image.naturalWidth>0&&image.naturalHeight>0).length,
           failedImages:images.filter(image=>image.complete&&(image.naturalWidth===0||image.naturalHeight===0)).map(image=>image.src),
@@ -63,7 +63,7 @@ def verify_live_content(session_id: str) -> None:
         """,
     )
     require(isinstance(state, dict), f"Suite production browser state unreadable: {state!r}")
-    require(state.get("title") == "GoreeCloud Suite", f"unexpected Suite production title: {state}")
+    require(state.get("title") == EXPECTED_TITLE, f"unexpected Suite production title: {state.get('title')!r}")
     require(state.get("glaze") == "1.3.0", f"Suite production browser Glaze version mismatch: {state}")
     require(
         state.get("glazeRevision") == "8354308445da9ac35ced2b37a7f503a08a0aaf72",
