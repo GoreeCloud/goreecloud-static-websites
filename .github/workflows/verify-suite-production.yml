@@ -3,7 +3,12 @@ name: Verify Suite production publication
 on:
   pull_request:
     paths:
-      - 'sites/suite/scripts/verify_production.py'
+      - 'sites/suite/**'
+      - '.github/workflows/verify-suite-production.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/suite/**'
       - '.github/workflows/verify-suite-production.yml'
   workflow_dispatch:
 
@@ -29,13 +34,31 @@ jobs:
           path: .glaze-ui
           persist-credentials: false
 
-      - name: Compile Suite verifier and builder
-        run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/verify_production.py
+      - name: Compile Suite verifier, browser smoke, and builder
+        run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/verify_production.py sites/suite/scripts/browser_responsive_smoke.py sites/suite/scripts/browser_production_smoke.py
 
       - name: Build reviewed Suite artifact
         env:
           GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python sites/suite/scripts/build_public_site.py
 
-      - name: Verify canonical Suite production publication
-        run: python sites/suite/scripts/verify_production.py
+      - name: Verify exact candidate responsive rendering
+        if: ${{ github.event_name == 'pull_request' }}
+        run: python sites/suite/scripts/browser_responsive_smoke.py
+
+      - name: Wait for exact merged Suite publication
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          for attempt in $(seq 1 18); do
+            if python sites/suite/scripts/verify_production.py; then
+              exit 0
+            fi
+            echo "Suite production does not yet match the exact merged artifact (attempt ${attempt}/18); waiting 10 seconds for Cloudflare publication."
+            sleep 10
+          done
+          echo "Suite production failed to converge to the exact merged artifact."
+          exit 1
+
+      - name: Verify canonical Suite production rendering
+        if: ${{ github.event_name != 'pull_request' }}
+        run: python sites/suite/scripts/browser_production_smoke.py
