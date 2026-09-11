@@ -5,6 +5,8 @@
 :root{--suite-v13-control:48px;--suite-v13-control-assisted:56px}
 :is(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-accent,currentColor);outline-offset:3px}
 .site-header a,.hero-actions .button,.footer-grid a{min-height:var(--suite-v13-control)}
+.hero-grid>*{min-width:0}
+.truth-note code{overflow-wrap:anywhere;word-break:break-word}
 @media(pointer:coarse){.site-header a,.hero-actions .button,.footer-grid a{min-height:var(--suite-v13-control-assisted);min-width:var(--suite-v13-control-assisted)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 @media(prefers-reduced-transparency:reduce){.site-header,.hero-panel,.app-card,.capability-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--glaze-surface-strong)!important}}
