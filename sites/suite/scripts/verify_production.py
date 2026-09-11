@@ -213,6 +213,14 @@ def verify_sitemap_and_robots() -> None:
     require(b"https://suite.goreecloud.com/sitemap.xml" in robots.body, "Suite robots.txt lacks canonical sitemap URL")
 
 
+def verify_consumer_assets() -> None:
+    for relative in ("styles.css", "glaze-v1.3-consumer.css"):
+        response = fetch(f"/{relative}")
+        require(response.status == 200, f"Suite {relative} returned HTTP {response.status}; expected 200")
+        require_cloudflare(response, f"/{relative}")
+        require_exact_body(response, relative)
+
+
 def verify_glaze_entrypoint() -> None:
     response = fetch("/assets/glaze-v1.3.0.css")
     require(response.status == 200, f"Suite Glaze entrypoint returned HTTP {response.status}; expected 200")
@@ -229,9 +237,10 @@ def main() -> int:
     verify_root()
     verify_not_found()
     verify_sitemap_and_robots()
+    verify_consumer_assets()
     verify_glaze_entrypoint()
     print(
-        "Suite production HTTP verification passed for suite.goreecloud.com: exact reviewed root/404/sitemap/robots/Glaze bytes, "
+        "Suite production HTTP verification passed for suite.goreecloud.com: exact reviewed root/404/sitemap/robots/consumer CSS/Glaze bytes, "
         "45 products, 9 groups, committed headers, canonical host, and Cloudflare delivery verified. "
         "Human rendered/accessibility acceptance and exact deployment-revision binding remain separate evidence gates."
     )
