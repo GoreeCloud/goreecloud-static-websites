@@ -1,24 +1,49 @@
 # GoreeCloud Suite Production Verification — 2026-09-10
 
-## Current disposition after portfolio reconciliation
+## Current production-verification decision
 
-The production verification below remains valid historical evidence for exact central repository revision `f03b0c5d62f870a52fda286636771db2a34d3aaf`, but it no longer establishes acceptance for the current corrected Suite source.
+**Production verification is accepted for the corrected public GoreeCloud Suite website at exact central repository revision `807adc08c955e37711ec6ba2c64a656d3bff0bfb`.**
 
-On September 10, 2026, the authoritative Suite portfolio was reconciled after the live directory was found to have dropped products that remained part of the recorded 38-card baseline and newer products established by later authoritative specifications. The corrected current portfolio contains **45 verified GoreeCloud products across 9 functional product groups**. Because that correction changes public bytes materially, Suite returns to `deployment-cutover-pending` until the corrected revision is deployed and independently reverified on `suite.goreecloud.com`.
+This acceptance covers the reconciled **45-product / 9-group** Suite publication at `https://suite.goreecloud.com/`. It supersedes the temporary `deployment-cutover-pending` disposition that followed discovery of the incomplete 27-product directory.
 
-The prior 27-product production result must not be represented as acceptance of the corrected 45-product directory. A follow-up production-verification record or explicit appended reacceptance section must bind the new live result to the exact corrected central Git revision before Suite returns to `production-verified`.
+The Cloudflare GitHub App recorded a successful `Cloudflare Pages: goreecloud-suite` deployment for exact revision `807adc08c955e37711ec6ba2c64a656d3bff0bfb`, reporting `Deployed successfully` for commit prefix `807adc0`.
 
-## Historical decision for exact revision f03b0c5d
+The repository's read-only production verification workflow then independently waited for the canonical domain to converge to the exact reviewed build. The first six attempts correctly failed closed because the live `glaze-v1.3-consumer.css` still contained the older 1839-byte publication while the merged revision expected 1928 bytes. The seventh attempt observed exact byte convergence and passed the full HTTP publication contract. This establishes that the production result was not inferred merely from provider-side deployment success.
 
-**Production verification was accepted for `suite.goreecloud.com` at central repository revision `f03b0c5d62f870a52fda286636771db2a34d3aaf`.**
+## Corrected live-production evidence
 
-This record establishes that the public GoreeCloud Suite website had been cut over to the centralized GoreeCloud static-website repository and that the observed production response matched the reviewed GLAZE UI V1.3 publication contract at that exact revision.
+The exact merged Suite build produced 94 files and 423847 bytes before publication verification.
 
-This decision applies only to the public Suite website at that exact revision. It does **not** establish production acceptance for any Suite application, service, capability identity, backend, runtime, deployment, release, or lifecycle claim beyond the website itself.
+The production HTTP verifier passed against `https://suite.goreecloud.com/` and established:
 
-## Central repository and Cloudflare deployment evidence
+- canonical HTTPS delivery through Cloudflare;
+- HTTP 200 for the root publication;
+- exact byte equality between the live root and the reviewed built `index.html`;
+- exact byte equality for the reviewed `404.html`, `sitemap.xml`, `robots.txt`, `styles.css`, `glaze-v1.3-consumer.css`, and canonical Glaze V1.3 entrypoint;
+- a true HTTP 404 with `Cache-Control: no-store` for the deliberately missing deployment-smoke path;
+- committed Content-Security-Policy, Referrer-Policy, X-Content-Type-Options, X-Frame-Options, Permissions-Policy, Cross-Origin-Opener-Policy, and Cross-Origin-Resource-Policy behavior;
+- root cache behavior requiring revalidation;
+- the canonical `https://suite.goreecloud.com/` sitemap and robots publication;
+- exactly **45 product cards** and **9 functional product groups**;
+- representative reconciled products including GoreeCloud Documents, Drive, File Manager, Mail, Messenger, Maps, Terminal, App Store, Gateway, AI, Index, Code, Health, Reader, Router OS, Social, Home, and Home Security;
+- GLAZE UI `1.3.0` with exact source revision `8354308445da9ac35ced2b37a7f503a08a0aaf72`;
+- exact canonical Glaze V1.3 Git blob SHA `4c3ad293ba9196e2e5a32700b530ec67fd01cef6`.
 
-The Suite Cloudflare Pages project was observed after cutover with the centralized publication contract:
+The production Chrome smoke then passed at **1180×900, 768×900, 390×844, and 320×844**. The live canonical page rendered all 45 products in 9 groups, retained the approved Glaze V1.3 identity, loaded all document images successfully, preserved the canonical URL, maintained the expected responsive grid behavior and navigation target floors, and no longer exhibited the 320-pixel horizontal overflow previously discovered during live-browser validation.
+
+The successful production workflow run was `34559034711`, job `103137750792`, using `contents: read` permissions only. It did not mutate Cloudflare, DNS, deployment state, or product lifecycle state.
+
+## 320-pixel overflow correction
+
+The live browser verifier initially exposed a real production defect at a 320-pixel viewport: the document width was 330 pixels, producing 10 pixels of horizontal overflow.
+
+The defect was traced to intrinsic CSS grid sizing caused by the long exact Glaze revision token in the hero truth note. PR #42 corrected the consumer layout by allowing hero-grid children to shrink with `min-width: 0` and allowing the revision token to wrap safely at narrow widths. The exact PR candidate passed local Chrome validation at 1180, 768, 390, and 320 pixels before merge.
+
+After PR #42 merged as exact central revision `807adc08c955e37711ec6ba2c64a656d3bff0bfb`, the production workflow waited until the merged consumer CSS was actually present on the canonical domain and then passed the same live Chrome checks. The production acceptance therefore includes evidence that the previously observed 320-pixel overflow is corrected in the live publication.
+
+## Central repository and Cloudflare deployment contract
+
+The verified public Suite website uses:
 
 - Git repository: `GoreeCloud/goreecloud-static-websites`
 - Production branch: `main`
@@ -28,41 +53,27 @@ The Suite Cloudflare Pages project was observed after cutover with the centraliz
 - Pages project: `goreecloud-suite`
 - Canonical custom domain: `suite.goreecloud.com`
 
-The Cloudflare GitHub App recorded a successful `Cloudflare Pages: goreecloud-suite` deployment for exact central repository revision:
-
-`f03b0c5d62f870a52fda286636771db2a34d3aaf`
-
-The corresponding Cloudflare check reported `Deployed successfully` for commit prefix `f03b0c5`.
-
-## Historical live production response evidence
-
-A direct HTTPS request to `https://suite.goreecloud.com/` returned `HTTP/2 200`, `server: cloudflare`, and `Cache-Control: public, max-age=0, must-revalidate`.
-
-The live root response included the committed Suite response policy, including Content-Security-Policy, Cross-Origin-Opener-Policy, Cross-Origin-Resource-Policy, Permissions-Policy, Referrer-Policy, X-Content-Type-Options, and X-Frame-Options.
-
-The rendered page visibly loaded the then-current GoreeCloud Suite V1.3 surface. That surface contained 27 products because a stale initial inventory had incorrectly been treated as complete during migration. The later portfolio reconciliation supersedes that directory content without invalidating the historical transport/build evidence for this exact revision.
-
-## Explicit 404 verification
-
-Before the historical production cutover, PR #34 added an explicit `sites/suite/404.html`, packaged it through the Suite build allowlist, removed the old general five-minute HTML cache policy, and added a dedicated Suite publication-contract CI gate.
-
-The deliberately missing path `https://suite.goreecloud.com/__goreecloud-deployment-smoke__/missing/path` returned `HTTP/2 404`, `Cache-Control: no-store`, and `server: cloudflare`, confirming that the deployed site did not fall back to a false HTTP 200 for unknown paths.
+The successful Cloudflare deployment is tied to exact central revision `807adc08c955e37711ec6ba2c64a656d3bff0bfb`.
 
 ## GLAZE UI V1.3 evidence
 
-The live production HTML reported `data-glaze-version="1.3.0"`, `<meta name="goreecloud-glaze-ui" content="1.3.0">`, and `<meta name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72">`.
+The accepted production HTML reports `data-glaze-version="1.3.0"`, `<meta name="goreecloud-glaze-ui" content="1.3.0">`, and `<meta name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72">`.
 
-The deployed canonical Glaze entrypoint `https://suite.goreecloud.com/assets/glaze-v1.3.0.css` produced Git blob SHA `4c3ad293ba9196e2e5a32700b530ec67fd01cef6`, matching the reviewed canonical GLAZE UI V1.3 Stable entrypoint.
-
-## Sitemap evidence
-
-The live production sitemap returned the canonical Suite hostname `https://suite.goreecloud.com/`.
+The deployed canonical Glaze entrypoint `https://suite.goreecloud.com/assets/glaze-v1.3.0.css` matches reviewed Git blob SHA `4c3ad293ba9196e2e5a32700b530ec67fd01cef6`.
 
 ## Authority boundary
 
-This record verifies the **public GoreeCloud Suite website deployment** only for the exact historical revision stated above. It does not by itself prove or authorize production readiness of any listed Suite product; correctness of a product runtime, backend, security, privacy, continuity, identity, or networking behavior; release or lifecycle promotion; global GLAZE UI acceptance outside the reviewed website deployment; or retirement/deletion of `GoreeCloud/goreecloud-suite`.
+This record verifies the **public GoreeCloud Suite website deployment** only for the exact accepted revision stated above. It does not by itself prove or authorize production readiness of any listed Suite product; correctness of a product runtime, backend, security, privacy, continuity, identity, networking, or recovery behavior; lifecycle or release promotion; global GLAZE UI acceptance outside this reviewed website deployment; or retirement/deletion of `GoreeCloud/goreecloud-suite`.
 
 Application and service implementation/runtime authority remains with the applicable producer repository, specification, release process, and independently verified evidence.
+
+## Historical 27-product verification
+
+The earlier production verification for exact central revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` remains valid historical evidence for the publication that existed at that revision.
+
+That older deployment used the same central repository, Suite package root, build command, output directory, Cloudflare Pages project, and canonical domain. It passed HTTP 200, explicit HTTP 404 with `no-store`, committed response headers, GLAZE UI V1.3 metadata, canonical sitemap, exact Glaze CSS integrity, and rendered review.
+
+However, the older page contained only 27 products because a stale initial inventory had incorrectly been treated as complete during migration. That historical result must never be represented as acceptance of the corrected 45-product directory. The current accepted revision is `807adc08c955e37711ec6ba2c64a656d3bff0bfb`.
 
 ## Legacy-source retirement
 
@@ -72,6 +83,8 @@ Before any former website source, deployment reference, automation, rollback mat
 
 ## Result
 
-Revision `f03b0c5d62f870a52fda286636771db2a34d3aaf` retains historical production-verification evidence. The corrected 45-product Suite source requires a new exact-revision deployment and live acceptance before `sites/manifest.json` may again record Suite as `production-verified`.
+The corrected 45-product GoreeCloud Suite publication is **`production-verified`** at exact central revision `807adc08c955e37711ec6ba2c64a656d3bff0bfb`.
+
+The previous `f03b0c5d62f870a52fda286636771db2a34d3aaf` verification remains historical exact-revision evidence only.
 
 `legacy-source-retired` remains a later, separately verified state.
