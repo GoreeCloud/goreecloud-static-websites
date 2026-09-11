@@ -1,0 +1,41 @@
+name: Verify Suite production publication
+
+on:
+  pull_request:
+    paths:
+      - 'sites/suite/scripts/verify_production.py'
+      - '.github/workflows/verify-suite-production.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-suite-production:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact verification candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+
+      - name: Compile Suite verifier and builder
+        run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/verify_production.py
+
+      - name: Build reviewed Suite artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/suite/scripts/build_public_site.py
+
+      - name: Verify canonical Suite production publication
+        run: python sites/suite/scripts/verify_production.py
