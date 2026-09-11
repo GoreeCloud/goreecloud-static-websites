@@ -36,8 +36,10 @@ jobs:
           ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
           path: .glaze-ui
           persist-credentials: false
-      - name: Compile central builder and validator
-        run: python -m py_compile scripts/build_simple_static_site.py scripts/validate_simple_static_site.py
+      - name: Compile Blog and central validators
+        run: python -m py_compile sites/blog/validate.py scripts/build_simple_static_site.py scripts/validate_simple_static_site.py
+      - name: Validate Blog public truth contract
+        run: python sites/blog/validate.py
       - name: Validate Blog V1.3 source contract
         run: python scripts/validate_simple_static_site.py sites/blog
       - name: Build exact Blog V1.3 artifact
