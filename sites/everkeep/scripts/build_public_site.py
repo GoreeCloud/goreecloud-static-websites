@@ -87,7 +87,7 @@ if DIST.exists():
     shutil.rmtree(DIST)
 (DIST / "assets").mkdir(parents=True)
 
-for name in ("index.html", "_headers", "robots.txt", "sitemap.xml"):
+for name in ("index.html", "404.html", "_headers", "robots.txt", "sitemap.xml"):
     shutil.copy2(require_file(SOURCE / name), DIST / name)
 for name in ("style.css", "site-polish.css", "v1.3-site.css"):
     shutil.copy2(require_file(SOURCE / name), DIST / "assets" / name)
