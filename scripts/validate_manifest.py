@@ -98,7 +98,7 @@ def main() -> None:
 
     required_ids = {
         "main", "projects", "roadmap", "blog", "archive", "suite", "design",
-        "privacy", "security", "everkeep", "identity", "manager", "mesh",
+        "privacy", "security", "everkeep", "identity", "manager", "mesh", "labs",
     }
     if not required_ids.issubset(ids):
         fail(f"known migration inventory missing: {sorted(required_ids - ids)}")

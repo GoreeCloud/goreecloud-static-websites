@@ -20,11 +20,24 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - name: Check out exact candidate
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
       - name: Compile Labs tooling
-        run: python3 -m py_compile sites/labs/build.py sites/labs/validate.py sites/labs/browser_smoke.py
+        run: >-
+          python3 -m py_compile
+          sites/labs/build.py
+          sites/labs/validate.py
+          sites/labs/browser_smoke.py
+          sites/labs/verify_public_deployment.py
+          sites/labs/browser_production_smoke.py
+      - name: Validate production-verifier configuration
+        working-directory: sites/labs
+        run: python3 verify_public_deployment.py --check-config
       - name: Validate source
         working-directory: sites/labs
         run: python3 validate.py
@@ -36,7 +49,19 @@ jobs:
       - name: Assert publication contract
         run: |
           grep -F 'Canonical repository: `GoreeCloud/goreecloud-static-websites`' sites/labs/README.md
+          grep -F 'Production branch target: `main`' sites/labs/README.md
           grep -F 'Site root: `sites/labs`' sites/labs/README.md
           grep -F 'Build command: `python3 build.py`' sites/labs/README.md
           grep -F 'Build output directory: `dist`' sites/labs/README.md
           grep -F 'labs.goreecloud.com' sites/labs/index.html
+      - name: Verify canonical production bytes and headers
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: sites/labs
+        run: |
+          python3 build.py
+          python3 validate.py dist
+          python3 verify_public_deployment.py
+      - name: Exercise canonical production in Chrome
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: sites/labs
+        run: python3 browser_production_smoke.py
