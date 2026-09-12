@@ -150,6 +150,18 @@ def exercise(session_id: str) -> None:
             const managerVisual=q('.manager-visual')?.getBoundingClientRect();
             const nav=rects('.header-row nav a');
             const theme=rects('.theme-group button');
+            const overflowers=[...document.querySelectorAll('body *')].map(node=>{
+              const r=node.getBoundingClientRect();
+              return {
+                tag:node.tagName.toLowerCase(),
+                id:node.id||'',
+                className:typeof node.className==='string'?node.className.slice(0,120):'',
+                left:Math.round(r.left*100)/100,
+                right:Math.round(r.right*100)/100,
+                width:Math.round(r.width*100)/100,
+                text:(node.textContent||'').trim().replace(/\s+/g,' ').slice(0,120),
+              };
+            }).filter(item=>item.width>0&&(item.left<-1||item.right>window.innerWidth+1)).slice(0,24);
             return {
               ready:document.readyState,
               width:window.innerWidth,
@@ -165,6 +177,7 @@ def exercise(session_id: str) -> None:
               managerVisualLeft:managerVisual?.left||0,
               actions:actions.map(r=>({width:r.width})),
               actionContainerWidth:actionContainer?.width||0,
+              overflowers,
               images:[...document.images].map(image=>({complete:image.complete,naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,src:image.src})),
             };
             """,
