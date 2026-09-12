@@ -1,0 +1,13 @@
+{
+  "schema":"goreecloud.firefox.public-inventory.v1",
+  "source_repository":"GoreeCloud/goreecloud-firefox-extensions",
+  "source_revision":"50491e3280545281bc67c31a32819855b265ab92",
+  "source_inventory":"docs/extension-inventory.json",
+  "extensions":[
+    {"slug":"bookmarks","name":"GoreeCloud Bookmarks","source_version":"0.1.1","source_state":"source-candidate","accepted_stable":null},
+    {"slug":"download-manager","name":"GoreeCloud Download Manager Extension","source_version":"0.2.12","source_state":"stable","accepted_stable":"0.2.12"},
+    {"slug":"redirector","name":"GoreeCloud Redirector","source_version":"0.2.1","source_state":"canonical-source","accepted_stable":"0.2.0"},
+    {"slug":"source-resync","name":"GoreeCloud Source Resync","source_version":"1.1.2","source_state":"canonical-source","accepted_stable":null},
+    {"slug":"privacy-shield","name":"GoreeCloud Privacy Shield","source_version":"0.2.0","source_state":"stable","accepted_stable":"0.2.0"}
+  ]
+}

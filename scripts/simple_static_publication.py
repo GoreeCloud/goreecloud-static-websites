@@ -2,9 +2,9 @@
 """Governed publication metadata for GoreeCloud's simple static sites.
 
 This registry is intentionally narrow. It records only the canonical public host,
-verified Cloudflare Pages namespace, expected title, and local site path required
-by publication verification. It does not assert that Cloudflare source authority
-has been cut over to the central repository.
+verified Cloudflare Pages namespace when one exists, expected title, and local site
+path required by publication verification. It does not assert that Cloudflare
+source authority has been cut over to the central repository.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ class SiteSpec:
     path: str
     title: str
     canonical_host: str
-    pages_domain: str
+    pages_domain: str | None
 
 
 SITES = {
@@ -43,6 +43,13 @@ SITES = {
         title="GoreeCloud Archive",
         canonical_host="archive.goreecloud.com",
         pages_domain="goreecloud-archive.pages.dev",
+    ),
+    "firefox": SiteSpec(
+        site_id="firefox",
+        path="sites/firefox",
+        title="GoreeCloud Firefox Extensions",
+        canonical_host="firefox.goreecloud.com",
+        pages_domain=None,
     ),
 }
 
