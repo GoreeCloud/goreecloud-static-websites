@@ -184,7 +184,7 @@ def validate_theme(session_id: str) -> None:
         const before=document.documentElement.getAttribute('data-theme');
         b.click();
         const after=document.documentElement.getAttribute('data-theme');
-        const stored=localStorage.getItem('goreecloud-firefox-theme');
+        const stored=localStorage.getItem('goreecloud-theme');
         b.click();
         return {before,after,stored,final:document.documentElement.getAttribute('data-theme')};
         """,
