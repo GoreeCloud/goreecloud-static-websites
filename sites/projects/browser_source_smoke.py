@@ -49,6 +49,13 @@ def inspect_intermediate(session_id: str, width: int) -> None:
         const cards=[...document.querySelectorAll('#projects .card')];
         const foundation=[...document.querySelectorAll('.foundation-strip>a')];
         const rect=node=>node.getBoundingClientRect();
+        const keySelectors=['.topbar-inner','.hero','.summary-panel','.controls','.grid','.principles','.footer'];
+        const keyRects=keySelectors.map(selector=>{
+          const node=document.querySelector(selector);
+          if(!node)return {selector,missing:true};
+          const r=rect(node);
+          return {selector,left:r.left,right:r.right,width:r.width,top:r.top,bottom:r.bottom};
+        });
         return {
           viewport:window.innerWidth,
           scrollWidth:document.documentElement.scrollWidth,
@@ -58,6 +65,7 @@ def inspect_intermediate(session_id: str, width: int) -> None:
           cardRight:cards.length?Math.max(...cards.map(node=>rect(node).right)):0,
           foundationLeft:foundation.length?Math.min(...foundation.map(node=>rect(node).left)):0,
           foundationRight:foundation.length?Math.max(...foundation.map(node=>rect(node).right)):0,
+          keyRects,
         };
         """,
     )
@@ -78,6 +86,16 @@ def inspect_intermediate(session_id: str, width: int) -> None:
         int(state.get("bodyScrollWidth", 99999)) <= viewport + 1,
         f"Projects body overflows horizontally at intermediate width {width}px: {state}",
     )
+    for item in state.get("keyRects") or []:
+        browser_smoke.require(
+            not item.get("missing"),
+            f"Projects key layout region is missing at {width}px: {item}",
+        )
+        browser_smoke.require(
+            float(item.get("left", -999)) >= -1
+            and float(item.get("right", 99999)) <= viewport + 1,
+            f"Projects key layout region escapes the intermediate viewport at {width}px: {item}; full state={state}",
+        )
     browser_smoke.require(
         int(state.get("cardCount", 0)) >= browser_smoke.MIN_PROJECT_CARDS,
         f"Projects card render is incomplete at intermediate width {width}px: {state}",
