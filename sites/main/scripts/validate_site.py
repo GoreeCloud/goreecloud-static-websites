@@ -27,6 +27,8 @@ PRIVATE_PATTERNS = (
 
 REQUIRED_MARKERS = (
     "Thirteen official surfaces. One GoreeCloud ecosystem.",
+    "45 verified Suite products",
+    "9 functional product groups",
     "seven Integral Platform Systems",
     "Glaze UI",
     "Privacy Shield",
@@ -38,12 +40,16 @@ REQUIRED_MARKERS = (
     "mesh.goreecloud.com",
     "id.goreecloud.com",
     "manage.goreecloud.com",
-    "Source migration does not establish Cloudflare source cutover",
+    "source migration does not establish Cloudflare source cutover",
     "GoreeCloud Home",
     "GoreeCloud Home Security",
+    "GoreeCloud Health",
+    "Reader",
+    "GoreeCloud Router OS",
     "GoreeCloud AI",
     "this website does not publish a fragile “current repository count.”",
     "Ownership should be understandable and repeatable.",
+    "From services to a first-party ecosystem.",
     '<section id="follow"',
     '<section id="contact"',
     "https://www.youtube.com/@GoreeCloud",
@@ -59,6 +65,13 @@ STALE = (
     "Six substantive platform systems",
     "Ten independently deployed public destinations",
     "Eleven official surfaces",
+    "Privacy-First Personal & Family Cloud",
+    "personal and family cloud",
+    "family digital foundation",
+    "More than a homelab.",
+    "Built deliberately from the beginning.",
+    "started in 2026 as a self-hosting plan",
+    "want to talk self-hosting",
     "<h3>Home Assistant</h3>",
     "<h3>Frigate</h3>",
     "assets/roadmap/home-assistant.png",
@@ -139,7 +152,13 @@ def main() -> int:
 
     if "js/theme-init.js" not in audit.scripts or "js/main.js" not in audit.scripts:
         errors.append("required appearance/navigation scripts missing")
-    for required_css in ("css/style.css", "css/glaze.css", "css/glaze-v1.3.0.css", "css/glaze-polish.css"):
+    for required_css in (
+        "css/style.css",
+        "css/glaze.css",
+        "css/glaze-v1.3.0.css",
+        "css/glaze-polish.css",
+        "css/homepage-v7.css",
+    ):
         if required_css not in audit.styles: errors.append(f"required stylesheet missing: {required_css}")
     if html.index('<script src="js/theme-init.js"></script>') > html.index('<link rel="stylesheet"'):
         errors.append("theme-init must run before first stylesheet")

@@ -50,13 +50,30 @@ def normalize_homepage(source: str) -> str:
         "Six substantive platform systems",
         "Ten independently deployed public destinations",
         "Eleven official surfaces",
+        "Privacy-First Personal & Family Cloud",
+        "personal and family cloud",
+        "family digital foundation",
+        "More than a homelab.",
+        "Built deliberately from the beginning.",
+        "started in 2026 as a self-hosting plan",
+        "want to talk self-hosting",
     ):
         if stale in source:
             raise ValueError(f"superseded current-state wording remains on homepage: {stale}")
     if "Thirteen official surfaces" not in source:
         raise ValueError("homepage must identify the authoritative 13-site public surface")
+    if "45 verified Suite products" not in source or "9 functional product groups" not in source:
+        raise ValueError("homepage must identify the authoritative 45-product / 9-group Suite model")
     if "seven Integral Platform Systems" not in source:
         raise ValueError("homepage must identify the seven-system platform model")
+    for marker in (
+        'href="css/homepage-v7.css"',
+        'class="ecosystem-panel"',
+        'class="ecosystem-metrics"',
+        "official public website surfaces",
+    ):
+        if marker not in source:
+            raise ValueError(f"homepage missing current ecosystem presentation marker: {marker}")
     if "source migration does not establish" not in source.lower():
         raise ValueError("homepage must preserve source/deployment acceptance separation")
     return source
