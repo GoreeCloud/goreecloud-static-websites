@@ -1,4 +1,4 @@
-name: Validate Manager static site
+name: Validate Manager public-site publication
 
 on:
   pull_request:
@@ -16,15 +16,16 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  manager-publication:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
-      - name: Check out exact website candidate
+      - name: Check out exact Manager publication candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
+
       - name: Check out pinned GLAZE UI V1.3 Stable source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -32,15 +33,37 @@ jobs:
           ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
           path: .glaze-ui
           persist-credentials: false
-      - name: Compile website tools
-        run: python -m py_compile sites/manager/scripts/build_public_site.py sites/manager/scripts/validate_public_site.py
-      - name: Validate V1.3 source contract
-        run: python sites/manager/scripts/validate_public_site.py
-      - name: Build exact V1.3 public candidate
+
+      - name: Compile Manager build and verification tools
+        run: >-
+          python -m py_compile
+          sites/manager/scripts/build_public_site.py
+          sites/manager/scripts/validate_public_site.py
+          sites/manager/scripts/verify_public_deployment.py
+          sites/manager/scripts/browser_responsive_smoke.py
+          sites/manager/scripts/browser_production_smoke.py
+
+      - name: Validate Manager source contract
+        run: |
+          python sites/manager/scripts/validate_public_site.py
+          python sites/manager/scripts/verify_public_deployment.py --check-config
+          node --check sites/manager/site.js
+
+      - name: Build reviewed Manager artifact
         env:
           GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python sites/manager/scripts/build_public_site.py
-      - name: Validate built V1.3 artifact
+
+      - name: Validate reviewed Manager artifact
         run: python sites/manager/scripts/validate_public_site.py --dist
-      - name: Validate JavaScript syntax
-        run: node --check sites/manager/site.js
+
+      - name: Exercise exact candidate responsive rendering
+        run: python sites/manager/scripts/browser_responsive_smoke.py
+
+      - name: Verify canonical Manager production publication
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/manager/scripts/verify_public_deployment.py
+
+      - name: Verify canonical Manager production rendering
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/manager/scripts/browser_production_smoke.py
