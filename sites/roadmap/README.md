@@ -10,8 +10,8 @@ The Roadmap is a public, evidence-scoped view of GoreeCloud development directio
 - Exact Stable source revision: `8354308445da9ac35ced2b37a7f503a08a0aaf72`
 - Consumer state: `source-migrated-rendered-acceptance-pending`
 - Canonical static-site repository: `GoreeCloud/goreecloud-static-websites`
-- Current authoritative registered package scope: **13 websites**
-- Labs: separate candidate scope, not part of the accepted 13-package manifest unless later governed integration is verified
+- Current authoritative registered package scope: **14 websites**
+- Labs: integrated as the fourteenth authoritative-main static-site package; Cloudflare source cutover, exact deployed-revision verification, production acceptance, and indexing release remain separate gates
 
 The current public roadmap uses the seven integral platform-system model and the authoritative Suite Inventory rather than publishing fast-changing repository-count snapshots.
 
