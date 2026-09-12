@@ -26,15 +26,32 @@ permissions:
 jobs:
   design:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - run: python -m py_compile sites/design/website/build.py sites/design/website/validate.py
-      - run: python sites/design/website/validate.py
-      - run: node --check sites/design/website/site.js
+      - name: Compile Design Center build and verification tools
+        run: |
+          python -m py_compile \
+            sites/design/website/build.py \
+            sites/design/website/validate.py \
+            sites/design/website/browser_artifact_smoke.py \
+            sites/design/website/verify_remote.py \
+            sites/design/website/browser_remote_smoke.py
+      - name: Validate and build exact Design Center artifact
+        run: python sites/design/website/validate.py
+      - name: Exercise exact built Design Center artifact in Chrome
+        run: python sites/design/website/browser_artifact_smoke.py
+      - name: Validate Design Center JavaScript syntax
+        run: node --check sites/design/website/site.js
+      - name: Verify canonical Design Center production bytes and headers
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/design/website/verify_remote.py --target production
+      - name: Verify canonical Design Center production rendering
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/design/website/browser_remote_smoke.py
 
   identity:
     runs-on: ubuntu-24.04
