@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /
+
+Sitemap: https://labs.goreecloud.com/sitemap.xml

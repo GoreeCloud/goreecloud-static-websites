@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" data-theme="system" data-glaze-version="1.3.0">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="GoreeCloud Labs is the public development center for emerging products, native rebuilds, infrastructure work, developer tools, home systems, AI, and experimental GoreeCloud services.">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="goreecloud-glaze-ui" content="1.3.0">
+  <link rel="canonical" href="https://labs.goreecloud.com/">
+  <link rel="icon" href="/assets/goreecloud-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/site.css">
+  <title>GoreeCloud Labs — Development Center</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-grid">
+      <a class="brand" href="#top" aria-label="GoreeCloud Labs home">
+        <img src="/assets/goreecloud-logo.svg" alt="" width="40" height="40">
+        <span><strong>GoreeCloud</strong><small>Labs</small></span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#workstreams">Workstreams</a>
+        <a href="#platform-systems">Platform systems</a>
+        <a href="#principles">Principles</a>
+        <a href="https://github.com/GoreeCloud">Source</a>
+      </nav>
+      <div class="theme-group" role="group" aria-label="Appearance">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="top" class="shell hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Development center · source-backed · fail-closed status</p>
+        <h1>Where GoreeCloud gets built next.</h1>
+        <p class="lede">Labs tracks the products, services, rebuilds, and experiments that need visible engineering attention without turning plans into release claims. It complements Suite: Suite is the complete product directory; Labs is the development lens.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#workstreams">Explore workstreams</a>
+          <a class="button" href="https://suite.goreecloud.com/">View the full Suite</a>
+        </div>
+      </div>
+      <aside class="hero-dashboard" aria-label="Labs portfolio summary">
+        <div class="dashboard-head"><img src="/assets/goreecloud-logo.svg" alt="" width="52" height="52"><div><span>GoreeCloud Labs</span><strong>Development observatory</strong></div></div>
+        <div class="metric-grid">
+          <div><strong>27</strong><span>focus workstreams</span></div>
+          <div><strong>6</strong><span>engineering lanes</span></div>
+          <div><strong>45</strong><span>Suite products tracked elsewhere</span></div>
+          <div><strong>7</strong><span>Integral Platform Systems</span></div>
+        </div>
+        <p>Repository existence is not release status. Every lifecycle claim stays project-specific and evidence-backed.</p>
+      </aside>
+    </section>
+
+    <section class="shell boundary-strip" aria-label="Labs boundary">
+      <strong>Labs is not a release channel.</strong>
+      <span>It surfaces work that is being created, rebuilt, migrated, qualified, or explored. Stable and production acceptance remain separate.</span>
+    </section>
+
+    <section id="workstreams" class="section shell">
+      <div class="section-heading">
+        <p class="eyebrow">Development workstreams</p>
+        <h2>More of the work that actually matters.</h2>
+        <p>Filter the public engineering view by lane. The complete 45-product portfolio remains at GoreeCloud Suite.</p>
+      </div>
+      <div class="filter-bar" role="toolbar" aria-label="Filter Labs workstreams">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="intelligence" aria-pressed="false">Intelligence & dev</button>
+        <button type="button" data-filter="home" aria-pressed="false">Home & edge</button>
+        <button type="button" data-filter="platform" aria-pressed="false">Core services</button>
+        <button type="button" data-filter="rebuild" aria-pressed="false">Native rebuilds</button>
+        <button type="button" data-filter="personal" aria-pressed="false">Personal experiences</button>
+        <button type="button" data-filter="extensions" aria-pressed="false">Extensions</button>
+      </div>
+
+      <div class="lane-stack">
+        <section class="lane" data-lane="intelligence" aria-labelledby="lane-intelligence">
+          <div class="lane-heading"><div><p class="lane-kicker">Intelligence & developer tools</p><h3 id="lane-intelligence">Build, understand, automate.</h3></div><span>4 workstreams</span></div>
+          <div class="workstream-grid">
+            <article class="workstream" data-workstream><span class="card-tag">Intelligence</span><h4>GoreeCloud AI</h4><p>Private AI and intelligence experiences under GoreeCloud control.</p><a href="https://github.com/GoreeCloud/goreecloud-ai">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Knowledge</span><h4>GoreeCloud Index</h4><p>Indexing and retrieval services for GoreeCloud-controlled information.</p><a href="https://github.com/GoreeCloud/goreecloud-index">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Developer</span><h4>GoreeCloud Code</h4><p>Developer coding, project, and source-workflow tooling.</p><a href="https://github.com/GoreeCloud/goreecloud-code">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Developer</span><h4>GoreeCloud Terminal</h4><p>Terminal and command-line workflows across GoreeCloud environments.</p><a href="https://github.com/GoreeCloud/goreecloud-terminal">Open source →</a></article>
+          </div>
+        </section>
+
+        <section class="lane" data-lane="home" aria-labelledby="lane-home">
+          <div class="lane-heading"><div><p class="lane-kicker">Home & edge</p><h3 id="lane-home">Bring GoreeCloud closer to the physical world.</h3></div><span>4 workstreams</span></div>
+          <div class="workstream-grid">
+            <article class="workstream" data-workstream><span class="card-tag">Home</span><h4>GoreeCloud Home</h4><p>Home automation, devices, routines, and household control.</p><a href="https://github.com/GoreeCloud/goreecloud-home">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Home security</span><h4>GoreeCloud Home Security</h4><p>Home-protection monitoring and security workflows.</p><a href="https://github.com/GoreeCloud/goreecloud-home-security">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Network edge</span><h4>GoreeCloud Router OS</h4><p>Router, firewall, and network-edge operating-system work.</p><a href="https://github.com/GoreeCloud/goreecloud-router-os">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">System</span><h4>GoreeCloud Boot</h4><p>Boot media, provisioning, startup, and system-installation workflows.</p><a href="https://github.com/GoreeCloud/goreecloud-boot">Open source →</a></article>
+          </div>
+        </section>
+
+        <section class="lane" data-lane="platform" aria-labelledby="lane-platform">
+          <div class="lane-heading"><div><p class="lane-kicker">Core services</p><h3 id="lane-platform">Build the services products depend on.</h3></div><span>7 workstreams</span></div>
+          <div class="workstream-grid">
+            <article class="workstream" data-workstream><span class="card-tag">Runtime</span><h4>GoreeCloud Containers</h4><p>OCI-compatible container engine, workloads, and administration.</p><a href="https://github.com/GoreeCloud/goreecloud-containers">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Distribution</span><h4>GoreeCloud App Store</h4><p>First-party application discovery, delivery, and ecosystem distribution.</p><a href="https://github.com/GoreeCloud/goreecloud-app-store">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Data movement</span><h4>GoreeCloud Sync</h4><p>Private synchronization, nearby transfer, migration, and sharing.</p><a href="https://github.com/GoreeCloud/goreecloud-sync">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Gateway</span><h4>GoreeCloud Gateway</h4><p>Service-edge and gateway integration for GoreeCloud workloads.</p><a href="https://github.com/GoreeCloud/goreecloud-gateway">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Network</span><h4>GoreeCloud Network</h4><p>Private networking, device enrollment, and remote connectivity.</p><a href="https://github.com/GoreeCloud/goreecloud-network">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">DNS</span><h4>GoreeCloud DNS</h4><p>DNS filtering, resolver administration, and policy control.</p><a href="https://github.com/GoreeCloud/goreecloud-dns">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Observability</span><h4>GoreeCloud Monitor</h4><p>Infrastructure monitoring, health visibility, and observability.</p><a href="https://github.com/GoreeCloud/goreecloud-monitor">Open source →</a></article>
+          </div>
+        </section>
+
+        <section class="lane" data-lane="rebuild" aria-labelledby="lane-rebuild">
+          <div class="lane-heading"><div><p class="lane-kicker">Native product rebuilds</p><h3 id="lane-rebuild">Replace transitional foundations with GoreeCloud-owned products.</h3></div><span>7 workstreams</span></div>
+          <div class="workstream-grid">
+            <article class="workstream" data-workstream><span class="card-tag">Discovery</span><h4>GoreeCloud Search</h4><p>Native private search and GoreeCloud-controlled discovery.</p><a href="https://github.com/GoreeCloud/goreecloud-search">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Web</span><h4>GoreeCloud Browser</h4><p>Privacy-first browsing with first-party GoreeCloud integrations.</p><a href="https://github.com/GoreeCloud/goreecloud-browser">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Media</span><h4>GoreeCloud Photos</h4><p>Self-hosted photo/video library, backup, search, and sharing.</p><a href="https://github.com/GoreeCloud/goreecloud-photos">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Media</span><h4>GoreeCloud Video</h4><p>Video-first media library, discovery, playback, and profiles.</p><a href="https://github.com/GoreeCloud/goreecloud-video">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Media</span><h4>GoreeCloud Music</h4><p>Multi-user music library, playback, discovery, and offline listening.</p><a href="https://github.com/GoreeCloud/goreecloud-music">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Communication</span><h4>GoreeCloud Messenger</h4><p>Private messaging and communications under a first-party product model.</p><a href="https://github.com/GoreeCloud/goreecloud-messenger">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Android</span><h4>GoreeCloud Launcher</h4><p>Android launcher, local search, widgets, and home-screen experience.</p><a href="https://github.com/GoreeCloud/goreecloud-launcher">Open source →</a></article>
+          </div>
+        </section>
+
+        <section class="lane" data-lane="personal" aria-labelledby="lane-personal">
+          <div class="lane-heading"><div><p class="lane-kicker">Emerging personal experiences</p><h3 id="lane-personal">Expand GoreeCloud into everyday life.</h3></div><span>4 workstreams</span></div>
+          <div class="workstream-grid">
+            <article class="workstream" data-workstream><span class="card-tag">Personal</span><h4>GoreeCloud Health</h4><p>Personal health and wellness product work.</p><a href="https://github.com/GoreeCloud/goreecloud-health">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Library</span><h4>GoreeCloud Reader</h4><p>Books, comics, manga, magazines, ebooks, and audiobooks.</p><a href="https://github.com/GoreeCloud/goreecloud-reader">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Community</span><h4>GoreeCloud Social</h4><p>First-party social and community experience work.</p><a href="https://github.com/GoreeCloud/goreecloud-social">Open source →</a></article>
+            <article class="workstream" data-workstream><span class="card-tag">Location</span><h4>GoreeCloud Location</h4><p>Private location history, sharing, places, maps, and device tracking.</p><a href="https://github.com/GoreeCloud/goreecloud-location">Open source →</a></article>
+          </div>
+        </section>
+
+        <section class="lane" data-lane="extensions" aria-labelledby="lane-extensions">
+          <div class="lane-heading"><div><p class="lane-kicker">Browser extension ecosystem</p><h3 id="lane-extensions">Extend GoreeCloud into Firefox.</h3></div><span>1 workstream</span></div>
+          <div class="workstream-grid">
+            <article class="workstream featured" data-workstream><span class="card-tag">Extensions</span><h4>GoreeCloud Firefox Extensions</h4><p>Bookmarks, Download Manager Extension, Privacy Shield, Redirector, and Source Resync share a dedicated source and release boundary.</p><a href="https://github.com/GoreeCloud/goreecloud-firefox-extensions">Open extension source →</a></article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="platform-systems" class="section platform-section">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div><p class="eyebrow">Integral Platform Systems</p><h2>Labs observes them. It does not replace their authority.</h2></div>
+          <p>The seven Integral Platform Systems remain separately governed and separately accepted. Labs links to their dedicated public centers where available.</p>
+        </div>
+        <div class="platform-grid">
+          <a href="https://manage.goreecloud.com/"><strong>GoreeCloud Manager</strong><span>Administration & operations</span></a>
+          <a href="https://id.goreecloud.com/"><strong>GoreeCloud Identity</strong><span>Identity & authentication</span></a>
+          <a href="https://design.goreecloud.com/"><strong>Glaze UI</strong><span>Visual & interaction system</span></a>
+          <a href="https://security.goreecloud.com/"><strong>Wardveil Security</strong><span>Security authority</span></a>
+          <a href="https://privacy.goreecloud.com/"><strong>Privacy Shield</strong><span>Privacy authority</span></a>
+          <a href="https://everkeep.goreecloud.com/"><strong>Everkeep</strong><span>Continuity & recovery</span></a>
+          <a href="https://mesh.goreecloud.com/"><strong>GoreeCloud Mesh</strong><span>Coordination fabric</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="principles" class="section shell">
+      <div class="section-heading"><p class="eyebrow">Labs principles</p><h2>Show real work without pretending it is finished.</h2></div>
+      <div class="principle-grid">
+        <article><strong>Source-backed</strong><p>Every listed workstream maps to a verified GoreeCloud repository.</p></article>
+        <article><strong>Fail-closed lifecycle</strong><p>Repository presence never becomes a Stable or production claim.</p></article>
+        <article><strong>Native-first</strong><p>The long-term direction is GoreeCloud-owned product software, with narrow mature dependencies retained only where justified.</p></article>
+        <article><strong>No fabricated identity</strong><p>Approved artwork is used where available; neutral presentation is preferred over invented official branding.</p></article>
+        <article><strong>Public-safe</strong><p>Labs communicates product direction without exposing private operations or internal-only system detail.</p></article>
+        <article><strong>Separate authorities</strong><p>Suite, platform systems, repositories, and release evidence keep their own controlling roles.</p></article>
+      </div>
+    </section>
+
+    <section class="shell closing-card">
+      <div><p class="eyebrow">Keep exploring</p><h2>Labs is the development lens. Suite is the complete product map.</h2><p>Use Labs to follow active engineering focus, Suite to browse the whole GoreeCloud portfolio, and Projects to inspect broader public project context.</p></div>
+      <div class="closing-actions"><a class="button primary" href="https://suite.goreecloud.com/">Open Suite</a><a class="button" href="https://projects.goreecloud.com/">Open Projects</a></div>
+    </section>
+  </main>
+
+  <footer><div class="shell footer-grid"><div class="footer-brand"><img src="/assets/goreecloud-logo.svg" alt="" width="34" height="34"><div><strong>GoreeCloud Labs</strong><span>Public development center</span></div></div><p>GLAZE UI V1.3 target · public-safe development visibility · lifecycle claims remain evidence-scoped</p></div></footer>
+  <script src="/site.js" defer></script>
+</body>
+</html>
