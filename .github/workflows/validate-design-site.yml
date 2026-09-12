@@ -1,0 +1,44 @@
+name: Validate Design Center
+
+on:
+  pull_request:
+    paths:
+      - 'sites/design/**'
+      - '.github/workflows/validate-design-site.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/design/**'
+      - '.github/workflows/validate-design-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: design-center-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Compile Design Center tooling
+        run: python3 -m py_compile sites/design/website/build.py sites/design/website/validate.py sites/design/website/browser_artifact_smoke.py sites/design/website/browser_header_smoke.py
+      - name: Validate and build Design Center source
+        working-directory: sites/design/website
+        run: python3 validate.py
+      - name: Exercise built artifact in Chrome
+        working-directory: sites/design/website
+        run: python3 browser_artifact_smoke.py
+      - name: Verify wide desktop branding in Chrome
+        working-directory: sites/design/website
+        run: python3 browser_header_smoke.py
+      - name: Check Design Center JavaScript syntax
+        run: node --check sites/design/website/site.js
