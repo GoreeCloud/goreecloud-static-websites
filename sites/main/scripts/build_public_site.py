@@ -9,6 +9,7 @@ build time and remains subject to independent rendered/deployment acceptance.
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import shutil
 import sys
 
@@ -151,6 +152,22 @@ def reject_symlink(path: Path) -> None:
         raise ValueError(f"Deployable source must not be a symlink: {path.relative_to(ROOT)}")
 
 
+def verify_homepage_stylesheet_closure() -> None:
+    index_path = DIST / "index.html"
+    html = index_path.read_text(encoding="utf-8")
+    hrefs = re.findall(r'<link\b[^>]*\brel=["\']stylesheet["\'][^>]*\bhref=["\']([^"\']+)["\']', html, flags=re.IGNORECASE)
+    hrefs += re.findall(r'<link\b[^>]*\bhref=["\']([^"\']+)["\'][^>]*\brel=["\']stylesheet["\']', html, flags=re.IGNORECASE)
+    missing: list[str] = []
+    for href in sorted(set(hrefs)):
+        if href.startswith(("http://", "https://", "//", "data:")):
+            continue
+        relative = href.split("?", 1)[0].split("#", 1)[0].lstrip("/")
+        if relative and not (DIST / relative).is_file():
+            missing.append(relative)
+    if missing:
+        raise ValueError("homepage references stylesheet(s) missing from dist: " + ", ".join(missing))
+
+
 def main() -> int:
     try:
         if len(PUBLIC_FILES) != len(set(PUBLIC_FILES)):
@@ -192,6 +209,8 @@ def main() -> int:
             target = DIST / "css" / name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
+
+        verify_homepage_stylesheet_closure()
 
     except (OSError, ValueError) as exc:
         return fail(str(exc))
