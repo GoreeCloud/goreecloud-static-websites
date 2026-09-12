@@ -5,6 +5,11 @@ on:
     paths:
       - 'sites/everkeep/**'
       - '.github/workflows/validate-everkeep-publication.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/everkeep/**'
+      - '.github/workflows/validate-everkeep-publication.yml'
   workflow_dispatch:
 
 permissions:
@@ -13,7 +18,7 @@ permissions:
 jobs:
   everkeep-publication:
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - name: Check out exact verification candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -93,10 +98,19 @@ jobs:
       - name: Exercise exact candidate responsive rendering
         run: python sites/everkeep/scripts/browser_responsive_smoke.py
 
-      - name: Verify canonical Continuity Center production publication
-        if: github.event_name == 'workflow_dispatch'
-        run: python sites/everkeep/scripts/verify_production.py
+      - name: Wait for exact merged Continuity Center publication
+        if: github.event_name != 'pull_request'
+        run: |
+          for attempt in $(seq 1 24); do
+            if python sites/everkeep/scripts/verify_production.py; then
+              exit 0
+            fi
+            echo "Continuity Center production does not yet match the reviewed artifact (attempt ${attempt}/24); waiting 10 seconds for Cloudflare publication."
+            sleep 10
+          done
+          echo "Continuity Center production failed to converge to the reviewed artifact."
+          exit 1
 
       - name: Verify canonical Continuity Center production rendering
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name != 'pull_request'
         run: python sites/everkeep/scripts/browser_production_smoke.py
