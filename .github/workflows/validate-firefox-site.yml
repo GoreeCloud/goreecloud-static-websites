@@ -48,6 +48,7 @@ jobs:
         run: |
           python -m py_compile \
             sites/firefox/validate.py \
+            sites/firefox/browser_smoke.py \
             scripts/build_simple_static_site.py \
             scripts/validate_simple_static_site.py \
             scripts/simple_static_publication.py \
@@ -65,7 +66,7 @@ jobs:
       - name: Validate Firefox built artifact
         run: python scripts/validate_simple_static_site.py sites/firefox --dist
       - name: Exercise exact built Firefox artifact in Chrome
-        run: python scripts/browser_simple_static_site.py firefox
+        run: python sites/firefox/browser_smoke.py
       - name: Verify canonical Firefox production bytes and headers
         if: github.event_name == 'workflow_dispatch'
         run: python scripts/verify_simple_static_deployment.py firefox --target production
