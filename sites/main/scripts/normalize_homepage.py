@@ -66,6 +66,14 @@ def normalize_homepage(source: str) -> str:
         raise ValueError("homepage must identify the authoritative 45-product / 9-group Suite model")
     if "seven Integral Platform Systems" not in source:
         raise ValueError("homepage must identify the seven-system platform model")
+    for marker in (
+        'href="css/homepage-v7.css"',
+        'class="ecosystem-panel"',
+        'class="ecosystem-metrics"',
+        "official public website surfaces",
+    ):
+        if marker not in source:
+            raise ValueError(f"homepage missing current ecosystem presentation marker: {marker}")
     if "source migration does not establish" not in source.lower():
         raise ValueError("homepage must preserve source/deployment acceptance separation")
     return source
