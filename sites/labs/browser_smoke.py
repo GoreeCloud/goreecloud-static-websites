@@ -46,7 +46,8 @@ def state(s):
     const visible=e=>{const r=e.getBoundingClientRect(),cs=getComputedStyle(e);return cs.display!=='none'&&cs.visibility!=='hidden'&&r.width>0&&r.height>0};
     const cols=e=>getComputedStyle(e).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
     const cards=[...document.querySelectorAll('[data-workstream]')]; const lanes=[...document.querySelectorAll('[data-lane]')];
-    return {title:document.title,width:innerWidth,scrollWidth:document.documentElement.scrollWidth,workstreams:cards.length,lanes:lanes.length,visibleLanes:lanes.filter(visible).length,broken:[...document.images].filter(i=>!i.complete||i.naturalWidth<=0).map(i=>i.src),minNav:Math.min(...[...document.querySelectorAll('.site-header a,.theme-group button')].filter(visible).map(e=>e.getBoundingClientRect().height)),columns:[...document.querySelectorAll('.workstream-grid')].filter(visible).map(cols)};
+    const offenders=[...document.querySelectorAll('body *')].filter(visible).map(e=>{const r=e.getBoundingClientRect();return {tag:e.tagName.toLowerCase(),className:String(e.className||''),left:Math.round(r.left*100)/100,right:Math.round(r.right*100)/100,width:Math.round(r.width*100)/100,text:(e.textContent||'').trim().replace(/\s+/g,' ').slice(0,80)}}).filter(x=>x.left < -1 || x.right > innerWidth+1).slice(0,20);
+    return {title:document.title,width:innerWidth,scrollWidth:document.documentElement.scrollWidth,workstreams:cards.length,lanes:lanes.length,visibleLanes:lanes.filter(visible).length,broken:[...document.images].filter(i=>!i.complete||i.naturalWidth<=0).map(i=>i.src),minNav:Math.min(...[...document.querySelectorAll('.site-header a,.theme-group button')].filter(visible).map(e=>e.getBoundingClientRect().height)),columns:[...document.querySelectorAll('.workstream-grid')].filter(visible).map(cols),offenders};
     """)
 def exercise(s):
     req('POST',f'/session/{s}/url',{'url':TARGET})
