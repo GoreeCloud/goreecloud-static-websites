@@ -152,7 +152,13 @@ def main() -> int:
 
     if "js/theme-init.js" not in audit.scripts or "js/main.js" not in audit.scripts:
         errors.append("required appearance/navigation scripts missing")
-    for required_css in ("css/style.css", "css/glaze.css", "css/glaze-v1.3.0.css", "css/glaze-polish.css"):
+    for required_css in (
+        "css/style.css",
+        "css/glaze.css",
+        "css/glaze-v1.3.0.css",
+        "css/glaze-polish.css",
+        "css/homepage-v7.css",
+    ):
         if required_css not in audit.styles: errors.append(f"required stylesheet missing: {required_css}")
     if html.index('<script src="js/theme-init.js"></script>') > html.index('<link rel="stylesheet"'):
         errors.append("theme-init must run before first stylesheet")
