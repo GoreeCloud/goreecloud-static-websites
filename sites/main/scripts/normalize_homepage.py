@@ -32,11 +32,11 @@ PLATFORM_SYSTEM_LABELS = (
 
 PUBLIC_PROFILES = (
     ("Instagram", "@goreecloud", "Visual progress and demonstrations", "https://instagram.com/goreecloud", "assets/social/instagram.ico", "IG"),
-    ("Threads", "@goreecloud", "Conversations and community updates", "https://www.threads.com/@goreecloud", None, "TH"),
-    ("TikTok", "@goreecloud", "Short-form video and demonstrations", "https://www.tiktok.com/@goreecloud", None, "TT"),
+    ("Threads", "@goreecloud", "Conversations and community updates", "https://www.threads.com/@goreecloud", "assets/social/threads.ico", "TH"),
+    ("TikTok", "@goreecloud", "Short-form video and demonstrations", "https://www.tiktok.com/@goreecloud", "assets/social/tiktok.ico", "TT"),
     ("X", "@GoreeCloud", "Concise technical updates and announcements", "https://x.com/GoreeCloud", "assets/social/x.ico", "X"),
-    ("Reddit", "u/goreecloud", "Detailed technical discussions", "https://www.reddit.com/user/goreecloud/", None, "RD"),
-    ("Pinterest", "@goreecloud", "Evergreen visual discovery and references", "https://www.pinterest.com/goreecloud/", None, "PI"),
+    ("Reddit", "u/goreecloud", "Detailed technical discussions", "https://www.reddit.com/user/goreecloud/", "assets/social/reddit.ico", "RD"),
+    ("Pinterest", "@goreecloud", "Evergreen visual discovery and references", "https://www.pinterest.com/goreecloud/", "assets/social/pinterest.ico", "PI"),
     ("YouTube", "@GoreeCloud", "Long-form video and demonstrations", "https://www.youtube.com/@GoreeCloud", "assets/social/youtube.ico", "YT"),
     ("GitHub", "GoreeCloud", "Public source and development history", "https://github.com/GoreeCloud", "assets/social/github.ico", "GH"),
 )
