@@ -1,0 +1,42 @@
+name: Validate Labs development center
+
+on:
+  pull_request:
+    paths:
+      - 'sites/labs/**'
+      - '.github/workflows/validate-labs-site.yml'
+      - 'sites/manifest.json'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/labs/**'
+      - '.github/workflows/validate-labs-site.yml'
+      - 'sites/manifest.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+      - name: Compile Labs tooling
+        run: python3 -m py_compile sites/labs/build.py sites/labs/validate.py sites/labs/browser_smoke.py
+      - name: Validate source
+        working-directory: sites/labs
+        run: python3 validate.py
+      - name: Exercise exact built artifact in Chrome
+        working-directory: sites/labs
+        run: python3 browser_smoke.py
+      - name: Check JavaScript syntax
+        run: node --check sites/labs/site.js
+      - name: Assert publication contract
+        run: |
+          grep -F 'Canonical repository: `GoreeCloud/goreecloud-static-websites`' sites/labs/README.md
+          grep -F 'Site root: `sites/labs`' sites/labs/README.md
+          grep -F 'Build command: `python3 build.py`' sites/labs/README.md
+          grep -F 'Build output directory: `dist`' sites/labs/README.md
+          grep -F 'labs.goreecloud.com' sites/labs/index.html
