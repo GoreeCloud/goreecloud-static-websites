@@ -171,7 +171,8 @@ def read_state(session_id: str) -> dict[str, Any]:
         const controls=[...document.querySelectorAll('header nav a, header button')].filter(visible);
         const styles=[...document.querySelectorAll('link[rel="stylesheet"]')].map(link=>({href:link.href,loaded:Boolean(link.sheet)}));
         const images=[...document.images];
-        const bodyRegions=[...document.body.children].filter(visible).map(node=>({tag:node.tagName.toLowerCase(),className:node.className||'',rect:rect(node)}));
+        const skip=document.querySelector('.skip-link');
+        const bodyRegions=[...document.body.children].filter(node=>node!==skip&&visible(node)).map(node=>({tag:node.tagName.toLowerCase(),className:node.className||'',rect:rect(node)}));
         return {
           ready:document.readyState,
           title:document.title,
@@ -188,10 +189,32 @@ def read_state(session_id: str) -> dict[str, Any]:
           styles,
           brokenImages:images.filter(img=>!img.complete||img.naturalWidth<=0).map(img=>img.getAttribute('src')),
           bodyRegions,
+          skipLinkExists:Boolean(skip),
         };
         """,
     )
     require(isinstance(state, dict), f"Could not read simple-static responsive state: {state!r}")
+    return state
+
+
+def inspect_skip_link(session_id: str) -> dict[str, Any] | None:
+    state = execute(
+        session_id,
+        """
+        const link=document.querySelector('.skip-link');
+        if(!link)return null;
+        const rect=node=>{const r=node.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};};
+        const before=rect(link);
+        link.focus();
+        const after=rect(link);
+        const active=document.activeElement===link;
+        link.blur();
+        return {active,before,after};
+        """,
+    )
+    if state is None:
+        return None
+    require(isinstance(state, dict), f"Could not inspect simple-static skip link: {state!r}")
     return state
 
 
@@ -225,6 +248,18 @@ def exercise(session_id: str, url: str, expected_title: str, canonical_host: str
         for region in state.get("bodyRegions") or []:
             r = region.get("rect") or {}
             require(float(r.get("left", -999)) >= -1 and float(r.get("right", 99999)) <= width + 1, f"Simple-static top-level region escapes viewport at {width}px: {region}; full state={state}")
+
+        if state.get("skipLinkExists"):
+            skip = inspect_skip_link(session_id)
+            require(skip is not None and skip.get("active") is True, f"Simple-static skip link could not receive focus at {width}px: {skip}")
+            focused = skip.get("after") or {}
+            require(
+                float(focused.get("left", -999)) >= -1
+                and float(focused.get("right", 99999)) <= width + 1
+                and float(focused.get("top", -999)) >= -1
+                and float(focused.get("bottom", 99999)) <= height + 1,
+                f"Simple-static skip link is not viewport-contained when focused at {width}px: {skip}",
+            )
 
 
 def main() -> int:
