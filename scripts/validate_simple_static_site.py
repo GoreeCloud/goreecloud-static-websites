@@ -55,9 +55,19 @@ for page_name, page in (("index.html", index), ("404.html", error)):
         if stale in page:
             raise SystemExit(f"{page_name} activates superseded Glaze source: {stale}")
 
-for required_header in ("Content-Security-Policy:", "X-Content-Type-Options: nosniff", "frame-ancestors 'none'", "Permissions-Policy:"):
+for required_header in (
+    "Content-Security-Policy:",
+    "X-Content-Type-Options: nosniff",
+    "frame-ancestors 'none'",
+    "Permissions-Policy:",
+    "Cross-Origin-Opener-Policy: same-origin",
+    "Cross-Origin-Resource-Policy: same-origin",
+    "Strict-Transport-Security: max-age=31536000",
+):
     if required_header not in headers:
         raise SystemExit(f"required security header missing: {required_header}")
+if any(line.strip() == "}" for line in headers.splitlines()):
+    raise SystemExit("malformed stray closing brace remains in simple-static _headers")
 for prohibited in ("google-analytics", "googletagmanager", "fonts.googleapis.com", "segment.com"):
     if prohibited in (index + error).lower():
         raise SystemExit(f"prohibited runtime dependency: {prohibited}")

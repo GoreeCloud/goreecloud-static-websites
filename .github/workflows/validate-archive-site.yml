@@ -6,6 +6,10 @@ on:
       - 'sites/archive/**'
       - 'scripts/build_simple_static_site.py'
       - 'scripts/validate_simple_static_site.py'
+      - 'scripts/simple_static_publication.py'
+      - 'scripts/browser_simple_static_site.py'
+      - 'scripts/verify_simple_static_deployment.py'
+      - 'scripts/browser_simple_static_remote.py'
       - '.github/workflows/validate-archive-site.yml'
   push:
     branches: [main]
@@ -13,6 +17,10 @@ on:
       - 'sites/archive/**'
       - 'scripts/build_simple_static_site.py'
       - 'scripts/validate_simple_static_site.py'
+      - 'scripts/simple_static_publication.py'
+      - 'scripts/browser_simple_static_site.py'
+      - 'scripts/verify_simple_static_deployment.py'
+      - 'scripts/browser_simple_static_remote.py'
       - '.github/workflows/validate-archive-site.yml'
   workflow_dispatch:
 
@@ -22,7 +30,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Check out exact website candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -36,8 +44,15 @@ jobs:
           ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
           path: .glaze-ui
           persist-credentials: false
-      - name: Compile central builder and validator
-        run: python -m py_compile scripts/build_simple_static_site.py scripts/validate_simple_static_site.py
+      - name: Compile Archive publication tools
+        run: |
+          python -m py_compile \
+            scripts/build_simple_static_site.py \
+            scripts/validate_simple_static_site.py \
+            scripts/simple_static_publication.py \
+            scripts/browser_simple_static_site.py \
+            scripts/verify_simple_static_deployment.py \
+            scripts/browser_simple_static_remote.py
       - name: Validate Archive V1.3 source contract
         run: python scripts/validate_simple_static_site.py sites/archive
       - name: Build exact Archive V1.3 artifact
@@ -46,3 +61,11 @@ jobs:
         run: python scripts/build_simple_static_site.py sites/archive
       - name: Validate Archive built artifact
         run: python scripts/validate_simple_static_site.py sites/archive --dist
+      - name: Exercise exact built Archive artifact in Chrome
+        run: python scripts/browser_simple_static_site.py archive
+      - name: Verify canonical Archive production bytes and headers
+        if: github.event_name == 'workflow_dispatch'
+        run: python scripts/verify_simple_static_deployment.py archive --target production
+      - name: Verify canonical Archive production rendering
+        if: github.event_name == 'workflow_dispatch'
+        run: python scripts/browser_simple_static_remote.py archive
