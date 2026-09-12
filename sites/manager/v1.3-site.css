@@ -4,6 +4,7 @@
  * application/runtime, platform-integration, and production acceptance remain separate.
  */
 :root{--manager-v13-control:48px;--manager-v13-control-assisted:56px}
+html,body{overflow-x:clip}
 :is(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-accent,currentColor);outline-offset:3px}
 .site-header a,.site-header button,.actions a,.footer-row a{min-height:var(--manager-v13-control)}
 .glaze-card,.status-card,.manager-visual{border-color:var(--glaze-line,currentColor)}
