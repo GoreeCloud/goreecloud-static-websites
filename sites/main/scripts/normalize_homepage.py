@@ -30,7 +30,7 @@ PLATFORM_SYSTEM_LABELS = (
     "GoreeCloud Manager",
 )
 
-LABS_CARD = """<article class=\"service-card website-card website-labs\"><div class=\"website-card-body\"><div class=\"website-card-head\"><span class=\"website-mark\" aria-hidden=\"true\">LB</span><span class=\"badge growing\">Product center</span></div><p class=\"service-kicker\">labs.goreecloud.com</p><h3>GoreeCloud Labs</h3><p>Public development center for GoreeCloud Home Security, Home, AI, Containers, Code, and Boot, with lifecycle claims kept evidence-scoped.</p><a class=\"website-link\" href=\"https://labs.goreecloud.com/\">Open destination →</a></div></article>"""
+LABS_CARD = """<article class=\"service-card website-card website-labs\"><div class=\"website-card-body\"><div class=\"website-card-head\"><span class=\"website-mark\" aria-hidden=\"true\">LB</span><span class=\"badge growing\">Product center</span></div><p class=\"service-kicker\">labs.goreecloud.com</p><h3>GoreeCloud Labs</h3><p>Public development center for GoreeCloud Home Security, GoreeCloud Home, GoreeCloud AI, GoreeCloud Containers, GoreeCloud Code, and GoreeCloud Boot, with lifecycle claims kept evidence-scoped.</p><a class=\"website-link\" href=\"https://labs.goreecloud.com/\">Open destination →</a></div></article>"""
 
 
 def _sync_public_directory(source: str) -> str:
