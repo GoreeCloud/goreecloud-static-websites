@@ -188,6 +188,14 @@
   }
 }
 
+@media (max-width: 720px) {
+  /* Match the compact Glaze header shell exactly instead of letting durable
+   * page content keep the wider desktop gutter at phone widths. */
+  #main .container {
+    width: min(calc(100% - 1.4rem), var(--homepage-container));
+  }
+}
+
 @media (max-width: 520px) {
   .ecosystem-panel {
     padding: 1rem;
