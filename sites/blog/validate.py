@@ -28,8 +28,10 @@ required = (
     "public experience",
     "GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security",
     "without turning portfolio membership into a Stable or production claim",
-    "13 registered static website packages",
+    "14 registered static website packages",
     "GoreeCloud/goreecloud-static-websites",
+    "Labs is integrated as the fourteenth authoritative-main package",
+    "production acceptance, and indexing release remain separate gates",
 )
 for needle in required:
     if needle not in html:
@@ -43,6 +45,8 @@ stale_current_claims = (
     "Glaze UI 2.1",
     "GLAZE UI 2.1",
     "identity.goreecloud.com",
+    "13 registered static website packages",
+    "Labs remains separate candidate scope",
 )
 for stale in stale_current_claims:
     if stale in html:
@@ -61,4 +65,4 @@ for prohibited in ("google-analytics", "googletagmanager", "segment.com"):
     if prohibited in html.lower():
         raise SystemExit(f"prohibited Blog runtime dependency: {prohibited}")
 
-print("GoreeCloud Blog current V1.3, seven-system, 45-product, nine-group, and 13-package public direction validated")
+print("GoreeCloud Blog current V1.3, seven-system, 45-product, nine-group, and 14-package public direction validated")
