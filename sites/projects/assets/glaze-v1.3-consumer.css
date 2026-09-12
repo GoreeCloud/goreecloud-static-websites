@@ -145,6 +145,12 @@ body.glaze-canvas{
     min-height:var(--projects-v13-touch-assisted);
   }
 }
+/* Touch Assistance is an explicit user/runtime request and must not depend on
+ * the browser also reporting a coarse pointer. Keep the same 56px contract for
+ * the assisted state so keyboard/mouse-capable touch devices remain covered. */
+html[data-glaze-touch-assistance="true"] :is(.topbar nav a,.theme-group button,.filter,.glaze-button,.card footer a,.foundation-strip a,.search input){
+  min-height:var(--projects-v13-touch-assisted);
+}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
   .card:hover{transform:none}
