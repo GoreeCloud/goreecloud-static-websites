@@ -18,7 +18,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Check out exact website candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -26,8 +26,25 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Compile Projects verification tools
-        run: python -m py_compile sites/projects/validate.py sites/projects/browser_smoke.py sites/projects/mobile_smoke.py sites/projects/verify_remote.py
+        run: |
+          python -m py_compile \
+            sites/projects/validate.py \
+            sites/projects/browser_smoke.py \
+            sites/projects/mobile_smoke.py \
+            sites/projects/browser_source_smoke.py \
+            sites/projects/verify_remote.py
       - name: Validate Projects source contract
         run: python sites/projects/validate.py
+      - name: Exercise exact centralized Projects source in Chrome
+        run: python sites/projects/browser_source_smoke.py
       - name: Validate Projects JavaScript syntax
         run: node --check sites/projects/assets/app.js && node --check sites/projects/assets/suite-portfolio.js && node --check sites/projects/assets/icon-refresh.js
+      - name: Verify canonical Projects production bytes and headers
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/projects/verify_remote.py --target production
+      - name: Verify canonical Projects production desktop runtime
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/projects/browser_smoke.py --target production --browser chrome
+      - name: Verify canonical Projects production mobile rendering
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/projects/mobile_smoke.py --target production --browser chrome

@@ -51,6 +51,10 @@ body.glaze-canvas{
 .hero{
   position:relative;
   isolation:isolate;
+  /* The V1.3 resonance orb is decorative paint positioned beyond the hero.
+   * Clip it without introducing a scroll container so it cannot widen the
+   * document while real content geometry remains independently testable. */
+  overflow:clip;
 }
 .hero::after{
   content:"";
@@ -88,6 +92,11 @@ body.glaze-canvas{
 }
 .foundation-strip a{min-height:var(--projects-v13-touch)}
 .card{
+  /* Durable directory content is an information surface, not transient chrome.
+   * Keep the base presentation optically solid even though navigation/control
+   * surfaces may retain Glaze blur. */
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
   transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
 }
 .card:hover{
@@ -135,6 +144,12 @@ body.glaze-canvas{
   .topbar nav a,.theme-group button,.filter,.glaze-button,.card footer a,.foundation-strip a,.search input{
     min-height:var(--projects-v13-touch-assisted);
   }
+}
+/* Touch Assistance is an explicit user/runtime request and must not depend on
+ * the browser also reporting a coarse pointer. Keep the same 56px contract for
+ * the assisted state so keyboard/mouse-capable touch devices remain covered. */
+html[data-glaze-touch-assistance="true"] :is(.topbar nav a,.theme-group button,.filter,.glaze-button,.card footer a,.foundation-strip a,.search input){
+  min-height:var(--projects-v13-touch-assisted);
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
