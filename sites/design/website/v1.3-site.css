@@ -86,3 +86,19 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid 
 @media (prefers-contrast:more){:root{--v13-line:currentColor}.glaze-card,.surface-card,.principle-card,.release-card,.adoption,.hero{box-shadow:none}}
 @media (forced-colors:active){.site-header,.hero,.hero-identity,.glaze-card,.surface-card,.principle-card,.release-card,.adoption,.glaze-button{forced-color-adjust:auto;background:Canvas;color:CanvasText;border:1px solid CanvasText;box-shadow:none}.glaze-button[data-variant="emphasis"]{background:Highlight;color:HighlightText}.eyebrow{color:LinkText}}
 @media print{.site-header,.actions{display:none!important}body.glaze-canvas{background:#fff;color:#000}.hero,.glaze-card,.surface-card,.principle-card,.release-card,.adoption{box-shadow:none;background:#fff;border:1px solid #bbb}.section-block{break-inside:avoid}}
+
+/* Header composition guard: keep brand, primary navigation, and appearance controls in
+ * independent layout tracks so long brand copy cannot paint into the first nav item. */
+@media (min-width:901px){
+  .nav-wrap{display:grid;grid-template-columns:minmax(180px,1fr) auto auto;column-gap:clamp(12px,1.8vw,22px);align-items:center}
+  .brand{min-width:0;overflow:hidden}
+  .brand-label-long{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .site-header nav{margin-left:0;min-width:0;justify-content:center}
+  .theme-group{justify-self:end;margin-left:0}
+}
+@media (min-width:901px) and (max-width:1120px){
+  .brand-label-long{display:none}
+  .brand-label-short{display:inline}
+  .site-header nav a{padding-inline:11px;font-size:.94rem}
+  .theme-group button{padding-inline:11px}
+}
