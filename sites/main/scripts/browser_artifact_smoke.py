@@ -31,6 +31,30 @@ def wait_http(timeout: float = 10) -> None:
     raise smoke.BrowserError(f"local Main artifact server did not become ready: {last}")
 
 
+def overflow_diagnostics(session_id: str) -> object:
+    return smoke.execute(
+        session_id,
+        r"""
+        return [...document.querySelectorAll('body *')].map(node=>{
+          const r=node.getBoundingClientRect();
+          const style=getComputedStyle(node);
+          return {
+            tag:node.tagName.toLowerCase(),
+            id:node.id||'',
+            className:typeof node.className==='string'?node.className.slice(0,140):'',
+            left:Math.round(r.left*100)/100,
+            right:Math.round(r.right*100)/100,
+            width:Math.round(r.width*100)/100,
+            display:style.display,
+            position:style.position,
+            transform:style.transform,
+            text:(node.textContent||'').trim().replace(/\s+/g,' ').slice(0,140),
+          };
+        }).filter(item=>item.width>0&&(item.left<-1||item.right>window.innerWidth+1)).slice(0,32);
+        """,
+    )
+
+
 def main() -> int:
     smoke.require(DIST.is_dir() and (DIST / "index.html").is_file(), "Main dist/ artifact is missing; run build first")
     server: subprocess.Popen[bytes] | None = None
@@ -63,6 +87,13 @@ def main() -> int:
         return 0
     except Exception as error:
         print(f"Main built-artifact responsive Chrome smoke failed: {error}")
+        if session_id:
+            try:
+                offenders = overflow_diagnostics(session_id)
+            except Exception as diagnostic_error:
+                print(f"Viewport overflow diagnostics unavailable: {diagnostic_error}")
+            else:
+                print(f"Viewport overflow offenders: {offenders}")
         if log_path:
             try:
                 text = log_path.read_text(encoding="utf-8", errors="replace")
