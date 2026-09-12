@@ -368,3 +368,86 @@ if (repositoryDirectory) {
     updateRepositoryFilters();
   }
 }
+
+// Public-profile inventory follows the authoritative GoreeCloud social-media record.
+const PUBLIC_PROFILES = [
+  { name: 'Instagram', handle: '@goreecloud', role: 'Visual progress and demonstrations', href: 'https://instagram.com/goreecloud', icon: 'assets/social/instagram.ico', monogram: 'IG' },
+  { name: 'Threads', handle: '@goreecloud', role: 'Conversations and community updates', href: 'https://www.threads.com/@goreecloud', monogram: 'TH' },
+  { name: 'TikTok', handle: '@goreecloud', role: 'Short-form video and demonstrations', href: 'https://www.tiktok.com/@goreecloud', monogram: 'TT' },
+  { name: 'X', handle: '@GoreeCloud', role: 'Concise technical updates and announcements', href: 'https://x.com/GoreeCloud', icon: 'assets/social/x.ico', monogram: 'X' },
+  { name: 'Reddit', handle: 'u/goreecloud', role: 'Detailed technical discussions', href: 'https://www.reddit.com/user/goreecloud/', monogram: 'RD' },
+  { name: 'Pinterest', handle: '@goreecloud', role: 'Evergreen visual discovery and references', href: 'https://www.pinterest.com/goreecloud/', monogram: 'PI' },
+  { name: 'YouTube', handle: '@GoreeCloud', role: 'Long-form video and demonstrations', href: 'https://www.youtube.com/@GoreeCloud', icon: 'assets/social/youtube.ico', monogram: 'YT' },
+  { name: 'GitHub', handle: 'GoreeCloud', role: 'Public source and development history', href: 'https://github.com/GoreeCloud', icon: 'assets/social/github.ico', monogram: 'GH' },
+];
+
+function createPublicProfileLink(profile, { compact = false } = {}) {
+  const link = document.createElement('a');
+  link.href = profile.href;
+  link.target = '_blank';
+  link.rel = 'me noopener noreferrer';
+  link.setAttribute('aria-label', `${profile.name}: ${profile.handle}`);
+
+  if (compact) {
+    link.className = 'footer-social-link';
+    link.textContent = profile.name;
+    return link;
+  }
+
+  link.className = `social-card${profile.name === 'GitHub' ? ' github-card' : ''}`;
+  const icon = document.createElement('span');
+  icon.className = 'social-icon';
+  icon.setAttribute('aria-hidden', 'true');
+  if (profile.icon) {
+    const image = document.createElement('img');
+    image.src = profile.icon;
+    image.alt = '';
+    image.width = 52;
+    image.height = 52;
+    icon.append(image);
+  } else {
+    const monogram = document.createElement('span');
+    monogram.className = 'social-monogram';
+    monogram.textContent = profile.monogram;
+    icon.append(monogram);
+  }
+
+  const name = document.createElement('strong');
+  name.textContent = profile.name;
+  const handle = document.createElement('span');
+  handle.textContent = profile.handle;
+  const role = document.createElement('small');
+  role.textContent = profile.role;
+  link.append(icon, name, handle, role);
+  return link;
+}
+
+const followSection = document.getElementById('follow');
+const socialGrid = followSection?.querySelector('.social-grid');
+if (followSection && socialGrid) {
+  socialGrid.replaceChildren(...PUBLIC_PROFILES.map((profile) => createPublicProfileLink(profile)));
+  const heading = followSection.querySelector('.section-heading');
+  if (heading && !followSection.querySelector('.social-scope-note')) {
+    const note = document.createElement('p');
+    note.className = 'social-scope-note';
+    note.textContent = 'Six active GoreeCloud social-media accounts are listed here, with YouTube and GitHub included as additional public destinations.';
+    heading.insertAdjacentElement('afterend', note);
+  }
+}
+
+const footerGrid = document.querySelector('.site-footer .footer-grid');
+const copyright = footerGrid?.querySelector('.copyright');
+if (footerGrid && copyright && !footerGrid.querySelector('.footer-social')) {
+  const social = document.createElement('nav');
+  social.className = 'footer-social';
+  social.setAttribute('aria-label', 'GoreeCloud public profiles');
+
+  const label = document.createElement('strong');
+  label.className = 'footer-social-label';
+  label.textContent = 'Follow GoreeCloud';
+  const links = document.createElement('div');
+  links.className = 'footer-social-links';
+  links.append(...PUBLIC_PROFILES.map((profile) => createPublicProfileLink(profile, { compact: true })));
+  social.append(label, links);
+  copyright.insertAdjacentElement('beforebegin', social);
+}
