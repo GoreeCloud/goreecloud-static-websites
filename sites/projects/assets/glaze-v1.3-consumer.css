@@ -88,6 +88,11 @@ body.glaze-canvas{
 }
 .foundation-strip a{min-height:var(--projects-v13-touch)}
 .card{
+  /* Durable directory content is an information surface, not transient chrome.
+   * Keep the base presentation optically solid even though navigation/control
+   * surfaces may retain Glaze blur. */
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
   transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
 }
 .card:hover{
