@@ -1,0 +1,69 @@
+name: Validate Mesh Center publication
+
+on:
+  pull_request:
+    paths:
+      - 'sites/mesh/**'
+      - '.github/workflows/validate-mesh-publication.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/mesh/**'
+      - '.github/workflows/validate-mesh-publication.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mesh-publication:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out exact verification candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+
+      - name: Compile Mesh build and verification tools
+        run: >-
+          python -m py_compile
+          sites/mesh/scripts/build_public_site.py
+          sites/mesh/scripts/validate_public_site.py
+          sites/mesh/scripts/verify_public_deployment.py
+          sites/mesh/scripts/browser_responsive_smoke.py
+          sites/mesh/scripts/browser_production_smoke.py
+
+      - name: Validate Mesh source contract
+        run: |
+          python sites/mesh/scripts/validate_public_site.py
+          python sites/mesh/scripts/verify_public_deployment.py --check-config
+          node --check sites/mesh/website/site.js
+
+      - name: Build reviewed Mesh artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/mesh/scripts/build_public_site.py
+
+      - name: Validate reviewed Mesh artifact
+        run: python sites/mesh/scripts/validate_public_site.py --dist
+
+      - name: Exercise exact candidate responsive rendering
+        run: python sites/mesh/scripts/browser_responsive_smoke.py
+
+      - name: Verify canonical Mesh production publication
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/mesh/scripts/verify_public_deployment.py
+
+      - name: Verify canonical Mesh production rendering
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/mesh/scripts/browser_production_smoke.py

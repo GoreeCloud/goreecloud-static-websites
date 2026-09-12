@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the deployed GoreeCloud Mesh website against reviewed repository source."""
+"""Verify deployed Mesh Center bytes against the exact reviewed built artifact."""
 
 from __future__ import annotations
 
@@ -14,19 +14,23 @@ from urllib.request import HTTPRedirectHandler, HTTPSHandler, Request, build_ope
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "website"
+DIST = ROOT / "dist"
 PRODUCTION_URL = "https://mesh.goreecloud.com/"
 EXPECTED_HOST = "mesh.goreecloud.com"
+EXPECTED_GLAZE_REVISION = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
+EXPECTED_GLAZE_BLOB = "4c3ad293ba9196e2e5a32700b530ec67fd01cef6"
 MAX_BODY_BYTES = 2_000_000
 REQUEST_TIMEOUT_SECONDS = 12
-RETRY_ATTEMPTS = 12
+RETRY_ATTEMPTS = 18
 RETRY_DELAY_SECONDS = 10
 
 REQUIRED_HEADER_MARKERS = {
-    "content-security-policy": ("default-src 'self'", "frame-ancestors 'none'"),
+    "content-security-policy": ("default-src 'self'", "frame-ancestors 'none'", "connect-src 'none'"),
     "strict-transport-security": ("max-age=31536000",),
     "x-content-type-options": ("nosniff",),
     "x-frame-options": ("DENY",),
     "referrer-policy": ("no-referrer",),
+    "cross-origin-opener-policy": ("same-origin",),
 }
 
 
@@ -44,10 +48,29 @@ def validate_configuration() -> None:
         raise SystemExit("production verifier must remain fixed to the canonical HTTPS Mesh host")
     if parsed.username or parsed.password or parsed.query or parsed.fragment:
         raise SystemExit("production verifier target must not contain credentials, query, or fragment")
-    for relative in ("index.html", "robots.txt", "404.html", "assets/goreecloud-mesh-mark.svg"):
+    for relative in ("index.html", "robots.txt", "sitemap.xml", "404.html", "assets/goreecloud-mesh-mark.svg"):
         path = SOURCE / relative
         if not path.is_file() or path.is_symlink():
             raise SystemExit(f"missing or unsafe reviewed website source: {relative}")
+
+
+def validate_artifact() -> None:
+    required = (
+        "index.html",
+        "404.html",
+        "_headers",
+        "robots.txt",
+        "sitemap.xml",
+        "assets/site.css",
+        "assets/v1.3-site.css",
+        "assets/site.js",
+        "assets/goreecloud-mesh-mark.svg",
+        "assets/glaze-v1.3.0.css",
+    )
+    for relative in required:
+        path = DIST / relative
+        if not path.is_file() or path.is_symlink():
+            raise SystemExit(f"missing or unsafe reviewed Mesh artifact: {relative}; build the site first")
 
 
 def fetch(path: str) -> tuple[int, str, dict[str, str], bytes]:
@@ -61,7 +84,7 @@ def fetch(path: str) -> tuple[int, str, dict[str, str], bytes]:
     request = Request(
         url,
         headers={
-            "User-Agent": "GoreeCloud-Mesh-Deployment-Verifier/1.0",
+            "User-Agent": "GoreeCloud-Mesh-Deployment-Verifier/2.0",
             "Accept": "*/*",
             "Accept-Encoding": "identity",
             "Cache-Control": "no-cache",
@@ -77,100 +100,129 @@ def fetch(path: str) -> tuple[int, str, dict[str, str], bytes]:
             body = response.read(MAX_BODY_BYTES + 1)
             if len(body) > MAX_BODY_BYTES:
                 raise RuntimeError(f"response too large: {path}")
-            return (
-                response.status,
-                response.geturl(),
-                {k.lower(): v for k, v in response.headers.items()},
-                body,
-            )
+            return response.status, response.geturl(), {k.lower(): v for k, v in response.headers.items()}, body
     except HTTPError as error:
         body = error.read(MAX_BODY_BYTES + 1)
-        return (
-            error.code,
-            error.geturl(),
-            {k.lower(): v for k, v in error.headers.items()},
-            body,
-        )
+        if len(body) > MAX_BODY_BYTES:
+            raise RuntimeError(f"error response too large: {path}")
+        return error.code, error.geturl(), {k.lower(): v for k, v in error.headers.items()}, body
 
 
 def expected_bytes(path: str) -> bytes:
     relative = "index.html" if path == "/" else path.lstrip("/")
-    return (SOURCE / relative).read_bytes()
+    return (DIST / relative).read_bytes()
+
+
+def exact_public_paths() -> list[str]:
+    paths = [
+        "/",
+        "/robots.txt",
+        "/sitemap.xml",
+        "/assets/site.css",
+        "/assets/v1.3-site.css",
+        "/assets/site.js",
+        "/assets/goreecloud-mesh-mark.svg",
+    ]
+    for file in sorted((DIST / "assets").glob("glaze-*.css")):
+        if file.is_file() and not file.is_symlink():
+            paths.append(f"/assets/{file.name}")
+    return paths
+
+
+def verify_exact_response(path: str, errors: list[str]) -> tuple[dict[str, str], bytes] | None:
+    try:
+        status, final_url, headers, body = fetch(path)
+    except (URLError, RuntimeError, ValueError) as error:
+        errors.append(f"{path}: network verification failed: {error}")
+        return None
+    if status != 200:
+        errors.append(f"{path}: expected HTTP 200, got {status}")
+        return None
+    if urlparse(final_url).hostname != EXPECTED_HOST:
+        errors.append(f"{path}: final host drifted to {final_url}")
+    expected = expected_bytes(path)
+    if body != expected:
+        errors.append(
+            f"{path}: deployed bytes differ from reviewed built artifact; "
+            f"expected sha256={sha256(expected).hexdigest()} deployed sha256={sha256(body).hexdigest()}"
+        )
+    return headers, body
 
 
 def verify_once() -> list[str]:
     errors: list[str] = []
+    root_headers: dict[str, str] = {}
+    root_body = b""
 
-    for path in ("/", "/robots.txt", "/assets/goreecloud-mesh-mark.svg"):
-        try:
-            status, final_url, headers, body = fetch(path)
-        except (URLError, RuntimeError, ValueError) as error:
-            errors.append(f"{path}: network verification failed: {error}")
-            continue
+    for path in exact_public_paths():
+        result = verify_exact_response(path, errors)
+        if path == "/" and result is not None:
+            root_headers, root_body = result
 
-        if status != 200:
-            errors.append(f"{path}: expected HTTP 200, got {status}")
-            continue
-        if urlparse(final_url).hostname != EXPECTED_HOST:
-            errors.append(f"{path}: final host drifted to {final_url}")
-        expected = expected_bytes(path)
-        if body != expected:
-            errors.append(
-                f"{path}: deployed bytes differ from reviewed source; "
-                f"expected sha256={sha256(expected).hexdigest()} "
-                f"deployed sha256={sha256(body).hexdigest()}"
-            )
-
-        if path == "/":
-            text = body.decode("utf-8", errors="replace")
-            for marker in (
-                "Interlace · coordination fabric",
-                'alt="GoreeCloud Mesh Interlace mark"',
-                '<link rel="canonical" href="https://mesh.goreecloud.com/">',
-            ):
-                if marker not in text:
-                    errors.append(f"/: missing expected Interlace deployment marker: {marker}")
-            if "noindex" in headers.get("x-robots-tag", "").lower():
-                errors.append("/: production site unexpectedly sends X-Robots-Tag: noindex")
-            for header, markers in REQUIRED_HEADER_MARKERS.items():
-                value = headers.get(header, "")
-                if not value:
-                    errors.append(f"/: missing required response header: {header}")
-                    continue
-                for marker in markers:
-                    if marker.lower() not in value.lower():
-                        errors.append(f"/: {header} missing required value: {marker}")
+    if root_body:
+        text = root_body.decode("utf-8", errors="replace")
+        for marker in (
+            "Interlace · coordination fabric",
+            'alt="GoreeCloud Mesh Interlace mark"',
+            '<link rel="canonical" href="https://mesh.goreecloud.com/">',
+            'name="goreecloud-glaze-ui" content="1.3.0"',
+            f'name="goreecloud-glaze-source-revision" content="{EXPECTED_GLAZE_REVISION}"',
+            "authority_transfer = false",
+            "Mesh itself remains in Development",
+        ):
+            if marker not in text:
+                errors.append(f"/: missing expected Mesh deployment marker: {marker}")
+        if "noindex" in root_headers.get("x-robots-tag", "").lower():
+            errors.append("/: production site unexpectedly sends X-Robots-Tag: noindex")
+        if root_headers.get("server", "").lower() != "cloudflare":
+            errors.append(f"/: expected Cloudflare delivery, got server={root_headers.get('server', '')!r}")
+        for header, markers in REQUIRED_HEADER_MARKERS.items():
+            value = root_headers.get(header, "")
+            if not value:
+                errors.append(f"/: missing required response header: {header}")
+                continue
+            for marker in markers:
+                if marker.lower() not in value.lower():
+                    errors.append(f"/: {header} missing required value: {marker}")
 
     try:
-        status, _, _, body = fetch("/__goreecloud_mesh_missing_verification_path__")
+        status, final_url, headers, body = fetch("/__goreecloud_mesh_missing_verification_path__")
         if status != 404:
             errors.append(f"404 behavior: expected HTTP 404, got {status}")
-        expected_404 = expected_bytes("/404.html")
+        if urlparse(final_url).hostname != EXPECTED_HOST:
+            errors.append(f"404 behavior: final host drifted to {final_url}")
+        expected_404 = (DIST / "404.html").read_bytes()
         if body != expected_404:
             errors.append(
-                "404 behavior: deployed 404 body differs from reviewed 404.html; "
-                f"expected sha256={sha256(expected_404).hexdigest()} "
-                f"deployed sha256={sha256(body).hexdigest()}"
+                "404 behavior: deployed 404 body differs from reviewed built 404.html; "
+                f"expected sha256={sha256(expected_404).hexdigest()} deployed sha256={sha256(body).hexdigest()}"
             )
+        if headers.get("server", "").lower() != "cloudflare":
+            errors.append(f"404 behavior: expected Cloudflare delivery, got server={headers.get('server', '')!r}")
     except (URLError, RuntimeError, ValueError) as error:
         errors.append(f"404 behavior: network verification failed: {error}")
+
+    glaze = DIST / "assets" / "glaze-v1.3.0.css"
+    data = glaze.read_bytes()
+    blob = __import__("hashlib").sha1(b"blob " + str(len(data)).encode("ascii") + b"\0" + data, usedforsecurity=False).hexdigest()
+    if blob != EXPECTED_GLAZE_BLOB:
+        errors.append(f"reviewed built Glaze entrypoint blob drifted before production verification: {blob}")
 
     return errors
 
 
 def verify_with_retry() -> None:
+    validate_artifact()
     last_errors: list[str] = []
     for attempt in range(1, RETRY_ATTEMPTS + 1):
         last_errors = verify_once()
         if not last_errors:
             print(
-                "Mesh production verification passed: canonical custom domain is reachable over HTTPS, "
-                "reviewed public bytes match, Interlace artwork is current, security headers are present, "
-                "and 404 behavior is correct."
+                "Mesh production HTTP verification passed for mesh.goreecloud.com: exact reviewed root/404/sitemap/robots/site assets/Interlace/Glaze bytes, committed headers, canonical host, and Cloudflare delivery verified. Mesh runtime and platform-system production acceptance remain separate."
             )
             return
         if attempt < RETRY_ATTEMPTS:
-            print(f"Verification attempt {attempt} did not yet pass; retrying.")
+            print(f"Mesh production does not yet match the exact reviewed artifact (attempt {attempt}/{RETRY_ATTEMPTS}); waiting {RETRY_DELAY_SECONDS} seconds.")
             time.sleep(RETRY_DELAY_SECONDS)
 
     print("Mesh production verification failed:")
@@ -185,7 +237,7 @@ def main() -> None:
     args = parser.parse_args()
     validate_configuration()
     if args.check_config:
-        print("Mesh production verifier configuration is valid.")
+        print("Mesh production verifier configuration is valid; live verification requires a built artifact.")
         return
     verify_with_retry()
 
