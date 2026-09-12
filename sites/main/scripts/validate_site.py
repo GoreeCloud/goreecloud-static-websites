@@ -44,7 +44,7 @@ REQUIRED_MARKERS = (
     "GoreeCloud Home",
     "GoreeCloud Home Security",
     "GoreeCloud Health",
-    "GoreeCloud Reader",
+    "Reader",
     "GoreeCloud Router OS",
     "GoreeCloud AI",
     "this website does not publish a fragile “current repository count.”",
