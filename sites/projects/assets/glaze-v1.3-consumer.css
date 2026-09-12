@@ -51,6 +51,10 @@ body.glaze-canvas{
 .hero{
   position:relative;
   isolation:isolate;
+  /* The V1.3 resonance orb is decorative paint positioned beyond the hero.
+   * Clip it without introducing a scroll container so it cannot widen the
+   * document while real content geometry remains independently testable. */
+  overflow:clip;
 }
 .hero::after{
   content:"";
