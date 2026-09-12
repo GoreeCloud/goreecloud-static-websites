@@ -7,6 +7,8 @@
 :is(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-accent,currentColor);outline-offset:3px}
 .header-row nav a,.theme-group button,.footer-row nav a,.actions .glaze-button,.status-card .glaze-button{min-height:var(--mesh-v13-control)}
 @media(pointer:coarse){.header-row nav a,.theme-group button,.footer-row nav a,.actions .glaze-button,.status-card .glaze-button{min-height:var(--mesh-v13-control-coarse);min-width:var(--mesh-v13-control-coarse)}}
+@media(max-width:480px){.hero,.hero-copy,.mesh-visual,.status-card,.truth-note,.actions{min-inline-size:0;max-inline-size:100%}.truth-note code,.status-card code{overflow-wrap:anywhere;word-break:break-word}}
+@media(max-width:380px){body.glaze-canvas{min-inline-size:0}.shell{min-inline-size:0;max-inline-size:100%}.mesh-orbit{max-inline-size:100%}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 @media(prefers-reduced-transparency:reduce){.site-header,.principle-panel,.hero,.status-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--glaze-surface-strong)!important}.hero:before{opacity:.2}}
 @media(prefers-contrast:more){.site-header,.hero,.cap-grid article,.boundary-list article,.principle-grid article,.status-card,.status-grid article,.mesh-orbit,.node{border-width:2px}.truth-note{border-left-width:4px}}
