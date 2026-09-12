@@ -17,6 +17,7 @@ This central package contains the public Mesh Center source, canonical Interlace
 The governed central deployment target is:
 
 - Pages project: `goreecloud-mesh`
+- Pages namespace: `goreecloud-mesh.pages.dev`
 - Git repository: `GoreeCloud/goreecloud-static-websites`
 - Production branch: `main`
 - Framework preset: `None`
@@ -25,7 +26,7 @@ The governed central deployment target is:
 - Build output directory: `dist`
 - Canonical custom domain: `mesh.goreecloud.com`
 
-The legacy Pages project is currently sourced from `GoreeCloud/goreecloud-mesh`, where the equivalent repository-local build used a blank root, `python scripts/build_public_site.py`, and `dist`. Reconnecting the Pages project to the central repository changes only the standalone public website source authority; it does not retire or replace the Mesh runtime repository.
+The Pages project identity and namespace are verified from legacy `GoreeCloud/goreecloud-mesh` Cloudflare deployment evidence. The legacy Pages project is currently sourced from that runtime repository, where the equivalent repository-local build used a blank root, `python scripts/build_public_site.py`, and `dist`. Reconnecting the Pages project to the central repository changes only the standalone public website source authority; it does not retire or replace the Mesh runtime repository.
 
 ## Acceptance boundary
 
@@ -33,4 +34,4 @@ Source/build validation, Cloudflare deployment success, canonical-domain HTTP eq
 
 The production verifier must compare the canonical live domain against the exact reviewed built artifact and verify true 404 behavior, canonical URLs, committed security headers, Interlace identity, local site assets, and the exact Glaze V1.3 dependency closure. The browser gate must exercise desktop, tablet, narrow mobile, and 320-pixel layouts plus System/Light/Dark controls.
 
-A public website pass does **not** establish GoreeCloud Mesh runtime interoperability, authenticated service access, authority transfer, platform-system production acceptance, product Stable qualification, or another technical authority claim. `authority_transfer = false` remains a substantive Mesh invariant.
+A public website pass does **not** establish GoreeCloud Mesh runtime interoperability, authenticated service access, authority transfer, platform-system production acceptance, product Stable qualification, authorization, security/privacy acceptance, or another technical authority claim. `authority_transfer = false` remains a substantive Mesh invariant.
