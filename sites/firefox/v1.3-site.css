@@ -1,0 +1,123 @@
+/* GoreeCloud Firefox Extensions — GLAZE UI V1.3 consumer adaptation.
+ * Shared Stable assets remain authoritative. This layer owns only local reachability,
+ * accessibility resilience, and publication-safe composition behavior.
+ */
+
+a, button, .button {
+  min-height: 48px;
+}
+
+.site-header nav a,
+.button {
+  min-height: 48px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--gc-cyan, #0891b2);
+  outline-offset: 3px;
+}
+
+.extension-card,
+.hero-panel,
+.principle-list article,
+.source-callout,
+.error-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (pointer:coarse) {
+  .site-header nav a,
+  .button,
+  .card-link {
+    min-height: 56px;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media (prefers-reduced-transparency:reduce) {
+  .site-header,
+  .hero-panel,
+  .extension-card,
+  .principle-list article,
+  .source-callout,
+  .error-card {
+    backdrop-filter: none !important;
+    background: var(--gc-surface-strong, Canvas) !important;
+  }
+}
+
+@media (prefers-contrast:more) {
+  .site-header,
+  .hero-panel,
+  .extension-card,
+  .principle-list article,
+  .source-callout,
+  .error-card,
+  .status {
+    border-width: 2px;
+  }
+
+  a { text-decoration-thickness: .12em; }
+}
+
+@media (forced-colors:active) {
+  .site-header,
+  .hero-panel,
+  .extension-card,
+  .principle-list article,
+  .source-callout,
+  .error-card,
+  .portfolio-metrics div,
+  .extension-mark,
+  .button {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-color: CanvasText !important;
+    box-shadow: none !important;
+  }
+
+  .button.primary,
+  .status,
+  .card-link,
+  .eyebrow {
+    color: LinkText !important;
+  }
+}
+
+@media print {
+  .site-header,
+  .hero-actions,
+  .site-footer,
+  .skip-link {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .section { padding: 1.25rem 0; }
+  .hero-panel,
+  .extension-card,
+  .principle-list article,
+  .source-callout {
+    box-shadow: none !important;
+    border: 1px solid #777 !important;
+    break-inside: avoid;
+  }
+}
