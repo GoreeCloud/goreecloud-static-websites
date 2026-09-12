@@ -185,6 +185,19 @@ def main() -> int:
     for stale in STALE:
         if stale in html: errors.append(f"superseded current-state copy remains: {stale}")
 
+    # Social discovery must exist in the exact generated HTML before JavaScript runs.
+    if html.count('class="social-card') != 8:
+        errors.append("generated homepage must contain eight static Follow profile cards")
+    if html.count('class="footer-social-link"') != 8:
+        errors.append("generated homepage must contain eight static footer profile links")
+    if "Six active GoreeCloud social-media accounts" not in html:
+        errors.append("generated homepage public-profile scope note missing")
+    if 'aria-label="GoreeCloud public profiles"' not in html:
+        errors.append("generated homepage footer public-profile navigation missing")
+    for profile_url in PUBLIC_PROFILE_URLS:
+        if html.count(f'href="{profile_url}"') < 2:
+            errors.append(f"public profile must exist in both generated Follow and footer markup: {profile_url}")
+
     repo = (ROOT / "repositories.html").read_text(encoding="utf-8")
     for marker in ("GitHub organization", "authoritative for current inventory", "goreecloud-static-websites", "goreecloud-health", "goreecloud-reader", "goreecloud-router-os", "goreecloud-os-desktop", "goreecloud-os-tv"):
         if marker not in repo: errors.append(f"repository guide missing current role marker: {marker}")
