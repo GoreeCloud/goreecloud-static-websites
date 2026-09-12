@@ -35,6 +35,8 @@ jobs:
             sites/projects/verify_remote.py
       - name: Validate Projects source contract
         run: python sites/projects/validate.py
+      - name: Validate Projects production-verifier configuration
+        run: python sites/projects/verify_remote.py --check-config
       - name: Exercise exact centralized Projects source in Chrome
         run: python sites/projects/browser_source_smoke.py
       - name: Validate Projects JavaScript syntax

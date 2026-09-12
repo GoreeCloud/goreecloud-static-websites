@@ -262,8 +262,9 @@ def exercise_page(session_id: str, target_url: str, browser: str) -> None:
     require(isinstance(suite, dict), f"Projects Suite filter did not return state in {browser}: {suite!r}")
     require(int(suite.get("cards", 0)) == EXPECTED_SUITE_PRODUCTS, f"Suite filter must render exactly 45 products in {browser}: {suite}")
     require(all(flag == "true" for flag in (suite.get("suiteFlags") or [])), f"Suite filter leaked a non-Suite entry in {browser}: {suite}")
-    for name in ("GoreeCloud Index", "GoreeVault", "GoreeCloud Health", "GoreeCloud Reader", "GoreeCloud Router OS", "GoreeCloud Social", "GoreeCloud Home", "GoreeCloud Home Security"):
+    for name in ("GoreeCloud Index", "GoreeCloud Vault", "GoreeCloud Health", "GoreeCloud Reader", "GoreeCloud Router OS", "GoreeCloud Social", "GoreeCloud Home", "GoreeCloud Home Security"):
         require(name in (suite.get("names") or []), f"Suite filter is missing {name} in {browser}: {suite}")
+    require("GoreeVault" not in (suite.get("names") or []), f"Suite filter still renders retired GoreeVault identity in {browser}: {suite}")
 
     foundations = execute(
         session_id,

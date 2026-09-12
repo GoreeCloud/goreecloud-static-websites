@@ -46,13 +46,16 @@ for needle in [
     "Wardveil Security", "Everkeep", "GoreeCloud Mesh", "GoreeCloud Identity", "GoreeCloud Manager",
     "GoreeCloud AI", "GoreeCloud Code", "GoreeCloud Documents", "GoreeCloud Messenger",
     "GoreeCloud Gateway", "GoreeCloud Quill", "GoreeCloud File Manager", "GoreeCloud Maps",
-    "GoreeCloud App Store", "GoreeCloud Index", "GoreeVault", "GoreeCloud Health",
+    "GoreeCloud App Store", "GoreeCloud Index", "GoreeCloud Vault", "GoreeCloud Health",
     "GoreeCloud Reader", "GoreeCloud Router OS", "GoreeCloud Social", "GoreeCloud Home",
     "GoreeCloud Home Security", "Design Center", "Privacy Center", "Security Center",
     "Continuity Center", "Mesh Center", "Identity Center", "Sentinel Fold", "Weave",
 ]:
     if needle not in combined:
         raise SystemExit(f"current portfolio marker missing: {needle}")
+
+if "GoreeVault" in active_direction:
+    raise SystemExit("retired GoreeVault product identity remains in active Projects source")
 
 for page_name, page in (("index", html), ("404", error_html)):
     for marker in (
@@ -97,7 +100,7 @@ suite_expected = [
     "GoreeCloud Drive", "GoreeCloud File Manager", "GoreeCloud Sync", "GoreeCloud Photos", "GoreeCloud Gallery", "GoreeCloud Music", "GoreeCloud Video", "GoreeCloud Bookmarks", "GoreeCloud Reader",
     "GoreeCloud Mail", "GoreeCloud Messenger", "GoreeCloud Search", "GoreeCloud Browser", "GoreeCloud Feed", "GoreeCloud Location", "GoreeCloud Maps", "GoreeCloud Social",
     "GoreeCloud Keyboard", "GoreeCloud Launcher", "GoreeCloud Terminal",
-    "GoreeCloud Manager", "GoreeCloud App Store", "GoreeCloud Identity", "GoreeVault", "GoreeCloud Backup", "GoreeCloud Network", "GoreeCloud DNS", "GoreeCloud Gateway", "GoreeCloud Notify", "GoreeCloud Monitor", "GoreeCloud Changelogs",
+    "GoreeCloud Manager", "GoreeCloud App Store", "GoreeCloud Identity", "GoreeCloud Vault", "GoreeCloud Backup", "GoreeCloud Network", "GoreeCloud DNS", "GoreeCloud Gateway", "GoreeCloud Notify", "GoreeCloud Monitor", "GoreeCloud Changelogs",
     "GoreeCloud AI", "GoreeCloud Index", "GoreeCloud Code",
     "GoreeCloud Health", "GoreeCloud Home", "GoreeCloud Home Security",
     "GoreeCloud Router OS", "GoreeCloud Website",
@@ -108,7 +111,7 @@ try:
     group_block = portfolio.split("const suitePortfolioGroups=Object.freeze({", 1)[1].split("});", 1)[0]
 except IndexError as exc:
     raise SystemExit("Projects Suite portfolio group authority is missing") from exc
-portfolio_names = re.findall(r"'((?:GoreeCloud|GoreeVault)[^']*)'", group_block)
+portfolio_names = re.findall(r"'(GoreeCloud[^']*)'", group_block)
 if len(portfolio_names) != 45 or set(portfolio_names) != set(suite_expected):
     missing = sorted(set(suite_expected) - set(portfolio_names))
     extra = sorted(set(portfolio_names) - set(suite_expected))
@@ -136,7 +139,7 @@ if '<strong id="foundation-count">7</strong><span>Integral platform systems</spa
 for current in [
     "GoreeCloud AI", "GoreeCloud Code", "GoreeCloud Documents", "GoreeCloud Messenger",
     "GoreeCloud Gateway", "GoreeCloud Quill", "GoreeCloud Mesh", "GoreeCloud File Manager",
-    "GoreeCloud Maps", "GoreeCloud App Store", "GoreeCloud Index", "GoreeVault",
+    "GoreeCloud Maps", "GoreeCloud App Store", "GoreeCloud Index", "GoreeCloud Vault",
     "GoreeCloud Health", "GoreeCloud Reader", "GoreeCloud Router OS", "GoreeCloud Social",
     "GoreeCloud Home", "GoreeCloud Home Security",
 ]:
@@ -285,6 +288,6 @@ for forbidden in (
 
 print(
     "GoreeCloud Projects source portfolio validation passed for GLAZE UI V1.3 source migration: "
-    "exact 45-product / 9-group Suite membership, seven Integral Platform Systems, approved branding provenance, "
+    "exact 45-product / 9-group Suite membership, seven Integral Platform Systems, canonical GoreeCloud Vault identity, approved branding provenance, "
     "responsive/accessibility consumer layer, additional-project separation, and explicit production acceptance boundary"
 )

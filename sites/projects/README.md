@@ -21,7 +21,7 @@ Projects is a broader project directory, not the authoritative definition of Sui
 
 `assets/suite-portfolio.js` is the publication projection of that verified portfolio for this website. It marks exactly those 45 product identities as Suite members, adds current products that are not present in the older Projects data file, and provides the dedicated **Suite products** filter. Additional GoreeCloud repository-level projects may remain visible in Projects without being counted as Suite products.
 
-The current Suite projection includes later products such as GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security; restores GoreeCloud Index to the directory; and presents GoreeVault as the Suite-level credential-management product while GoreeCloud Vault Server remains a separately governed server component/project.
+The current Suite projection includes later products such as GoreeCloud Health, Reader, Router OS, Social, Home, and Home Security; restores GoreeCloud Index to the directory; and uses **GoreeCloud Vault** as the canonical Suite credential-management product. Former product naming is retired and must not be published as current. **GoreeCloud Vault Server** remains the separately governed backend identity/project rather than a second Suite product. The canonical current Vault repository is `GoreeCloud/goreecloud-vault`.
 
 The seven Integral Platform Systems are GoreeCloud Manager, GoreeCloud Identity, Glaze UI, Wardveil Security, Privacy Shield, Everkeep, and GoreeCloud Mesh. Manager and Identity may also have Suite product surfaces without transferring or duplicating their distinct platform authority. Quill, Waypoint, and Resonance remain application-centered capability identities rather than standalone Suite products unless later governing architecture changes that classification.
 
@@ -52,5 +52,7 @@ GLAZE UI V1.3 being Official Stable and consumer-eligible does not grant Project
 ## Production boundary
 
 Source validation does not itself authorize production claims. Branch-preview and production verification must confirm that the deployed Projects surface matches the reviewed source. Platform artwork identifies the relevant system but does not establish technical runtime acceptance, protection, privacy, recovery, identity, management, or coordination state.
+
+The canonical production verifier must require byte equality for the reviewed static publication, a true reviewed 404 response, the complete committed security-header baseline, canonical HTTPS host behavior, mutable-asset revalidation, and Cloudflare delivery before production acceptance can be recorded. Desktop and representative-mobile browser gates remain separate rendered/interaction evidence.
 
 Cloudflare Pages source cutover and legacy-source retirement remain separate migration gates after central validation.
