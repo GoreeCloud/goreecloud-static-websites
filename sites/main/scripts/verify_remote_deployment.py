@@ -66,6 +66,15 @@ def branch_preview_url() -> str:
     return f"https://{label}.{PAGES_DOMAIN}"
 
 
+def target_url(target: str) -> str:
+    """Resolve only the approved remote deployment targets used by browser gates."""
+    if target == "branch-preview":
+        return branch_preview_url()
+    if target == "production":
+        return PRODUCTION_URL
+    raise ValueError(f"unsupported remote deployment target: {target}")
+
+
 def host_allowed(hostname: str | None) -> bool:
     return bool(hostname and (hostname in ALLOWED_HOSTS or hostname.endswith(f".{PAGES_DOMAIN}")))
 
@@ -170,7 +179,8 @@ def verify(base: str) -> list[str]:
         try:
             response = fetch(url)
         except (RuntimeError, ValueError) as exc:
-            errors.append(str(exc)); continue
+            errors.append(str(exc))
+            continue
         if response.status != 200:
             errors.append(f"{remote_path(relative)} returned HTTP {response.status}; expected 200")
             continue
@@ -207,7 +217,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("target", choices=("branch-preview", "production"))
     args = parser.parse_args()
-    base = branch_preview_url() if args.target == "branch-preview" else PRODUCTION_URL
+    base = target_url(args.target)
     errors = verify(base)
     if errors:
         print(f"Remote deployment verification failed for {base}:")
