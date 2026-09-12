@@ -13,12 +13,12 @@ for path in (HTML, README):
 html = HTML.read_text(encoding="utf-8")
 readme = README.read_text(encoding="utf-8")
 
-current_match = re.search(r'<section id="current"\b.*?</section>', html, flags=re.DOTALL)
+current_match = re.search(r'<section\s+id="current"[^>]*>.*?</section>', html, flags=re.DOTALL)
 if not current_match:
     raise SystemExit("Archive current-boundary section is missing")
 current = current_match.group(0)
 
-timeline_match = re.search(r'<section id="timeline"\b.*?</section>', html, flags=re.DOTALL)
+timeline_match = re.search(r'<section\s+id="timeline"[^>]*>.*?</section>', html, flags=re.DOTALL)
 if not timeline_match:
     raise SystemExit("Archive historical timeline is missing")
 timeline = timeline_match.group(0)
