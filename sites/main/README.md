@@ -11,6 +11,17 @@ Canonical static website repository: `GoreeCloud/goreecloud-static-websites`
 
 This package contains the directly authored public HTML, reviewed assets, exact GLAZE UI consumer lock, build tooling, validation tooling, browser acceptance tooling, deployment verification tooling, and public policy files required to reproduce the Main static artifact.
 
+## Public information contract
+
+The Main homepage is an ecosystem overview, not an independent inventory authority. Current public portfolio statements must remain synchronized with the applicable authoritative GoreeCloud records:
+
+- `Inventory — Suite Applications` controls the current Suite portfolio. The current reconciled registry is **45 verified products across 9 functional product groups**.
+- The active Suite architecture defines **7 Integral Platform Systems**: GoreeCloud Manager, GoreeCloud Identity, Glaze UI, Wardveil Security, Privacy Shield, Everkeep, and GoreeCloud Mesh. Their platform authority remains separate from ordinary Suite product counting even when Manager and Identity also expose user-facing product surfaces.
+- `Project Record — Public Websites` plus `sites/manifest.json` control the registered public static-website scope. The current centralized manifest contains **13 website packages**.
+- The live GoreeCloud GitHub organization is authoritative for current repository inventory and counts. Main must not publish a fragile numeric repository-total snapshot as current truth.
+
+The homepage must present GoreeCloud as the current software ecosystem rather than freezing an earlier homelab-only or personal/family-cloud phase as the current product definition. Historical origin context may remain only when it is clearly presented as history and does not override current architecture, product, lifecycle, or deployment authority.
+
 ## Governed Cloudflare Pages contract
 
 The approved centralized publication contract is:
