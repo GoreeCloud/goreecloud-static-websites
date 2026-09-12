@@ -121,12 +121,12 @@
   line-height: 1.5;
 }
 
-/* Thirteen public destinations: deliberate 3 / 4 / 3 / 3 desktop rhythm. */
+/* Fourteen public destinations: deliberate 3 / 4 / 4 / 3 desktop rhythm. */
 .website-card:nth-child(1) { grid-column: span 6; }
 .website-card:nth-child(2),
 .website-card:nth-child(3),
-.website-card:nth-child(n+4):nth-child(-n+7) { grid-column: span 3; }
-.website-card:nth-child(n+8) { grid-column: span 4; }
+.website-card:nth-child(n+4):nth-child(-n+11) { grid-column: span 3; }
+.website-card:nth-child(n+12) { grid-column: span 4; }
 
 #roadmap .section-heading {
   max-width: 920px;
@@ -162,10 +162,6 @@
 
   .website-card:nth-child(n) {
     grid-column: span 6;
-  }
-
-  .website-card:last-child {
-    grid-column: 1 / -1;
   }
 }
 

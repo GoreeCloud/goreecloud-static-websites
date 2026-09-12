@@ -115,6 +115,7 @@ PUBLIC_STYLE_FILES = (
     "css/glaze.css",
     "css/glaze-v1.3.0.css",
     "css/homepage-v6.css",
+    "css/homepage-v7.css",
     "css/how-it-works.css",
     "css/platform.css",
     "css/repositories.css",
