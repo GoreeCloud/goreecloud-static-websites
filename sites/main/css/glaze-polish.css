@@ -95,6 +95,7 @@ h1,h2,h3,.eyebrow,.glaze-chip{font-weight:800;}
     left:auto;
     right:0;
     width:min(20rem,100%);
+    max-width:100%;
     max-height:calc(100dvh - 96px - env(safe-area-inset-bottom));
     display:none;
     padding:.65rem;
