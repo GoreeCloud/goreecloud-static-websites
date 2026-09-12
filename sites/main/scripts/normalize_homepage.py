@@ -17,6 +17,7 @@ EXPECTED_WEBSITE_DOMAINS = (
     "mesh.goreecloud.com",
     "id.goreecloud.com",
     "manage.goreecloud.com",
+    "labs.goreecloud.com",
 )
 
 PLATFORM_SYSTEM_LABELS = (
@@ -50,6 +51,7 @@ def normalize_homepage(source: str) -> str:
         "Six substantive platform systems",
         "Ten independently deployed public destinations",
         "Eleven official surfaces",
+        "Thirteen official surfaces",
         "Privacy-First Personal & Family Cloud",
         "personal and family cloud",
         "family digital foundation",
@@ -60,8 +62,10 @@ def normalize_homepage(source: str) -> str:
     ):
         if stale in source:
             raise ValueError(f"superseded current-state wording remains on homepage: {stale}")
-    if "Thirteen official surfaces" not in source:
-        raise ValueError("homepage must identify the authoritative 13-site public surface")
+    if "Fourteen official surfaces" not in source:
+        raise ValueError("homepage must identify the current 14-site public surface including Labs")
+    if "GoreeCloud Labs" not in source or "labs.goreecloud.com" not in source:
+        raise ValueError("homepage must include the GoreeCloud Labs destination")
     if "45 verified Suite products" not in source or "9 functional product groups" not in source:
         raise ValueError("homepage must identify the authoritative 45-product / 9-group Suite model")
     if "seven Integral Platform Systems" not in source:
