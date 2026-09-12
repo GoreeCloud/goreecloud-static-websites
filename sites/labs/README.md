@@ -38,6 +38,31 @@ This site is reconciled against:
 - applicable project specifications for specialized products and services,
 - the canonical Glaze UI lifecycle registry for the current design target.
 
+## Build and acceptance
+
+From `sites/labs`:
+
+```bash
+python3 validate.py
+python3 browser_smoke.py
+python3 verify_public_deployment.py --check-config
+```
+
+The local/browser gate rebuilds `dist/`, validates the exact static artifact, and exercises the site at 1180, 768, 390, and 320 CSS pixels with filter controls, System/Light/Dark behavior, viewport containment, image loading, interaction-target sizing, and responsive workstream layouts.
+
+Canonical production verification is deliberately separate. After the Cloudflare Pages source has been independently switched to the centralized publication contract, run:
+
+```bash
+python3 build.py
+python3 validate.py dist
+python3 verify_public_deployment.py
+python3 browser_production_smoke.py
+```
+
+`verify_public_deployment.py` is fixed to `https://labs.goreecloud.com/`. It compares the canonical root, 404, robots, sitemap, CSS, JavaScript, and GoreeCloud identity asset byte-for-byte with the reviewed `dist/` artifact, validates committed security-header requirements, rejects cross-host redirects, and requires Cloudflare delivery. `browser_production_smoke.py` then reruns the responsive/interaction acceptance against the live canonical hostname and verifies the rendered Labs content boundary.
+
+The dedicated GitHub workflow runs source/build/browser verification for ordinary pull requests and pushes. The live canonical-host checks run only through `workflow_dispatch`, so repository CI cannot silently convert a source change into production acceptance.
+
 ## Indexing boundary
 
-The rebuilt central candidate remains `noindex,nofollow` until central source integration, Cloudflare source cutover, exact deployed-revision verification, and public production acceptance are complete. Indexing release is a separate gate.
+The rebuilt central source remains `noindex,nofollow` until Cloudflare source cutover, exact deployed-revision verification, and public production acceptance are complete. Indexing release is a separate gate and must not be inferred merely from a successful deployment.
