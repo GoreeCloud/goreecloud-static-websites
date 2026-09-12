@@ -162,6 +162,13 @@ def read_state(session_id: str) -> dict[str, Any]:
         session_id,
         """
         const q=s=>document.querySelector(s);
+        const qa=s=>[...document.querySelectorAll(s)];
+        const box=s=>{
+          const el=q(s);
+          if(!el) return null;
+          const r=el.getBoundingClientRect();
+          return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};
+        };
         const layout=s=>{
           const el=q(s);
           if(!el) return null;
@@ -193,6 +200,29 @@ def read_state(session_id: str) -> dict[str, Any]:
         const hero=q('#top');
         const headerRect=header?.getBoundingClientRect();
         const heroRect=hero?.getBoundingClientRect();
+        const socialCards=qa('.social-card');
+        const socialIconSlots=qa('.social-card .social-icon');
+        const socialVisualIconCount=socialIconSlots.filter(slot=>{
+          const image=slot.querySelector('img');
+          if(image) return image.complete && image.naturalWidth>0 && image.naturalHeight>0;
+          const fallback=slot.querySelector('.social-monogram');
+          return Boolean(fallback && getComputedStyle(fallback).backgroundImage !== 'none');
+        }).length;
+        const titleRows=new Map();
+        socialCards.forEach(card=>{
+          const title=card.querySelector('strong');
+          if(!title) return;
+          const cardTop=Math.round(card.getBoundingClientRect().top);
+          const titleTop=title.getBoundingClientRect().top;
+          const values=titleRows.get(cardTop) || [];
+          values.push(titleTop);
+          titleRows.set(cardTop, values);
+        });
+        let socialTitleRowSpread=0;
+        titleRows.forEach(values=>{
+          if(values.length<2) return;
+          socialTitleRowSpread=Math.max(socialTitleRowSpread,Math.max(...values)-Math.min(...values));
+        });
         return {
           ready:document.readyState,
           width:window.innerWidth,
@@ -202,11 +232,17 @@ def read_state(session_id: str) -> dict[str, Any]:
           headerBottom:headerRect?.bottom||0,
           heroTop:heroRect?.top||0,
           heroFont:parseFloat(getComputedStyle(q('.hero h1')).fontSize),
+          headerShell:box('.site-header .container'),
+          heroShell:box('#top .container'),
           websiteLayout:layout('.website-grid'),
           howLayout:layout('.how-flow'),
           roadmapLayout:layout('.roadmap-grid'),
           socialLayout:layout('.social-grid'),
           statLayout:layout('.repository-teaser-stats'),
+          socialCardCount:socialCards.length,
+          socialVisualIconCount,
+          footerProfileCount:qa('.footer-social-link').length,
+          socialTitleRowSpread,
         };
         """,
     )
@@ -268,6 +304,18 @@ def exercise(session_id: str, url: str) -> None:
         require(state.get("headerPosition") not in {"fixed", "sticky"}, f"Public header overlays content at {width}px: {state}")
         require(float(state.get("heroTop", 0)) + 1 >= float(state.get("headerBottom", 0)), f"Hero begins beneath an overlapping header at {width}px: {state}")
         require(float(state.get("heroFont", 0)) >= 40, f"Hero type became too small at {width}px: {state}")
+        require(int(state.get("socialCardCount", 0)) == 8, f"Homepage did not render all eight public profile cards at {width}px: {state}")
+        require(int(state.get("socialVisualIconCount", 0)) == 8, f"Homepage public profile icons are missing or broken at {width}px: {state}")
+        require(int(state.get("footerProfileCount", 0)) == 8, f"Footer did not render all eight direct public profile links at {width}px: {state}")
+        require(float(state.get("socialTitleRowSpread", 99)) <= 2.0, f"Public profile titles are not row-aligned at {width}px: {state}")
+
+        header_shell = state.get("headerShell") or {}
+        hero_shell = state.get("heroShell") or {}
+        require(
+            abs(float(header_shell.get("left", -99)) - float(hero_shell.get("left", 99))) <= 1.5
+            and abs(float(header_shell.get("right", -99)) - float(hero_shell.get("right", 99))) <= 1.5,
+            f"Homepage content shell is not aligned with the public header at {width}px: {state}",
+        )
 
         if width <= 820:
             require(single_column(state.get("websiteLayout")), f"Website directory did not render as one full-width content column at {width}px: {state}")

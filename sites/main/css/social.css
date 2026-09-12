@@ -3,22 +3,60 @@
 /* Eight public destinations resolve into two balanced four-card desktop rows. */
 .social-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
 }
 
 .social-card.github-card {
   grid-column: auto;
 }
 
+/* Keep every card on the same visual baseline even when role copy wraps. */
+.social-card {
+  display: grid;
+  grid-template-rows: 42px auto auto minmax(2.65rem, 1fr);
+  align-content: start;
+  align-items: start;
+  row-gap: .28rem;
+}
+
+.social-card .social-icon {
+  margin: 0 0 .55rem;
+  align-self: start;
+}
+
+.social-card strong {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.social-card > span:not(.social-icon) {
+  line-height: 1.35;
+}
+
+.social-card small {
+  margin-top: .35rem;
+  line-height: 1.45;
+}
+
+/* The runtime inventory may temporarily render a monogram fallback while a
+ * cached main.js is still active. Map those fallbacks to the canonical local
+ * assets so every supported profile still presents its real icon. */
 .social-monogram {
   display: inline-grid;
-  min-width: 1.7rem;
-  min-height: 1.7rem;
+  width: 25px;
+  height: 25px;
   place-items: center;
-  color: currentColor;
-  font-size: .72rem;
-  font-weight: 900;
-  letter-spacing: .04em;
+  color: transparent;
+  font-size: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
+
+.social-card[href*="threads.com"] .social-monogram { background-image: url("../assets/social/threads.ico"); }
+.social-card[href*="tiktok.com"] .social-monogram { background-image: url("../assets/social/tiktok.ico"); }
+.social-card[href*="reddit.com"] .social-monogram { background-image: url("../assets/social/reddit.ico"); }
+.social-card[href*="pinterest.com"] .social-monogram { background-image: url("../assets/social/pinterest.ico"); }
 
 .social-scope-note {
   max-width: 760px;
@@ -80,6 +118,10 @@
 @media (max-width: 720px) {
   .social-grid {
     grid-template-columns: 1fr;
+  }
+
+  .social-card {
+    grid-template-rows: 42px auto auto auto;
   }
 
   .social-scope-note {
