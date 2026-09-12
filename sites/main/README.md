@@ -15,6 +15,8 @@ This package contains the directly authored public HTML, reviewed assets, exact 
 
 The approved centralized publication contract is:
 
+- Cloudflare Pages project: `goreecloud-website`
+- Pages namespace: `goreecloud-website.pages.dev`
 - Repository: `GoreeCloud/goreecloud-static-websites`
 - Production branch: `main`
 - Root directory: `sites/main`
@@ -22,7 +24,7 @@ The approved centralized publication contract is:
 - Build output directory: `dist`
 - Canonical public domain: `www.goreecloud.com`
 
-This is the desired source configuration for the public website. It does not establish that Cloudflare Pages has already been reconnected from the legacy source repository, that a provider deployment corresponds to the reviewed central revision, or that production acceptance has occurred.
+The Pages project identity and namespace are verified from legacy `GoreeCloud/goreecloud-website` Cloudflare deployment evidence. This is the desired central source configuration for the public website. It does not establish that Cloudflare Pages has already been reconnected from the legacy source repository, that a provider deployment corresponds to the reviewed central revision, or that production acceptance has occurred.
 
 ## Build and local acceptance
 

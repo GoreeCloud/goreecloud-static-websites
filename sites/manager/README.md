@@ -19,6 +19,8 @@ The public site remains `noindex,nofollow,noarchive` until its independent publi
 
 The approved centralized publication contract is:
 
+- Cloudflare Pages project: `goreecloud-manager`
+- Pages namespace: `goreecloud-manager.pages.dev`
 - Repository: `GoreeCloud/goreecloud-static-websites`
 - Production branch: `main`
 - Root directory: `sites/manager`
@@ -26,7 +28,7 @@ The approved centralized publication contract is:
 - Build output directory: `dist`
 - Canonical public domain: `manage.goreecloud.com`
 
-This contract is the desired source configuration for the public informational website only. It does not establish that Cloudflare has already been reconnected to the central repository, that the custom domain serves the reviewed central revision, or that the private Manager application is deployed or accepted.
+The Pages project identity and namespace are verified from legacy `GoreeCloud/goreecloud-manager` Cloudflare deployment evidence. This contract is the desired source configuration for the public informational website only. It does not establish that Cloudflare has already been reconnected to the central repository, that the custom domain serves the reviewed central revision, or that the private Manager application is deployed or accepted.
 
 ## Build and validation
 
