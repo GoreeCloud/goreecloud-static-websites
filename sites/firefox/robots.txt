@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /
+
+# Indexing remains closed until firefox.goreecloud.com is production-verified.
