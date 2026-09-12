@@ -185,6 +185,8 @@ def exercise(session_id: str) -> None:
         require(isinstance(state, dict), f"Manager public-site layout state unreadable at {requested_width}px: {state!r}")
         width = int(state.get("width", requested_width))
         require(state.get("ready") == "complete", f"Manager public site did not finish loading at {width}px: {state}")
+        overflowers = state.get("overflowers") or []
+        require(not overflowers, f"Manager rendered content escapes viewport at {width}px: {overflowers}")
         require(
             int(state.get("scrollWidth", width + 2)) <= width + 1,
             f"Manager public site has horizontal overflow at {width}px: {state}",
