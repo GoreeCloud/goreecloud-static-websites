@@ -15,10 +15,26 @@ CANONICAL_SHA256 = "82d3bdc331a96593873ca4d327e3b46d561d1ca96e653cef71e0c5e42fa1
 
 for name in (
     "index.html", "404.html", "site.css", "identity.css", "site.js",
-    "v1.3-site.css", "_headers", "build.py"
+    "v1.3-site.css", "_headers", "build.py", "README.md"
 ):
     if not (SITE / name).is_file():
         raise SystemExit(f"missing Design Center source: {name}")
+
+readme = (SITE / "README.md").read_text(encoding="utf-8")
+for marker in (
+    "GLAZE UI V1.3",
+    "1.3.0",
+    "GoreeCloud/goreecloud-static-websites",
+    "design.goreecloud.com",
+    "goreecloud-design.pages.dev",
+    GLAZE_REVISION,
+    "legacy",
+):
+    if marker not in readme:
+        raise SystemExit(f"Design Center README missing current publication guidance: {marker}")
+for stale in ("GLAZE UI V1.0 Website", "sole current Glaze UI product identity: **GLAZE UI V1.0**"):
+    if stale in readme:
+        raise SystemExit(f"stale active Design Center README guidance remains: {stale}")
 
 mark = IDENTITY / "glaze-ui-mark.svg"
 if not mark.is_file() or hashlib.sha256(mark.read_bytes()).hexdigest() != CANONICAL_SHA256:
@@ -108,8 +124,11 @@ for remote in re.findall(r'(?:src|href)=["\'](https?://[^"\']+)', html + not_fou
         raise SystemExit(f"unexpected remote Design Center link/resource: {remote}")
 
 for directive in (
-    "Content-Security-Policy:", "frame-ancestors 'none'", "Permissions-Policy:",
+    "Content-Security-Policy:",
+    "frame-ancestors 'none'",
+    "Permissions-Policy:",
     "X-Content-Type-Options: nosniff",
+    "Strict-Transport-Security: max-age=31536000",
 ):
     if directive not in headers:
         raise SystemExit(f"required security header missing: {directive}")
@@ -131,5 +150,5 @@ for forbidden in (
 print(
     "GLAZE UI V1.3 Design Center source validation passed: exact Stable source anchor, "
     "current public release identity, accessibility/responsive consumer layer, current canonical Facet identity, "
-    "and explicit rendered/production acceptance boundary"
+    "HSTS/security publication baseline, reconciled package guidance, and explicit rendered/production acceptance boundary"
 )
