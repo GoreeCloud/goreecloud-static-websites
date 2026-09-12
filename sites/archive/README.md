@@ -12,6 +12,10 @@ The Archive is a curated public historical record of major GoreeCloud milestones
 
 Historical Glaze UI 1.x and 2.x milestones may remain in Archive content when clearly described as historical. They do not override the current V1.3 lifecycle authority and must never be activated as current stylesheet dependencies.
 
+## Current website-authority boundary
+
+The canonical static-site repository currently contains **14 authoritative website packages**. Historical Archive entries may preserve earlier package counts when they are clearly tied to their original period. The current-boundary section must use the present 14-package authority: Labs is integrated as the fourteenth authoritative-main package, while its Cloudflare source cutover, exact deployed-revision verification, canonical-domain browser acceptance, production acceptance, and indexing release remain separate gates.
+
 ## Curation boundary
 
 Public history may preserve approved context, including superseded technical or product direction. It must not publish credentials, private topology, administrative interfaces, sensitive operational details, personal information that was not deliberately approved for release, or internal records simply because they exist.
