@@ -13,6 +13,10 @@ The Blog is GoreeCloud's public editorial surface for development writing, homel
 
 The isolated build vendors only the recursive CSS dependency closure reachable from that exact Stable entrypoint. Analytics, advertising, behavioral tracking, remote fonts, and unreviewed external runtime dependencies remain excluded.
 
+## Current website-authority scope
+
+The canonical static-site repository currently contains **14 authoritative website packages**. Labs is integrated as the fourteenth authoritative-main package. That source inclusion does not establish its Cloudflare source cutover, exact deployed-revision verification, canonical-domain browser acceptance, production acceptance, or indexing release; those remain independent gates.
+
 ## Acceptance boundary
 
 Source/build migration, rendered visual review, accessibility/adaptive acceptance, Cloudflare source cutover, custom-domain verification, and exact production acceptance are separate gates. Historical Blog entries may preserve superseded decisions when clearly identified as history, but the landing page must not present obsolete versions, repository counts, or platform models as current state.
