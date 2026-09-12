@@ -26,7 +26,7 @@ PRIVATE_PATTERNS = (
 )
 
 REQUIRED_MARKERS = (
-    "Thirteen official surfaces. One GoreeCloud ecosystem.",
+    "Fourteen official surfaces. One GoreeCloud ecosystem.",
     "45 verified Suite products",
     "9 functional product groups",
     "seven Integral Platform Systems",
@@ -40,6 +40,7 @@ REQUIRED_MARKERS = (
     "mesh.goreecloud.com",
     "id.goreecloud.com",
     "manage.goreecloud.com",
+    "labs.goreecloud.com",
     "source migration does not establish Cloudflare source cutover",
     "GoreeCloud Home",
     "GoreeCloud Home Security",
@@ -65,6 +66,7 @@ STALE = (
     "Six substantive platform systems",
     "Ten independently deployed public destinations",
     "Eleven official surfaces",
+    "Thirteen official surfaces",
     "Privacy-First Personal & Family Cloud",
     "personal and family cloud",
     "family digital foundation",
@@ -76,6 +78,17 @@ STALE = (
     "<h3>Frigate</h3>",
     "assets/roadmap/home-assistant.png",
     "assets/roadmap/frigate.svg",
+)
+
+PUBLIC_PROFILE_URLS = (
+    "https://instagram.com/goreecloud",
+    "https://www.threads.com/@goreecloud",
+    "https://www.tiktok.com/@goreecloud",
+    "https://x.com/GoreeCloud",
+    "https://www.reddit.com/user/goreecloud/",
+    "https://www.pinterest.com/goreecloud/",
+    "https://www.youtube.com/@GoreeCloud",
+    "https://github.com/GoreeCloud",
 )
 
 
@@ -181,8 +194,16 @@ def main() -> int:
     main_js = (ROOT / "js/main.js").read_text(encoding="utf-8")
     theme_js = (ROOT / "js/theme-init.js").read_text(encoding="utf-8")
     polish = (ROOT / "css/glaze-polish.css").read_text(encoding="utf-8")
+    social_css = (ROOT / "css/social.css").read_text(encoding="utf-8")
     if "'system', 'light', 'dark'" not in main_js: errors.append("System/Light/Dark appearance modes missing")
     if "root.dataset.js = 'true'" not in main_js: errors.append("progressive JavaScript state marker missing")
+    if "const PUBLIC_PROFILES = [" not in main_js: errors.append("authoritative public-profile runtime inventory missing")
+    for profile_url in PUBLIC_PROFILE_URLS:
+        if profile_url not in main_js: errors.append(f"public profile missing from Main runtime inventory: {profile_url}")
+    for marker in ("Six active GoreeCloud social-media accounts", "footer-social", "footer-social-links"):
+        if marker not in main_js: errors.append(f"public-profile discoverability marker missing: {marker}")
+    for marker in (".social-monogram", ".social-scope-note", ".footer-social-link", "min-height: 48px"):
+        if marker not in social_css: errors.append(f"public-profile responsive styling missing: {marker}")
     if "localStorage.getItem(THEME_STORAGE_KEY)" not in theme_js: errors.append("appearance preference restoration missing")
     for marker in ("prefers-reduced-motion", "prefers-reduced-transparency", "prefers-contrast: more", "forced-colors: active", "@media print"):
         if marker not in polish: errors.append(f"consumer accessibility fallback missing: {marker}")

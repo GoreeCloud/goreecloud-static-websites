@@ -1,0 +1,40 @@
+name: Validate Firefox Extensions site
+
+on:
+  pull_request:
+    paths:
+      - 'sites/firefox/**'
+      - '.github/workflows/validate-firefox-site.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/firefox/**'
+      - '.github/workflows/validate-firefox-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+      - name: Compile site tooling
+        run: python3 -m py_compile sites/firefox/build.py sites/firefox/validate.py sites/firefox/browser_smoke.py
+      - name: Validate source and build
+        working-directory: sites/firefox
+        run: python3 validate.py
+      - name: Exercise exact built artifact in Chrome
+        working-directory: sites/firefox
+        run: python3 browser_smoke.py
+      - name: Check JavaScript syntax
+        run: node --check sites/firefox/site.js
+      - name: Assert production publication contract
+        run: |
+          grep -F 'Canonical repository: `GoreeCloud/goreecloud-static-websites`' sites/firefox/README.md
+          grep -F 'Site root: `sites/firefox`' sites/firefox/README.md
+          grep -F 'Build command: `python3 build.py`' sites/firefox/README.md
+          grep -F 'Build output directory: `dist`' sites/firefox/README.md
+          grep -F 'firefox.goreecloud.com' sites/firefox/index.html
