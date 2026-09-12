@@ -42,7 +42,7 @@ def wait_site():
         time.sleep(.1)
     raise SmokeError('Labs server did not become ready')
 def state(s):
-    return execute(s,"""
+    return execute(s,r"""
     const visible=e=>{const r=e.getBoundingClientRect(),cs=getComputedStyle(e);return cs.display!=='none'&&cs.visibility!=='hidden'&&r.width>0&&r.height>0};
     const cols=e=>getComputedStyle(e).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
     const cards=[...document.querySelectorAll('[data-workstream]')]; const lanes=[...document.querySelectorAll('[data-lane]')];
