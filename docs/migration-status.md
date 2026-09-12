@@ -1,7 +1,7 @@
 # Static Website Consolidation Status
 
 **Canonical target:** `GoreeCloud/goreecloud-static-websites`  
-**Reviewed:** 2026-09-11  
+**Reviewed:** 2026-09-12  
 **GLAZE UI source/build baseline:** V1.3 / 1.3.0  
 **Verified Security production revision:** `256daf235066b4fd1f931e50e45e366fa92f45e7`  
 **Verified Privacy production revision:** `80379f6962a5ded6c01317542941a2c55aedd922`  
@@ -12,9 +12,11 @@
 
 ## Current state
 
-Source consolidation and GLAZE UI V1.3 source/build reconciliation are complete for the thirteen authoritative static website packages on canonical `main`.
+Source consolidation and GLAZE UI V1.3 source/build reconciliation are complete for the fourteen authoritative static website packages on canonical `main`.
 
-Production deployment migration is proceeding site by site. **Security Center, Privacy Center, Identity Center, GoreeCloud Suite, and the Continuity Center / Everkeep are `production-verified`.** The other eight packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
+Production deployment migration is proceeding site by site. **Security Center, Privacy Center, Identity Center, GoreeCloud Suite, and the Continuity Center / Everkeep are `production-verified`.** The other nine packages remain `legacy-source` until their own Cloudflare source cutover and exact production verification are completed.
+
+Labs became the fourteenth authoritative package through PR #63, merged as `2f635261f792bd815de9a9a09aa6fb7d6f0b55e7`. Its exact reviewed PR head passed the dedicated Labs build/browser workflow and repository-wide validation before merge. The canonical `labs.goreecloud.com` hostname was subsequently observed still serving the older Labs publication, so Labs remains `legacy-source`. The central package now carries fixed-host exact-byte/header verification and live Chrome acceptance tooling for use only after a separately verified Cloudflare source cutover. Indexing release remains an independent gate.
 
 Everkeep is accepted at exact central revision `61378be3248a38f51c9f5560967a03298a288454`. The Cloudflare GitHub App reported a successful `goreecloud-everkeep` deployment for that exact revision, while an independent repository workflow rebuilt the reviewed artifact and verified the canonical live domain rather than trusting provider deployment status alone. Canonical-domain HTTP verification and live Chrome verification both passed.
 
@@ -47,6 +49,7 @@ No legacy repository may remain a second website source authority after its site
 | Identity Center | `id.goreecloud.com` | `sites/identity` | `validated-in-central-repo` | **`production-verified`** |
 | Manager public site | `manage.goreecloud.com` | `sites/manager` | `validated-in-central-repo` | `legacy-source` |
 | Mesh Center | `mesh.goreecloud.com` | `sites/mesh` | `validated-in-central-repo` | `legacy-source` |
+| Labs | `labs.goreecloud.com` | `sites/labs` | `validated-in-central-repo` | `legacy-source` |
 
 The manifest remains the machine-readable controlling registry for these states.
 
@@ -112,7 +115,7 @@ These production decisions apply only to public website deployments. They do not
 
 ## Remaining production migration sequence
 
-Eight initial production acceptance actions remain for the eight sites that still show `legacy-source`.
+Nine initial production acceptance actions remain for the nine sites that still show `legacy-source`.
 
 For each site or materially changed publication:
 
