@@ -26,7 +26,7 @@ PRIVATE_PATTERNS = (
 )
 
 REQUIRED_MARKERS = (
-    "Thirteen official surfaces. One GoreeCloud ecosystem.",
+    "Fourteen official surfaces. One GoreeCloud ecosystem.",
     "45 verified Suite products",
     "9 functional product groups",
     "seven Integral Platform Systems",
@@ -40,6 +40,7 @@ REQUIRED_MARKERS = (
     "mesh.goreecloud.com",
     "id.goreecloud.com",
     "manage.goreecloud.com",
+    "labs.goreecloud.com",
     "source migration does not establish Cloudflare source cutover",
     "GoreeCloud Home",
     "GoreeCloud Home Security",
@@ -65,6 +66,7 @@ STALE = (
     "Six substantive platform systems",
     "Ten independently deployed public destinations",
     "Eleven official surfaces",
+    "Thirteen official surfaces",
     "Privacy-First Personal & Family Cloud",
     "personal and family cloud",
     "family digital foundation",
