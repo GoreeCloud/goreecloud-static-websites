@@ -32,13 +32,32 @@ From `sites/design/website`:
 
 ```bash
 python3 validate.py
+python3 browser_artifact_smoke.py
+python3 browser_header_smoke.py
 node --check site.js
 ```
 
 `validate.py` rebuilds `dist/`, verifies the exact V1.3 source anchors, synchronized Facet identity, required artifact closure, accessibility/adaptation markers, security-header source contract, and fail-closed consumer-state language.
 
-Repository CI additionally exercises the built `dist/` artifact in real Chrome. Canonical production byte/header and browser verification remain manual until the external Cloudflare Pages source cutover has been independently performed and verified.
+Repository CI additionally exercises the built `dist/` artifact in real Chrome at 1180, 768, 390, and 320 CSS pixels and verifies the full canonical `GoreeCloud · Design Center · GLAZE UI` identity at 1440 pixels without clipping or overlap.
+
+## Canonical production acceptance
+
+Canonical production verification remains manual until the external Cloudflare Pages source cutover has been independently performed and verified. After that provider-side source change, rebuild the reviewed artifact and run:
+
+```bash
+python3 validate.py
+python3 verify_remote.py --target production
+python3 browser_remote_smoke.py
+python3 browser_header_remote_smoke.py
+```
+
+`verify_remote.py` accepts only the canonical Design Center host and the verified `goreecloud-design.pages.dev` namespace. For production it compares every fetchable `dist/` artifact byte-for-byte with the canonical live deployment, requires the reviewed security headers and true HTTP 404 behavior, and checks the current V1.3/fail-closed consumer markers.
+
+`browser_remote_smoke.py` reruns the production-responsive and appearance-control checks at 1180, 768, 390, and 320 CSS pixels. `browser_header_remote_smoke.py` separately requires the live 1440-pixel header to show the complete canonical Design Center identity without ellipsis, clipping, document overflow, brand/navigation collision, or navigation/appearance-control collision.
+
+The dedicated GitHub workflow exposes those canonical-host checks only on `workflow_dispatch`; pull-request and push validation cannot silently become production acceptance.
 
 ## Production boundary
 
-The central package is not production-authoritative merely because it is build-valid. Keep the migration registry fail-closed until Cloudflare Pages is verified to use `GoreeCloud/goreecloud-static-websites`, branch `main`, the Design Center site root/build contract, and the canonical domain passes exact deployed-content and browser acceptance.
+The central package is not production-authoritative merely because it is build-valid. Keep the migration registry fail-closed until Cloudflare Pages is verified to use `GoreeCloud/goreecloud-static-websites`, branch `main`, the Design Center site root/build contract, and the canonical domain passes exact deployed-content, responsive browser, and wide-header acceptance.
