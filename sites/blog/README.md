@@ -17,6 +17,24 @@ The isolated build vendors only the recursive CSS dependency closure reachable f
 
 The canonical static-site repository currently contains **14 authoritative website packages**. Labs is integrated as the fourteenth authoritative-main package. That source inclusion does not establish its Cloudflare source cutover, exact deployed-revision verification, canonical-domain browser acceptance, production acceptance, or indexing release; those remain independent gates.
 
+## Governed Cloudflare Pages cutover contract
+
+The approved centralized publication contract is:
+
+- Cloudflare Pages project: `goreecloud-blog`
+- Pages namespace: `goreecloud-blog.pages.dev`
+- Repository: `GoreeCloud/goreecloud-static-websites`
+- Production branch: `main`
+- Root directory: repository root (leave the Cloudflare Root directory setting blank)
+- Build command: `python3 scripts/build_simple_static_site.py sites/blog`
+- Build output directory: `sites/blog/dist`
+- Canonical custom domain: `blog.goreecloud.com`
+- Legacy deployment/source repository: `GoreeCloud/goreecloud-website`
+
+The Pages project identity and namespace are verified from legacy-repository Cloudflare deployment evidence. The root/build/output settings above match the centralized exact-build workflow and are the governed target for source reconnection; documenting them does not establish that Cloudflare has already been re-pointed to the central repository.
+
+After an independently authorized source cutover, run the Blog workflow manually so the allowlisted production verifier can compare the canonical domain against the reviewed `dist/` artifact, required security headers, canonical-host and 404 behavior, and the live Chrome rendering contract. Provider deployment success by itself is not production acceptance.
+
 ## Acceptance boundary
 
 Source/build migration, rendered visual review, accessibility/adaptive acceptance, Cloudflare source cutover, custom-domain verification, and exact production acceptance are separate gates. Historical Blog entries may preserve superseded decisions when clearly identified as history, but the landing page must not present obsolete versions, repository counts, or platform models as current state.
