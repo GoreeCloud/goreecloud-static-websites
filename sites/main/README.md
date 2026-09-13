@@ -17,7 +17,7 @@ The Main homepage is an ecosystem overview, not an independent inventory authori
 
 - `Inventory — Suite Applications` controls the current Suite portfolio. The current reconciled registry is **45 verified products across 9 functional product groups**.
 - The active Suite architecture defines **7 Integral Platform Systems**: GoreeCloud Manager, GoreeCloud Identity, Glaze UI, Wardveil Security, Privacy Shield, Everkeep, and GoreeCloud Mesh. Their platform authority remains separate from ordinary Suite product counting even when Manager and Identity also expose user-facing product surfaces.
-- `Project Record — Public Websites` plus `sites/manifest.json` control the registered public static-website scope. The current centralized manifest contains **13 website packages**.
+- `Project Record — Public Websites` plus `sites/manifest.json` control the registered public static-website scope. The current centralized manifest contains **14 website packages**, with Labs integrated as the fourteenth authoritative-main package.
 - The live GoreeCloud GitHub organization is authoritative for current repository inventory and counts. Main must not publish a fragile numeric repository-total snapshot as current truth.
 
 The homepage must present GoreeCloud as the current software ecosystem rather than freezing an earlier homelab-only or personal/family-cloud phase as the current product definition. Historical origin context may remain only when it is clearly presented as history and does not override current architecture, product, lifecycle, or deployment authority.
@@ -26,6 +26,8 @@ The homepage must present GoreeCloud as the current software ecosystem rather th
 
 The approved centralized publication contract is:
 
+- Cloudflare Pages project: `goreecloud-website`
+- Pages namespace: `goreecloud-website.pages.dev`
 - Repository: `GoreeCloud/goreecloud-static-websites`
 - Production branch: `main`
 - Root directory: `sites/main`
@@ -33,7 +35,7 @@ The approved centralized publication contract is:
 - Build output directory: `dist`
 - Canonical public domain: `www.goreecloud.com`
 
-This is the desired source configuration for the public website. It does not establish that Cloudflare Pages has already been reconnected from the legacy source repository, that a provider deployment corresponds to the reviewed central revision, or that production acceptance has occurred.
+The Pages project identity and namespace are verified from legacy `GoreeCloud/goreecloud-website` Cloudflare deployment evidence. This is the desired central source configuration for the public website. It does not establish that Cloudflare Pages has already been reconnected from the legacy source repository, that a provider deployment corresponds to the reviewed central revision, or that production acceptance has occurred.
 
 ## Build and local acceptance
 

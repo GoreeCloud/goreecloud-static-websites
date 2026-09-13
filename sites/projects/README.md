@@ -10,8 +10,12 @@ Canonical static source for `projects.goreecloud.com`.
 - Build output directory: `.`
 - Production branch target: `main`
 - Custom domain: `projects.goreecloud.com`
+- Cloudflare Pages project: `goreecloud-projects`
+- Pages namespace: `goreecloud-projects.pages.dev`
 - Migration source: `GoreeCloud/goreecloud-website` at `sites/projects`
 - Reviewed legacy source tree: `2f7f5d096707bcc001e0e0ae46eb718c5ea3ab3f`
+
+The Cloudflare project identity and Pages namespace are verified from legacy `GoreeCloud/goreecloud-website` deployment evidence. The desired central Pages source is `GoreeCloud/goreecloud-static-websites`, branch `main`, root `sites/projects`, with no build command and output `.`. Recording that target does not establish that the provider has already been reconnected or that production serves the reviewed central revision.
 
 The site is static, dependency-free, tracking-free, and uses only local browser runtime code. `_headers` defines the public security-header baseline.
 
