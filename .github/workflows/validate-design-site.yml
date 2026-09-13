@@ -22,7 +22,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Check out exact candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -30,7 +30,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Compile Design Center tooling
-        run: python3 -m py_compile sites/design/website/build.py sites/design/website/validate.py sites/design/website/browser_artifact_smoke.py sites/design/website/browser_header_smoke.py
+        run: >-
+          python3 -m py_compile
+          sites/design/website/build.py
+          sites/design/website/validate.py
+          sites/design/website/browser_artifact_smoke.py
+          sites/design/website/browser_header_smoke.py
+          sites/design/website/verify_remote.py
+          sites/design/website/browser_remote_smoke.py
+          sites/design/website/browser_header_remote_smoke.py
       - name: Validate and build Design Center source
         working-directory: sites/design/website
         run: python3 validate.py
@@ -42,3 +50,15 @@ jobs:
         run: python3 browser_header_smoke.py
       - name: Check Design Center JavaScript syntax
         run: node --check sites/design/website/site.js
+      - name: Verify canonical production bytes and headers
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: sites/design/website
+        run: python3 verify_remote.py --target production
+      - name: Exercise canonical production in Chrome
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: sites/design/website
+        run: python3 browser_remote_smoke.py
+      - name: Verify canonical production wide desktop branding
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: sites/design/website
+        run: python3 browser_header_remote_smoke.py
