@@ -1,0 +1,68 @@
+name: Validate Privacy Center browser artifact
+
+on:
+  pull_request:
+    paths:
+      - 'sites/privacy/**'
+      - '.github/workflows/validate-privacy-browser-artifact.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/privacy/**'
+      - '.github/workflows/validate-privacy-browser-artifact.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: privacy-browser-artifact-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  chrome-artifact-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Verify exact source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          actual="$(git rev-parse HEAD)"
+          printf 'Expected source revision: %s\nActual source revision:   %s\n' "$expected" "$actual"
+          test "$actual" = "$expected"
+
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+
+      - name: Compile Privacy Center browser gate
+        run: python -m py_compile sites/privacy/website/build.py sites/privacy/website/validate.py sites/privacy/website/browser_artifact_smoke.py
+
+      - name: Validate source boundary
+        run: python sites/privacy/website/validate.py
+
+      - name: Build exact Privacy Center artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/privacy/website/build.py
+
+      - name: Validate exact built artifact
+        run: python sites/privacy/website/validate.py --dist
+
+      - name: Exercise exact built artifact in Chrome
+        run: python sites/privacy/website/browser_artifact_smoke.py
+
+      - name: Validate JavaScript syntax
+        run: node --check sites/privacy/website/site.js
