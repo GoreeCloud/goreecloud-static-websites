@@ -47,8 +47,8 @@ jobs:
           path: .glaze-ui
           persist-credentials: false
 
-      - name: Compile Privacy Center browser gate
-        run: python -m py_compile sites/privacy/website/build.py sites/privacy/website/validate.py sites/privacy/website/browser_artifact_smoke.py
+      - name: Compile Privacy Center browser gates
+        run: python -m py_compile sites/privacy/website/build.py sites/privacy/website/validate.py sites/privacy/website/browser_artifact_smoke.py sites/privacy/website/accessibility_artifact_smoke.py
 
       - name: Validate source boundary
         run: python sites/privacy/website/validate.py
@@ -63,6 +63,9 @@ jobs:
 
       - name: Exercise exact built artifact in Chrome
         run: python sites/privacy/website/browser_artifact_smoke.py
+
+      - name: Exercise accessibility semantics and preferences in Chrome
+        run: python sites/privacy/website/accessibility_artifact_smoke.py
 
       - name: Validate JavaScript syntax
         run: node --check sites/privacy/website/site.js
