@@ -12,6 +12,13 @@
   --home-blue-soft: color-mix(in srgb, var(--blue) 12%, transparent);
 }
 
+/* Main intentionally keeps its public header in normal document flow. The
+ * navigation remains visually prominent without covering page content. */
+.site-header {
+  position: relative;
+  top: auto;
+}
+
 #main .container {
   width: min(calc(100% - 2rem), var(--homepage-container));
 }
@@ -593,7 +600,7 @@
 }
 
 .footer-social-link {
-  min-height: 42px;
+  min-height: 48px;
   display: inline-flex;
   align-items: center;
   padding: .48rem .72rem;
