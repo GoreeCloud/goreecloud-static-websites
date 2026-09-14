@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise the public GoreeCloud homepage at screenshot-relevant CSS viewports."""
+"""Exercise the rebuilt public GoreeCloud homepage at representative CSS viewports."""
 
 from __future__ import annotations
 
@@ -129,8 +129,6 @@ def set_css_viewport(session_id: str, width: int, height: int) -> None:
             },
         },
     )
-    # Keep each viewport independent: a navigation expansion at 390px must not
-    # affect the initial page geometry checked at 320px.
     execute(
         session_id,
         """
@@ -200,29 +198,9 @@ def read_state(session_id: str) -> dict[str, Any]:
         const hero=q('#top');
         const headerRect=header?.getBoundingClientRect();
         const heroRect=hero?.getBoundingClientRect();
-        const socialCards=qa('.social-card');
-        const socialIconSlots=qa('.social-card .social-icon');
-        const socialVisualIconCount=socialIconSlots.filter(slot=>{
-          const image=slot.querySelector('img');
-          if(image) return image.complete && image.naturalWidth>0 && image.naturalHeight>0;
-          const fallback=slot.querySelector('.social-monogram');
-          return Boolean(fallback && getComputedStyle(fallback).backgroundImage !== 'none');
-        }).length;
-        const titleRows=new Map();
-        socialCards.forEach(card=>{
-          const title=card.querySelector('strong');
-          if(!title) return;
-          const cardTop=Math.round(card.getBoundingClientRect().top);
-          const titleTop=title.getBoundingClientRect().top;
-          const values=titleRows.get(cardTop) || [];
-          values.push(titleTop);
-          titleRows.set(cardTop, values);
-        });
-        let socialTitleRowSpread=0;
-        titleRows.forEach(values=>{
-          if(values.length<2) return;
-          socialTitleRowSpread=Math.max(socialTitleRowSpread,Math.max(...values)-Math.min(...values));
-        });
+        const metric=q('.ecosystem-metric strong');
+        const footerProfiles=qa('.footer-social-link');
+        const footerProfileHeights=footerProfiles.map(link=>link.getBoundingClientRect().height).filter(Boolean);
         return {
           ready:document.readyState,
           width:window.innerWidth,
@@ -232,17 +210,23 @@ def read_state(session_id: str) -> dict[str, Any]:
           headerBottom:headerRect?.bottom||0,
           heroTop:heroRect?.top||0,
           heroFont:parseFloat(getComputedStyle(q('.hero h1')).fontSize),
+          metricFont:metric?parseFloat(getComputedStyle(metric).fontSize):0,
           headerShell:box('.site-header .container'),
           heroShell:box('#top .container'),
           websiteLayout:layout('.website-grid'),
           howLayout:layout('.how-flow'),
           roadmapLayout:layout('.roadmap-grid'),
-          socialLayout:layout('.social-grid'),
-          statLayout:layout('.repository-teaser-stats'),
-          socialCardCount:socialCards.length,
-          socialVisualIconCount,
-          footerProfileCount:qa('.footer-social-link').length,
-          socialTitleRowSpread,
+          foundationLayout:layout('.foundation-grid'),
+          platformLayout:layout('.platform-system-grid'),
+          followSectionCount:qa('#follow').length,
+          socialGridCount:qa('.social-grid').length,
+          footerSocialCount:qa('.footer-social').length,
+          footerProfileCount:footerProfiles.length,
+          minFooterProfileHeight:footerProfileHeights.length?Math.min(...footerProfileHeights):0,
+          portfolioCount:qa('.portfolio-card').length,
+          platformSystemCount:qa('.platform-system-card').length,
+          destinationGroupCount:qa('.destination-group').length,
+          ecosystemMetricCount:qa('.ecosystem-metric').length,
         };
         """,
     )
@@ -304,10 +288,18 @@ def exercise(session_id: str, url: str) -> None:
         require(state.get("headerPosition") not in {"fixed", "sticky"}, f"Public header overlays content at {width}px: {state}")
         require(float(state.get("heroTop", 0)) + 1 >= float(state.get("headerBottom", 0)), f"Hero begins beneath an overlapping header at {width}px: {state}")
         require(float(state.get("heroFont", 0)) >= 40, f"Hero type became too small at {width}px: {state}")
-        require(int(state.get("socialCardCount", 0)) == 8, f"Homepage did not render all eight public profile cards at {width}px: {state}")
-        require(int(state.get("socialVisualIconCount", 0)) == 8, f"Homepage public profile icons are missing or broken at {width}px: {state}")
-        require(int(state.get("footerProfileCount", 0)) == 8, f"Footer did not render all eight direct public profile links at {width}px: {state}")
-        require(float(state.get("socialTitleRowSpread", 99)) <= 2.0, f"Public profile titles are not row-aligned at {width}px: {state}")
+        require(float(state.get("metricFont", 0)) >= 34, f"Ecosystem metrics became too small to read at {width}px: {state}")
+
+        require(int(state.get("followSectionCount", -1)) == 0, f"Duplicate standalone social section remains at {width}px: {state}")
+        require(int(state.get("socialGridCount", -1)) == 0, f"Duplicate social card grid remains at {width}px: {state}")
+        require(int(state.get("footerSocialCount", 0)) == 1, f"Homepage must expose exactly one social area at {width}px: {state}")
+        require(int(state.get("footerProfileCount", 0)) == 8, f"Footer did not render all eight public profile links at {width}px: {state}")
+        require(float(state.get("minFooterProfileHeight", 0)) >= 40, f"Footer social target became too small at {width}px: {state}")
+
+        require(int(state.get("portfolioCount", 0)) == 9, f"Homepage did not render the nine Suite product groups at {width}px: {state}")
+        require(int(state.get("platformSystemCount", 0)) == 7, f"Homepage did not render the seven Integral Platform Systems at {width}px: {state}")
+        require(int(state.get("destinationGroupCount", 0)) == 4, f"Homepage public destinations are not grouped into four purpose areas at {width}px: {state}")
+        require(int(state.get("ecosystemMetricCount", 0)) == 4, f"Homepage ecosystem summary is incomplete at {width}px: {state}")
 
         header_shell = state.get("headerShell") or {}
         hero_shell = state.get("heroShell") or {}
@@ -319,8 +311,9 @@ def exercise(session_id: str, url: str) -> None:
 
         if width <= 820:
             require(single_column(state.get("websiteLayout")), f"Website directory did not render as one full-width content column at {width}px: {state}")
+            require(single_column(state.get("platformLayout")), f"Platform systems did not render as one full-width content column at {width}px: {state}")
         if width <= 600:
-            for key in ("howLayout", "roadmapLayout", "socialLayout", "statLayout"):
+            for key in ("howLayout", "roadmapLayout", "foundationLayout"):
                 require(single_column(state.get(key)), f"{key} did not render as one full-width content column at {width}px: {state}")
         if width <= 390:
             validate_navigation(session_id, width, height)
