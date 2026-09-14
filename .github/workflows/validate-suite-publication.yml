@@ -18,25 +18,26 @@ permissions:
 jobs:
   suite-publication:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
-      - name: Check out pinned GLAZE UI V1.3 Stable source
+      - name: Check out pinned GLAZE UI V1.4 Stable source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: GoreeCloud/goreecloud-glaze-ui
-          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
           path: .glaze-ui
           persist-credentials: false
 
-      - name: Validate Suite source publication boundary
+      - name: Validate retained Suite source-template boundary
         shell: python
         run: |
           from pathlib import Path
+          import json
           root = Path('sites/suite')
           required = (
               'index.html', '404.html', '_headers', 'robots.txt', 'sitemap.xml',
@@ -46,6 +47,15 @@ jobs:
           for name in required:
               if not (root / name).is_file():
                   raise SystemExit(f'missing Suite publication source: {name}')
+          lock=json.loads((root/'glaze.lock.json').read_text(encoding='utf-8'))
+          expected={
+              'version':'1.4.0','lifecycle':'Stable',
+              'stable_commit':'84cb3db4884042f0fa25ed6d475a127fb110f596',
+              'entrypoint':'glaze-v1.4.0.css','entrypoint_blob':'d48a9bc317090d152799769271de0fb4325494c4',
+              'consumer_state':'build-migrated-rendered-acceptance-pending',
+          }
+          for key,value in expected.items():
+              if lock.get(key)!=value: raise SystemExit(f'Suite current publication lock mismatch for {key}: {lock.get(key)!r}')
           error = (root / '404.html').read_text(encoding='utf-8')
           for marker in (
               '<meta name="robots" content="noindex, nofollow">',
@@ -56,26 +66,25 @@ jobs:
               'This error does not imply that an application, capability, lifecycle state, service, deployment, or production-acceptance state exists or has changed.',
           ):
               if marker not in error:
-                  raise SystemExit(f'missing Suite 404 publication marker: {marker}')
-          build = (root / 'scripts/build_public_site.py').read_text(encoding='utf-8')
-          if '"404.html"' not in build:
-              raise SystemExit('Suite builder does not package 404.html')
+                  raise SystemExit(f'missing retained Suite V1.3 404 template marker: {marker}')
           headers = (root / '_headers').read_text(encoding='utf-8')
           if 'Cache-Control: public, max-age=300' in headers:
               raise SystemExit('Suite HTML/404 responses must not retain legacy five-minute cache policy')
-          print('Suite source publication contract validated')
+          print('Suite retained V1.3 source template and current V1.4 publication lock validated')
 
-      - run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/validate_site.py sites/suite/scripts/validate_responsive_layout.py
+      - run: python -m py_compile sites/suite/scripts/build_public_site.py sites/suite/scripts/validate_site.py sites/suite/scripts/validate_responsive_layout.py sites/suite/scripts/browser_responsive_smoke.py
       - run: python sites/suite/scripts/validate_site.py
+      - run: python sites/suite/scripts/validate_responsive_layout.py
 
-      - name: Build Suite public artifact
+      - name: Build exact Suite GLAZE UI V1.4 public artifact
         env:
           GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python sites/suite/scripts/build_public_site.py
 
       - run: python sites/suite/scripts/validate_site.py --dist
+      - run: python sites/suite/scripts/browser_responsive_smoke.py
 
-      - name: Validate built 404 artifact
+      - name: Validate built V1.4 404 artifact
         shell: python
         run: |
           from pathlib import Path
@@ -83,7 +92,11 @@ jobs:
           if not error.is_file():
               raise SystemExit('built Suite artifact is missing 404.html')
           text = error.read_text(encoding='utf-8')
-          for marker in ('Page not found — GoreeCloud Suite', 'noindex, nofollow', 'data-glaze-version="1.3.0"'):
+          for marker in (
+              'Page not found — GoreeCloud Suite', 'noindex, nofollow',
+              'data-glaze-version="1.4.0"', 'name="goreecloud-glaze-ui" content="1.4.0"',
+              'assets/glaze-v1.4.0.css', 'data-glaze-consumer-adaptation="1.3-inherited"',
+          ):
               if marker not in text:
-                  raise SystemExit(f'built Suite 404 marker missing: {marker}')
-          print('Suite built 404 publication contract validated; production acceptance remains separate')
+                  raise SystemExit(f'built Suite V1.4 404 marker missing: {marker}')
+          print('Suite built V1.4 404 publication contract validated; production acceptance remains separate')

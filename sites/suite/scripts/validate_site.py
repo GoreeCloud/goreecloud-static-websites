@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the GoreeCloud Suite source or built artifact against current portfolio authority."""
+"""Validate retained Suite source or the exact GLAZE UI V1.4 built publication."""
 
 from __future__ import annotations
 
@@ -14,11 +14,12 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 LOCK = json.loads((ROOT / "glaze.lock.json").read_text(encoding="utf-8"))
-EXPECTED_VERSION = "1.3.0"
-EXPECTED_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
-EXPECTED_ENTRYPOINT = "glaze-v1.3.0.css"
-EXPECTED_ENTRYPOINT_BLOB = "4c3ad293ba9196e2e5a32700b530ec67fd01cef6"
-EXPECTED_CONSUMER_STATE = "source-migrated-rendered-acceptance-pending"
+SOURCE_VERSION = "1.3.0"
+SOURCE_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
+PUBLICATION_VERSION = "1.4.0"
+PUBLICATION_COMMIT = "84cb3db4884042f0fa25ed6d475a127fb110f596"
+PUBLICATION_ENTRYPOINT = "glaze-v1.4.0.css"
+PUBLICATION_ENTRYPOINT_BLOB = "d48a9bc317090d152799769271de0fb4325494c4"
 IMPORT_RE = re.compile(r'@import\s+(?:url\()?\s*["\']?\.\/([^"\')\s;]+)', re.IGNORECASE)
 
 parser = argparse.ArgumentParser()
@@ -115,7 +116,6 @@ class HtmlAudit(HTMLParser):
 def imported_closure(errors: list[str]) -> set[str]:
     assets = DIST / "assets"
     seen: set[str] = set()
-
     def visit(name: str) -> None:
         if name in seen:
             return
@@ -137,51 +137,73 @@ def imported_closure(errors: list[str]) -> set[str]:
                 errors.append(f"unsupported Glaze import syntax: {statement}")
                 continue
             visit(match.group(1))
-
-    visit(EXPECTED_ENTRYPOINT)
+    visit(PUBLICATION_ENTRYPOINT)
     return seen
 
 
 def main() -> int:
     errors: list[str] = []
     html = (BASE / "index.html").read_text(encoding="utf-8")
+    nf = (BASE / "404.html").read_text(encoding="utf-8")
     css = (BASE / "styles.css").read_text(encoding="utf-8")
-    v13_css = (BASE / "glaze-v1.3-consumer.css").read_text(encoding="utf-8")
+    inherited_css = (BASE / "glaze-v1.3-consumer.css").read_text(encoding="utf-8")
     HtmlAudit(errors).feed(html)
+    HtmlAudit(errors).feed(nf)
 
-    for key, expected in (
-        ("version", EXPECTED_VERSION),
-        ("lifecycle", "Stable"),
-        ("stable_commit", EXPECTED_COMMIT),
-        ("entrypoint", EXPECTED_ENTRYPOINT),
-        ("entrypoint_blob", EXPECTED_ENTRYPOINT_BLOB),
-        ("consumer_state", EXPECTED_CONSUMER_STATE),
-    ):
+    for key, expected in {
+        "version": PUBLICATION_VERSION,
+        "lifecycle": "Stable",
+        "repository": "GoreeCloud/goreecloud-glaze-ui",
+        "stable_commit": PUBLICATION_COMMIT,
+        "entrypoint": PUBLICATION_ENTRYPOINT,
+        "entrypoint_blob": PUBLICATION_ENTRYPOINT_BLOB,
+        "consumer_state": "build-migrated-rendered-acceptance-pending",
+    }.items():
         if LOCK.get(key) != expected:
-            errors.append(f"Suite Glaze lock mismatch for {key}: {LOCK.get(key)!r} != {expected!r}")
+            errors.append(f"Suite current publication lock mismatch for {key}: {LOCK.get(key)!r}")
+
+    if args.dist:
+        required_markers = (
+            'data-glaze-version="1.4.0"',
+            'name="goreecloud-glaze-ui" content="1.4.0"',
+            f'name="goreecloud-glaze-source-revision" content="{PUBLICATION_COMMIT}"',
+            'name="goreecloud-glaze-consumer-state" content="build-migrated-rendered-acceptance-pending"',
+            'href="assets/glaze-v1.4.0.css" data-glaze-ui="1.4.0"',
+            'href="glaze-v1.3-consumer.css" data-glaze-consumer-adaptation="1.3-inherited"',
+        )
+    else:
+        required_markers = (
+            'data-glaze-version="1.3.0"',
+            'name="goreecloud-glaze-ui" content="1.3.0"',
+            f'name="goreecloud-glaze-source-revision" content="{SOURCE_COMMIT}"',
+            'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"',
+            'href="assets/glaze-v1.3.0.css" data-glaze-ui="1.3.0"',
+            'href="glaze-v1.3-consumer.css"',
+        )
+    for page_name, page in (("index", html), ("404", nf)):
+        for marker in required_markers:
+            if marker not in page:
+                errors.append(f"{page_name}: missing Suite {'V1.4 publication' if args.dist else 'retained V1.3 source'} marker: {marker}")
 
     for marker in (
-        'data-glaze-version="1.3.0"',
-        'name="goreecloud-glaze-ui" content="1.3.0"',
-        f'name="goreecloud-glaze-source-revision" content="{EXPECTED_COMMIT}"',
-        f'name="goreecloud-glaze-consumer-state" content="{EXPECTED_CONSUMER_STATE}"',
-        'href="assets/glaze-v1.3.0.css" data-glaze-ui="1.3.0"',
-        'href="glaze-v1.3-consumer.css"',
         '<link rel="canonical" href="https://suite.goreecloud.com/">',
-        'GLAZE UI V1.3 source target.',
         '45</strong><span>verified Suite products',
         '9</strong><span>functional product groups',
         '3</strong><span>application-centered capability identities',
         'Products without an approved canonical asset use an intentionally neutral marker',
     ):
         if marker not in html:
-            errors.append(f"Suite V1.3/current-portfolio marker missing: {marker}")
+            errors.append(f"Suite current-portfolio marker missing: {marker}")
+    if args.dist:
+        for marker in ("GLAZE UI V1.4 publication target", f"canonical revision <code>{PUBLICATION_COMMIT}</code>", "current Stable 1.4.0 design"):
+            if marker not in html:
+                errors.append(f"Suite V1.4 publication identity missing: {marker}")
+    else:
+        for marker in ("GLAZE UI V1.3 source target", f"canonical revision <code>{SOURCE_COMMIT}</code>", "current Stable 1.3.0 design"):
+            if marker not in html:
+                errors.append(f"Suite retained V1.3 source identity missing: {marker}")
 
-    for stale in (
-        'goreecloud-glaze-ui" content="2.1.0"', 'data-glaze-ui="2.1.0"', 'glaze-ui-2.1.0.css',
-        '27</strong><span>current Suite applications', '7</strong><span>functional groups',
-        '38</strong><span>current applications', '5</strong><span>approved umbrella',
-    ):
+    for stale in ('goreecloud-glaze-ui" content="2.1.0"', 'data-glaze-ui="2.1.0"', 'glaze-ui-2.1.0.css', '27</strong><span>current Suite applications', '7</strong><span>functional groups', '38</strong><span>current applications', '5</strong><span>approved umbrella'):
         if stale in html:
             errors.append(f"superseded Suite directory or Glaze marker remains active: {stale}")
 
@@ -189,14 +211,10 @@ def main() -> int:
     group_count = html.count('class="product-group"')
     capability_count = html.count('class="capability-card"')
     neutral_count = html.count('class="neutral-product-mark"')
-    if app_card_count != 45:
-        errors.append(f"expected 45 reconciled Suite product cards; found {app_card_count}")
-    if group_count != 9:
-        errors.append(f"expected 9 reconciled Suite functional product groups; found {group_count}")
-    if capability_count != 3:
-        errors.append(f"expected 3 current application-centered capability identities; found {capability_count}")
-    if neutral_count != len(NEUTRAL_ARTWORK_PRODUCTS):
-        errors.append(f"expected {len(NEUTRAL_ARTWORK_PRODUCTS)} neutral product marks; found {neutral_count}")
+    if app_card_count != 45: errors.append(f"expected 45 reconciled Suite product cards; found {app_card_count}")
+    if group_count != 9: errors.append(f"expected 9 reconciled Suite functional product groups; found {group_count}")
+    if capability_count != 3: errors.append(f"expected 3 current application-centered capability identities; found {capability_count}")
+    if neutral_count != len(NEUTRAL_ARTWORK_PRODUCTS): errors.append(f"expected {len(NEUTRAL_ARTWORK_PRODUCTS)} neutral product marks; found {neutral_count}")
 
     for product in CURRENT_PRODUCTS:
         if html.count(f"<h4>{product}</h4>") != 1:
@@ -208,62 +226,46 @@ def main() -> int:
         if marker not in html:
             errors.append(f"Integral Platform System marker missing: {marker}")
 
-    for marker in (
-        "--suite-v13-control:48px", "--suite-v13-control-assisted:56px", "pointer:coarse", "focus-visible",
-        "prefers-reduced-motion:reduce", "prefers-reduced-transparency:reduce", "prefers-contrast:more",
-        "forced-colors:active", "@media print",
-    ):
-        if marker not in v13_css:
-            errors.append(f"Suite V1.3 adaptation marker missing: {marker}")
+    for marker in ("--suite-v13-control:48px", "--suite-v13-control-assisted:56px", "pointer:coarse", "focus-visible", "prefers-reduced-motion:reduce", "prefers-reduced-transparency:reduce", "prefers-contrast:more", "forced-colors:active", "@media print"):
+        if marker not in inherited_css:
+            errors.append(f"Suite inherited V1.3 adaptation marker missing: {marker}")
     for marker in ("@media (prefers-reduced-motion: reduce)", "@media (prefers-reduced-transparency: reduce)", ":focus-visible", ".neutral-product-mark"):
         if marker not in css:
             errors.append(f"Suite base accessibility/identity fallback missing: {marker}")
 
     ids = re.findall(r'\bid="([^"]+)"', html)
-    if len(ids) != len(set(ids)):
-        errors.append("HTML contains duplicate id attributes")
-    if "https://www.goreecloud.com/assets/suite/" in html:
-        errors.append("Suite identity assets must remain origin-local")
+    if len(ids) != len(set(ids)): errors.append("HTML contains duplicate id attributes")
+    if "https://www.goreecloud.com/assets/suite/" in html: errors.append("Suite identity assets must remain origin-local")
     allowed_images = set(EXPECTED_ASSET_BLOBS)
     for src in re.findall(r'<img[^>]+src="([^"]+)"', html):
-        if src not in allowed_images:
-            errors.append(f"unexpected or non-reviewed image source: {src}")
+        if src not in allowed_images: errors.append(f"unexpected or non-reviewed image source: {src}")
 
     for relative, expected_blob in EXPECTED_ASSET_BLOBS.items():
         source_path = ROOT / relative
         if not source_path.is_file() or source_path.is_symlink():
             errors.append(f"required reviewed identity asset missing: {relative}")
             continue
-        if blob_id(source_path.read_bytes()) != expected_blob:
-            errors.append(f"reviewed identity asset drifted: {relative}")
+        if blob_id(source_path.read_bytes()) != expected_blob: errors.append(f"reviewed identity asset drifted: {relative}")
         if args.dist:
             built_path = DIST / relative
-            if not built_path.is_file() or built_path.is_symlink():
-                errors.append(f"built reviewed identity asset missing: {relative}")
-            elif blob_id(built_path.read_bytes()) != expected_blob:
-                errors.append(f"built reviewed identity asset drifted: {relative}")
+            if not built_path.is_file() or built_path.is_symlink(): errors.append(f"built reviewed identity asset missing: {relative}")
+            elif blob_id(built_path.read_bytes()) != expected_blob: errors.append(f"built reviewed identity asset drifted: {relative}")
 
     if args.dist:
-        entrypoint = DIST / "assets" / EXPECTED_ENTRYPOINT
-        if not entrypoint.is_file():
-            errors.append("built GLAZE UI V1.3 Stable entrypoint missing")
-        elif blob_id(entrypoint.read_bytes()) != EXPECTED_ENTRYPOINT_BLOB:
-            errors.append("built GLAZE UI V1.3 Stable entrypoint integrity mismatch")
-        closure = imported_closure(errors)
-        if "glaze-v1.2.0.css" not in closure:
-            errors.append("canonical V1.3 inherited rendering foundation is incomplete")
+        entrypoint = DIST / "assets" / PUBLICATION_ENTRYPOINT
+        if not entrypoint.is_file(): errors.append("built GLAZE UI V1.4 Stable entrypoint missing")
+        elif blob_id(entrypoint.read_bytes()) != PUBLICATION_ENTRYPOINT_BLOB: errors.append("built GLAZE UI V1.4 Stable entrypoint integrity mismatch")
+        imported_closure(errors)
 
     if errors:
         print("Suite website validation failed:")
-        for error in errors:
-            print(f"  - {error}")
+        for error in errors: print(f"  - {error}")
         return 1
 
     print(
-        f"Suite website V1.3 validation passed ({'dist' if args.dist else 'source'}): 45 reconciled products, "
-        "9 functional product groups, 3 application-centered capability identities, 38 reviewed product assets plus "
-        "6 neutral artwork fallbacks, exact Glaze source pin, and accessibility/adaptive fallbacks. "
-        "Rendered/production acceptance remains separate."
+        f"Suite website validation passed ({'V1.4 artifact' if args.dist else 'retained V1.3 source template'}): 45 reconciled products, "
+        "9 functional product groups, 3 application-centered capability identities, exact reviewed assets, current V1.4 publication lock, and accessibility/adaptive fallbacks. "
+        "Exact deployment and production acceptance remain separately evidenced."
     )
     return 0
 
