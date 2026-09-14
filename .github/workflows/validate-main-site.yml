@@ -71,8 +71,8 @@ jobs:
           node --check sites/main/js/main.js
           node --check sites/main/js/telemetry.js
       - name: Verify canonical production bytes and headers
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.head_ref == 'verify/main-production-v14-20260914')
         run: python sites/main/scripts/verify_remote_deployment.py production
       - name: Verify canonical production responsive rendering
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.head_ref == 'verify/main-production-v14-20260914')
         run: python sites/main/scripts/browser_responsive_smoke.py --target production
