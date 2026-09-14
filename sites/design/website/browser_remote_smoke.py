@@ -31,7 +31,7 @@ def main() -> int:
         smoke.exercise(session_id)
         print(
             "Design Center canonical production Chrome acceptance passed at "
-            "1180×900, 768×900, 390×844, and 320×844 with V1.3 appearance controls."
+            "1180×900, 768×900, 390×844, and 320×844 with GLAZE UI V1.4 appearance controls."
         )
         return 0
     except Exception as error:
