@@ -16,6 +16,8 @@ SITEMAP = ROOT / "sitemap.xml"
 HEADERS = ROOT / "_headers"
 MAIN_JS = ROOT / "js" / "main.js"
 THEME_INIT_JS = ROOT / "js" / "theme-init.js"
+TELEMETRY_JS = ROOT / "js" / "telemetry.js"
+TELEMETRY_REVIEW = ROOT / "docs" / "posthog-telemetry-review.md"
 PRIVACY_URL = "https://www.goreecloud.com/privacy.html"
 PRIVATE_PATTERNS = (
     re.compile(r"\b10(?:\.\d{1,3}){3}\b"),
@@ -121,7 +123,15 @@ def report(errors: list[str]) -> int:
 
 def main() -> int:
     errors: list[str] = []
-    required_paths = (PRIVACY_PAGE, SITEMAP, HEADERS, MAIN_JS, THEME_INIT_JS)
+    required_paths = (
+        PRIVACY_PAGE,
+        SITEMAP,
+        HEADERS,
+        MAIN_JS,
+        THEME_INIT_JS,
+        TELEMETRY_JS,
+        TELEMETRY_REVIEW,
+    )
     for path in required_paths:
         if not path.exists():
             errors.append(f"Required privacy-validation resource is missing: {path.relative_to(ROOT)}")
@@ -206,6 +216,58 @@ def main() -> int:
     for source, marker, label in storage_requirements:
         if marker not in source:
             errors.append(f"Privacy statement no longer matches website {label} behavior.")
+
+    telemetry = TELEMETRY_JS.read_text(encoding="utf-8")
+    telemetry_requirements = (
+        ("const POSTHOG_ACTIVATION = false;", "PostHog activation must remain fail-closed while the project privacy gate is unresolved"),
+        ("const CONSENT_STORAGE_KEY = 'goreecloud-analytics-consent';", "explicit first-party analytics consent storage key"),
+        ("autocapture: false", "interaction autocapture disabled"),
+        ("capture_pageview: false", "automatic page views disabled"),
+        ("capture_pageleave: false", "automatic page leaves disabled"),
+        ("capture_dead_clicks: false", "dead-click capture disabled"),
+        ("capture_exceptions: false", "exception autocapture disabled"),
+        ("capture_heatmaps: false", "heatmaps disabled"),
+        ("capture_performance: false", "performance capture disabled"),
+        ("disable_session_recording: true", "session replay disabled"),
+        ("disable_external_dependency_loading: true", "PostHog external feature dependencies disabled"),
+        ("advanced_disable_flags: true", "feature-flag network requests disabled"),
+        ("opt_out_capturing_by_default: true", "PostHog capture opted out by default"),
+        ("opt_out_persistence_by_default: true", "PostHog persistence opted out by default"),
+        ("before_send: scrubEvent", "outbound event allowlist/redaction hook"),
+        ("if (!POSTHOG_ACTIVATION) return;", "network-capable telemetry code unreachable while staged"),
+        ("window.posthog.opt_in_capturing();", "explicit opt-in path"),
+        ("window.posthog.opt_out_capturing();", "explicit revocation path"),
+        ("event.event !== WEBSITE_EVENT", "single-event allowlist"),
+        ("$process_person_profile: false", "person-profile processing disabled for the website event"),
+    )
+    for marker, label in telemetry_requirements:
+        if marker not in telemetry:
+            errors.append(f"Staged telemetry contract is missing {label}: {marker}")
+
+    theme_telemetry_requirements = (
+        "const TELEMETRY_MODULE_HREF = '/js/telemetry.js';",
+        "ensureTelemetryModule();",
+    )
+    for marker in theme_telemetry_requirements:
+        if marker not in theme_init:
+            errors.append(f"Local staged telemetry module is not wired through theme-init.js: {marker}")
+
+    if "https://us-assets.i.posthog.com" in headers or "https://us.i.posthog.com" in headers:
+        errors.append(
+            "PostHog network origins must not be allowed by CSP while POSTHOG_ACTIVATION remains false."
+        )
+
+    telemetry_review = TELEMETRY_REVIEW.read_text(encoding="utf-8")
+    for marker in (
+        "**Status:** Staged / inactive",
+        "POSTHOG_ACTIVATION = false",
+        "discard client IP data",
+        "12-month event-retention",
+        "website opened",
+        "Production behavior is independently verified",
+    ):
+        if marker not in telemetry_review:
+            errors.append(f"Telemetry review is missing required staged-state evidence: {marker}")
 
     browser_code = "\n".join(
         path.read_text(encoding="utf-8", errors="replace").lower()
