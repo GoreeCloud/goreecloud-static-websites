@@ -20,12 +20,19 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out exact candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned GLAZE UI V1.4 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
+          path: .glaze-ui
           persist-credentials: false
       - name: Compile Labs tooling
         run: >-
@@ -33,16 +40,26 @@ jobs:
           sites/labs/build.py
           sites/labs/validate.py
           sites/labs/browser_smoke.py
-          sites/labs/verify_public_deployment.py
+          sites/labs/verify_v14_public_deployment.py
           sites/labs/browser_production_smoke.py
-      - name: Validate production-verifier configuration
+      - name: Validate V1.4 production-verifier configuration
         working-directory: sites/labs
-        run: python3 verify_public_deployment.py --check-config
-      - name: Validate source
+        run: python3 verify_v14_public_deployment.py --check-config
+      - name: Validate retained source template
         working-directory: sites/labs
         run: python3 validate.py
+      - name: Build exact Labs V1.4 artifact
+        working-directory: sites/labs
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python3 build.py
+      - name: Validate exact Labs V1.4 artifact
+        working-directory: sites/labs
+        run: python3 validate.py dist
       - name: Exercise exact built artifact in Chrome
         working-directory: sites/labs
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python3 browser_smoke.py
       - name: Check JavaScript syntax
         run: node --check sites/labs/site.js
@@ -54,13 +71,15 @@ jobs:
           grep -F 'Build command: `python3 build.py`' sites/labs/README.md
           grep -F 'Build output directory: `dist`' sites/labs/README.md
           grep -F 'labs.goreecloud.com' sites/labs/index.html
-      - name: Verify canonical production bytes and headers
+      - name: Verify canonical production V1.4 bytes and headers
         if: github.event_name == 'workflow_dispatch'
         working-directory: sites/labs
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: |
           python3 build.py
           python3 validate.py dist
-          python3 verify_public_deployment.py
+          python3 verify_v14_public_deployment.py --target production
       - name: Exercise canonical production in Chrome
         if: github.event_name == 'workflow_dispatch'
         working-directory: sites/labs
