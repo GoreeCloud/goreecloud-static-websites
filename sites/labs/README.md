@@ -10,7 +10,13 @@ Canonical centralized static source for `labs.goreecloud.com`.
 - Build command: `python3 build.py`
 - Build output directory: `dist`
 - Intended custom domain: `labs.goreecloud.com`
-- Current design target: GLAZE UI V1.3 / 1.3.0
+- Current publication target: **GLAZE UI V1.4 / 1.4.0 Stable**
+- Exact Glaze revision: `84cb3db4884042f0fa25ed6d475a127fb110f596`
+- Exact Stable entrypoint: `glaze-v1.4.0.css`
+- Entrypoint Git blob: `d48a9bc317090d152799769271de0fb4325494c4`
+- Consumer state: `build-migrated-rendered-acceptance-pending`
+
+The retained Labs source template preserves its earlier **GLAZE UI V1.3 / 1.3.0** marker as migration provenance. `build.py` deterministically produces the current V1.4 publication identity, adds the exact V1.4 Stable stylesheet dependency closure, and keeps source/build acceptance distinct.
 
 ## Product boundary
 
@@ -31,12 +37,7 @@ The seven Integral Platform Systems remain separate from the 27 Labs workstreams
 
 ## Source authority
 
-This site is reconciled against:
-
-- `Inventory — Suite Applications` (authoritative current 45-product / 9-group portfolio record),
-- `Inventory — GitHub Repositories` (verified owned-repository inventory),
-- applicable project specifications for specialized products and services,
-- the canonical Glaze UI lifecycle registry for the current design target.
+This site is reconciled against the authoritative Suite inventory, verified owned-repository inventory, applicable project specifications, and the canonical Glaze UI lifecycle registry. Publication content must remain bounded by those sources and must not strengthen project lifecycle claims beyond verified evidence.
 
 ## Build and acceptance
 
@@ -44,25 +45,27 @@ From `sites/labs`:
 
 ```bash
 python3 validate.py
+GLAZE_UI_SOURCE=/path/to/goreecloud-glaze-ui python3 build.py
+python3 validate.py dist
 python3 browser_smoke.py
-python3 verify_public_deployment.py --check-config
+python3 verify_v14_public_deployment.py --check-config
 ```
 
-The local/browser gate rebuilds `dist/`, validates the exact static artifact, and exercises the site at 1180, 768, 390, and 320 CSS pixels with filter controls, System/Light/Dark behavior, viewport containment, image loading, interaction-target sizing, and responsive workstream layouts.
+The browser gate rebuilds and validates the exact static artifact, then exercises the site at 1180, 768, 390, and 320 CSS pixels with filter controls, System/Light/Dark behavior, viewport containment, image loading, interaction-target sizing, and responsive workstream layouts.
 
 Canonical production verification is deliberately separate. After the Cloudflare Pages source has been independently switched to the centralized publication contract, run:
 
 ```bash
 python3 build.py
 python3 validate.py dist
-python3 verify_public_deployment.py
+python3 verify_v14_public_deployment.py --target production
 python3 browser_production_smoke.py
 ```
 
-`verify_public_deployment.py` is fixed to `https://labs.goreecloud.com/`. It compares the canonical root, 404, robots, sitemap, CSS, JavaScript, and GoreeCloud identity asset byte-for-byte with the reviewed `dist/` artifact, validates committed security-header requirements, rejects cross-host redirects, and requires Cloudflare delivery. `browser_production_smoke.py` then reruns the responsive/interaction acceptance against the live canonical hostname and verifies the rendered Labs content boundary.
+The V1.4 production verifier is fixed to `https://labs.goreecloud.com/`. It compares every fetchable built artifact byte-for-byte with production, validates committed security headers, canonical host behavior, true 404 output, the exact V1.4 publication markers, and Cloudflare delivery. The production browser gate independently reruns responsive/interaction acceptance against the live canonical hostname.
 
-The dedicated GitHub workflow runs source/build/browser verification for ordinary pull requests and pushes. The live canonical-host checks run only through `workflow_dispatch`, so repository CI cannot silently convert a source change into production acceptance.
+The dedicated GitHub workflow runs source/build/browser verification for ordinary pull requests and pushes. Live canonical-host checks run only through `workflow_dispatch`, so repository CI cannot silently convert a source change into production acceptance.
 
 ## Indexing boundary
 
-The rebuilt central source remains `noindex,nofollow` until Cloudflare source cutover, exact deployed-revision verification, and public production acceptance are complete. Indexing release is a separate gate and must not be inferred merely from a successful deployment.
+The rebuilt central source remains `noindex,nofollow` until Cloudflare source cutover, exact deployed-revision verification, public production acceptance, and an independently authorized indexing release are complete. Indexing release is a separate gate and must not be inferred merely from a successful deployment.
