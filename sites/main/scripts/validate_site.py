@@ -259,7 +259,7 @@ def main() -> int:
     for marker in ("footer-social", "footer-social-links"):
         if marker not in main_js:
             errors.append(f"footer public-profile runtime fallback missing: {marker}")
-    for marker in (".footer-social", ".footer-social-links", ".footer-social-link", "min-height: 42px"):
+    for marker in (".footer-social", ".footer-social-links", ".footer-social-link", "min-height: 48px"):
         if marker not in homepage_css:
             errors.append(f"footer public-profile styling missing: {marker}")
     if "localStorage.getItem(THEME_STORAGE_KEY)" not in theme_js:
