@@ -8,6 +8,7 @@
 (() => {
   const THEME_STORAGE_KEY = 'goreecloud-theme';
   const MANIFEST_HREF = '/site.webmanifest';
+  const TELEMETRY_MODULE_HREF = '/js/telemetry.js';
   const THEME_COLORS = {
     dark: '#07111f',
     light: '#f4f7fb',
@@ -23,6 +24,16 @@
     document.head.append(manifest);
   }
 
+  function ensureTelemetryModule() {
+    if (document.querySelector(`script[src="${TELEMETRY_MODULE_HREF}"]`)) return;
+
+    const telemetry = document.createElement('script');
+    telemetry.src = TELEMETRY_MODULE_HREF;
+    telemetry.defer = true;
+    telemetry.dataset.goreecloudTelemetry = 'staged';
+    document.head.append(telemetry);
+  }
+
   function updateThemeColors(mode) {
     document.querySelectorAll('meta[name="theme-color"][data-theme-color]').forEach((meta) => {
       const scheme = meta.dataset.themeColor;
@@ -33,6 +44,7 @@
   }
 
   ensureManifestLink();
+  ensureTelemetryModule();
 
   try {
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
