@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the explicit public artifact for suite.goreecloud.com."""
+"""Build the explicit GLAZE UI V1.4 public artifact for suite.goreecloud.com."""
 
 from __future__ import annotations
 
@@ -16,64 +16,30 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 LOCK = json.loads((ROOT / "glaze.lock.json").read_text(encoding="utf-8"))
-EXPECTED_VERSION = "1.3.0"
-EXPECTED_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
-EXPECTED_ENTRYPOINT = "glaze-v1.3.0.css"
-EXPECTED_ENTRYPOINT_BLOB = "4c3ad293ba9196e2e5a32700b530ec67fd01cef6"
+EXPECTED_VERSION = "1.4.0"
+EXPECTED_COMMIT = "84cb3db4884042f0fa25ed6d475a127fb110f596"
+EXPECTED_ENTRYPOINT = "glaze-v1.4.0.css"
+EXPECTED_ENTRYPOINT_BLOB = "d48a9bc317090d152799769271de0fb4325494c4"
+LEGACY_VERSION = "1.3.0"
+LEGACY_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
 IMPORT_RE = re.compile(r'@import\s+(?:url\()?\s*["\']?\.\/([^"\')\s;]+)', re.IGNORECASE)
 
 SUITE_ICON_FILES = (
-    "assets/suite/ai.svg",
-    "assets/suite/app-store.svg",
-    "assets/suite/backup.svg",
-    "assets/suite/bookmarks.svg",
-    "assets/suite/browser.svg",
-    "assets/suite/calendar.svg",
-    "assets/suite/changelogs.svg",
-    "assets/suite/code.svg",
-    "assets/suite/contacts.svg",
-    "assets/suite/dns.svg",
-    "assets/suite/documents.svg",
-    "assets/suite/drive.svg",
-    "assets/suite/feed.svg",
-    "assets/suite/file-manager.svg",
-    "assets/suite/gallery.svg",
-    "assets/suite/gateway.svg",
-    "assets/suite/identity.svg",
-    "assets/suite/index.svg",
-    "assets/suite/keyboard.svg",
-    "assets/suite/launcher.svg",
-    "assets/suite/location.svg",
-    "assets/suite/mail.svg",
-    "assets/suite/manager.svg",
-    "assets/suite/maps.svg",
-    "assets/suite/memos.svg",
-    "assets/suite/messenger.svg",
-    "assets/suite/monitor.svg",
-    "assets/suite/music.svg",
-    "assets/suite/network.svg",
-    "assets/suite/notes.svg",
-    "assets/suite/notify.svg",
-    "assets/suite/photos.svg",
-    "assets/suite/search.svg",
-    "assets/suite/sync.svg",
-    "assets/suite/tasks.svg",
-    "assets/suite/terminal.svg",
-    "assets/suite/vault.svg",
-    "assets/suite/video.svg",
+    "assets/suite/ai.svg", "assets/suite/app-store.svg", "assets/suite/backup.svg", "assets/suite/bookmarks.svg",
+    "assets/suite/browser.svg", "assets/suite/calendar.svg", "assets/suite/changelogs.svg", "assets/suite/code.svg",
+    "assets/suite/contacts.svg", "assets/suite/dns.svg", "assets/suite/documents.svg", "assets/suite/drive.svg",
+    "assets/suite/feed.svg", "assets/suite/file-manager.svg", "assets/suite/gallery.svg", "assets/suite/gateway.svg",
+    "assets/suite/identity.svg", "assets/suite/index.svg", "assets/suite/keyboard.svg", "assets/suite/launcher.svg",
+    "assets/suite/location.svg", "assets/suite/mail.svg", "assets/suite/manager.svg", "assets/suite/maps.svg",
+    "assets/suite/memos.svg", "assets/suite/messenger.svg", "assets/suite/monitor.svg", "assets/suite/music.svg",
+    "assets/suite/network.svg", "assets/suite/notes.svg", "assets/suite/notify.svg", "assets/suite/photos.svg",
+    "assets/suite/search.svg", "assets/suite/sync.svg", "assets/suite/tasks.svg", "assets/suite/terminal.svg",
+    "assets/suite/vault.svg", "assets/suite/video.svg",
 )
 
 PUBLIC_FILES = (
-    "index.html",
-    "404.html",
-    "styles.css",
-    "glaze-v1.3-consumer.css",
-    "_headers",
-    "robots.txt",
-    "sitemap.xml",
-    "site.webmanifest",
-    "assets/goreecloud-logo.svg",
-    *SUITE_ICON_FILES,
+    "index.html", "404.html", "styles.css", "glaze-v1.3-consumer.css", "_headers", "robots.txt",
+    "sitemap.xml", "site.webmanifest", "assets/goreecloud-logo.svg", *SUITE_ICON_FILES,
 )
 
 
@@ -88,6 +54,25 @@ def require_file(path: Path) -> Path:
     return path
 
 
+def render_v14(text: str) -> str:
+    replacements = (
+        ('data-glaze-version="1.3.0"', 'data-glaze-version="1.4.0"'),
+        ('name="goreecloud-glaze-ui" content="1.3.0"', 'name="goreecloud-glaze-ui" content="1.4.0"'),
+        (f'name="goreecloud-glaze-source-revision" content="{LEGACY_COMMIT}"', f'name="goreecloud-glaze-source-revision" content="{EXPECTED_COMMIT}"'),
+        ('name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"', 'name="goreecloud-glaze-consumer-state" content="build-migrated-rendered-acceptance-pending"'),
+        ('assets/glaze-v1.3.0.css" data-glaze-ui="1.3.0"', 'assets/glaze-v1.4.0.css" data-glaze-ui="1.4.0"'),
+        ('href="glaze-v1.3-consumer.css"', 'href="glaze-v1.3-consumer.css" data-glaze-consumer-adaptation="1.3-inherited"'),
+        ('GLAZE UI V1.3 source target', 'GLAZE UI V1.4 publication target'),
+        ('GLAZE UI V1.3 source target.', 'GLAZE UI V1.4 publication target.'),
+        ('GLAZE UI 1.3.0 at canonical revision', 'GLAZE UI 1.4.0 at canonical revision'),
+        ('current Stable 1.3.0 design', 'current Stable 1.4.0 design'),
+        (LEGACY_COMMIT, EXPECTED_COMMIT),
+    )
+    for old, new in replacements:
+        text = text.replace(old, new)
+    return text
+
+
 def read_glaze(name: str) -> bytes:
     if Path(name).name != name or not name.endswith(".css"):
         raise ValueError(f"unsafe Glaze stylesheet dependency: {name}")
@@ -96,11 +81,11 @@ def read_glaze(name: str) -> bytes:
         data = require_file(Path(source_root) / "css" / name).read_bytes()
     else:
         url = f"https://raw.githubusercontent.com/{LOCK['repository']}/{LOCK['stable_commit']}/css/{name}"
-        request = urllib.request.Request(url, headers={"User-Agent": "GoreeCloud-public-site-builder/1"})
+        request = urllib.request.Request(url, headers={"User-Agent": "GoreeCloud-Suite-public-site-builder/1.4"})
         with urllib.request.urlopen(request, timeout=20) as response:
             data = response.read()
     if name == EXPECTED_ENTRYPOINT and git_blob_sha(data) != EXPECTED_ENTRYPOINT_BLOB:
-        raise ValueError("Glaze V1.3 Stable entrypoint integrity mismatch")
+        raise ValueError("Glaze V1.4 Stable entrypoint integrity mismatch")
     return data
 
 
@@ -124,14 +109,18 @@ def collect_glaze(name: str, collected: dict[str, bytes]) -> None:
 
 def main() -> int:
     try:
-        if LOCK.get("version") != EXPECTED_VERSION or LOCK.get("lifecycle") != "Stable":
-            raise ValueError("Suite Glaze lock must target 1.3.0 Stable")
-        if LOCK.get("stable_commit") != EXPECTED_COMMIT:
-            raise ValueError("Suite Glaze lock has unexpected Stable source revision")
-        if LOCK.get("entrypoint") != EXPECTED_ENTRYPOINT or LOCK.get("entrypoint_blob") != EXPECTED_ENTRYPOINT_BLOB:
-            raise ValueError("Suite Glaze lock has unexpected Stable entrypoint contract")
-        if LOCK.get("consumer_state") != "source-migrated-rendered-acceptance-pending":
-            raise ValueError("Suite Glaze consumer state must remain fail-closed")
+        expected_lock = {
+            "version": EXPECTED_VERSION,
+            "lifecycle": "Stable",
+            "repository": "GoreeCloud/goreecloud-glaze-ui",
+            "stable_commit": EXPECTED_COMMIT,
+            "entrypoint": EXPECTED_ENTRYPOINT,
+            "entrypoint_blob": EXPECTED_ENTRYPOINT_BLOB,
+            "consumer_state": "build-migrated-rendered-acceptance-pending",
+        }
+        for key, value in expected_lock.items():
+            if LOCK.get(key) != value:
+                raise ValueError(f"Suite Glaze lock mismatch for {key}: {LOCK.get(key)!r}")
         if len(PUBLIC_FILES) != len(set(PUBLIC_FILES)):
             raise ValueError("public allowlist contains duplicate paths")
         if DIST.exists():
@@ -143,7 +132,10 @@ def main() -> int:
             source = require_file(ROOT / relative)
             target = DIST / relative
             target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, target)
+            if relative in {"index.html", "404.html"}:
+                target.write_text(render_v14(source.read_text(encoding="utf-8")), encoding="utf-8")
+            else:
+                shutil.copy2(source, target)
 
         glaze: dict[str, bytes] = {}
         collect_glaze(EXPECTED_ENTRYPOINT, glaze)
@@ -157,8 +149,8 @@ def main() -> int:
 
     files = [path for path in DIST.rglob("*") if path.is_file()]
     print(
-        f"Built Suite V1.3 source-migrated artifact: {len(files)} files, "
-        f"{sum(path.stat().st_size for path in files)} bytes; rendered/production acceptance remains separate"
+        f"Built Suite GLAZE UI V1.4 artifact: {len(files)} files, "
+        f"{sum(path.stat().st_size for path in files)} bytes; exact deployment and production acceptance remain separate"
     )
     return 0
 
