@@ -117,7 +117,18 @@ def normalize_homepage(source: str) -> str:
         raise ValueError("homepage must identify the current 14-site public surface including Labs")
     if "GoreeCloud Labs" not in source or "labs.goreecloud.com" not in source:
         raise ValueError("homepage must include the GoreeCloud Labs destination")
-    if "45 verified Suite products" not in source or "9 functional product groups" not in source:
+
+    has_45_product_model = (
+        "45 verified Suite products" in source
+        or '<strong>45</strong><span>verified Suite products</span>' in source
+        or "45 products across nine functional groups" in source
+    )
+    has_9_group_model = (
+        "9 functional product groups" in source
+        or '<strong>9</strong><span>functional product groups</span>' in source
+        or "nine functional groups" in source
+    )
+    if not (has_45_product_model and has_9_group_model):
         raise ValueError("homepage must identify the authoritative 45-product / 9-group Suite model")
     if "seven Integral Platform Systems" not in source:
         raise ValueError("homepage must identify the seven-system platform model")
