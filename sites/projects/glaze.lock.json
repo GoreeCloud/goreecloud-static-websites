@@ -1,0 +1,10 @@
+{
+  "schema":"goreecloud.glaze.consumer-lock.v1",
+  "version":"1.4.0",
+  "lifecycle":"Stable",
+  "repository":"GoreeCloud/goreecloud-glaze-ui",
+  "stable_commit":"84cb3db4884042f0fa25ed6d475a127fb110f596",
+  "entrypoint":"glaze-v1.4.0.css",
+  "entrypoint_blob":"d48a9bc317090d152799769271de0fb4325494c4",
+  "consumer_state":"source-migrated-rendered-acceptance-pending"
+}

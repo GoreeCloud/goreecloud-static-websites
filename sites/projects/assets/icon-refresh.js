@@ -12,7 +12,7 @@ const canonicalProductBranding={
   'goreecloud-dns':['products/dns/app-icon.svg','dns.svg'],
   'goreecloud-documents':['products/documents/app-icon.svg','documents.svg'],
   'goreecloud-drive':['products/drive/app-icon.svg','drive.svg'],
-  'goreecloud-rss':['products/feed/app-icon.svg','feed.svg'],
+  'goreecloud-rss':['products/feed/app-icon.svg','/assets/feed.svg'],
   'goreecloud-gallery':['products/gallery/app-icon.svg','gallery.svg'],
   'goreecloud-gateway':['products/gateway/app-icon.svg','gateway.svg'],
   'goreecloud-identity':['products/identity/app-icon.svg','identity.svg'],
@@ -61,7 +61,7 @@ for(const entry of entries){
     entry.brandingAuthority=brandingAuthority;
     entry.brandingSource=productBranding[0];
     entry.brandingStatus='approved';
-    entry.icon=`${publishedSuiteIconBase}${productBranding[1]}`;
+    entry.icon=productBranding[1].startsWith('/')?productBranding[1]:`${publishedSuiteIconBase}${productBranding[1]}`;
     continue;
   }
   entry.brandingAuthority=brandingAuthority;
