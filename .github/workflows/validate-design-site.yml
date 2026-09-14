@@ -22,12 +22,19 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out exact candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned GLAZE UI V1.4 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
+          path: .glaze-ui
           persist-credentials: false
       - name: Compile Design Center tooling
         run: >-
@@ -39,10 +46,12 @@ jobs:
           sites/design/website/verify_remote.py
           sites/design/website/browser_remote_smoke.py
           sites/design/website/browser_header_remote_smoke.py
-      - name: Validate and build Design Center source
+      - name: Validate and build Design Center V1.4 source
         working-directory: sites/design/website
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python3 validate.py
-      - name: Exercise built artifact in Chrome
+      - name: Exercise built V1.4 artifact in Chrome
         working-directory: sites/design/website
         run: python3 browser_artifact_smoke.py
       - name: Verify wide desktop branding in Chrome
@@ -50,11 +59,15 @@ jobs:
         run: python3 browser_header_smoke.py
       - name: Check Design Center JavaScript syntax
         run: node --check sites/design/website/site.js
-      - name: Verify canonical production bytes and headers
+      - name: Verify canonical production V1.4 bytes and headers
         if: github.event_name == 'workflow_dispatch'
         working-directory: sites/design/website
-        run: python3 verify_remote.py --target production
-      - name: Exercise canonical production in Chrome
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: |
+          python3 validate.py
+          python3 verify_remote.py --target production
+      - name: Exercise canonical production V1.4 in Chrome
         if: github.event_name == 'workflow_dispatch'
         working-directory: sites/design/website
         run: python3 browser_remote_smoke.py
