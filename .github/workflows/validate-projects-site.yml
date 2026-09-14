@@ -42,7 +42,8 @@ jobs:
             sites/projects/build.py \
             sites/projects/validate_v14_artifact.py \
             sites/projects/browser_v14_artifact_smoke.py \
-            sites/projects/verify_v14_deployment.py
+            sites/projects/verify_v14_deployment.py \
+            sites/projects/browser_v14_remote_smoke.py
       - name: Validate retained Projects source/content contract
         run: python sites/projects/validate.py
       - name: Exercise retained Projects source template in Chrome
@@ -66,3 +67,6 @@ jobs:
         run: |
           python sites/projects/build.py
           python sites/projects/verify_v14_deployment.py --target production
+      - name: Verify canonical Projects production V1.4 rendering
+        if: github.event_name == 'workflow_dispatch'
+        run: python sites/projects/browser_v14_remote_smoke.py
