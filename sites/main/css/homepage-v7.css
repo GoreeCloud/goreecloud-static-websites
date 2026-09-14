@@ -717,6 +717,24 @@
   .platform-system-card {
     min-height: 0;
   }
+
+  /* Keep the compact navigation bounded and deliberately two-column on phones.
+   * The final Contact action spans both columns for a stable visual anchor. */
+  .site-header .site-nav {
+    left: auto;
+    right: 0;
+    width: min(320px, calc(100vw - 1.4rem));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .site-header .site-nav.open {
+    display: grid;
+  }
+
+  .site-header .site-nav .nav-cta {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 390px) {
