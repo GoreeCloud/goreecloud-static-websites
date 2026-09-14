@@ -39,7 +39,6 @@ for page_name, page in (("index.html", index), ("404.html", not_found)):
         'data-glaze-version="1.4.0"',
         'name="goreecloud-glaze-ui" content="1.4.0"',
         f'name="goreecloud-glaze-source-revision" content="{REVISION}"',
-        'name="goreecloud-glaze-consumer-state" content="build-migrated-rendered-acceptance-pending"',
         '/assets/glaze-v1.4.0.css',
         'data-glaze-ui="1.4.0"',
         'data-glaze-consumer-adaptation="1.3-inherited"',
@@ -55,6 +54,9 @@ for page_name, page in (("index.html", index), ("404.html", not_found)):
     ):
         if stale in page:
             raise SystemExit(f"{page_name} still exposes superseded active Design Center publication state: {stale}")
+
+if 'name="goreecloud-glaze-consumer-state" content="build-migrated-rendered-acceptance-pending"' not in index:
+    raise SystemExit("index.html missing Design Center fail-closed V1.4 consumer-state marker")
 
 for marker in (
     "GLAZE UI V1.4 — Optical Intelligence",
