@@ -27,7 +27,7 @@ The Cloudflare project identity and Pages namespace are verified from current le
 - Inherited Design Center consumer adaptation: `v1.3-site.css`
 - Current consumer state: **build migrated; rendered/browser, accessibility, performance, rollback, Cloudflare cutover, exact deployed-revision, and production acceptance remain separate gates**
 
-The checked-in Design Center HTML preserves the reviewed V1.3 layout/content template as migration input. `build.py` deterministically projects that template into a V1.4 publication artifact, replaces the old local shared-Glaze bundle with the exact pinned V1.4 Stable dependency closure, preserves the repository-local V1.3 adaptation stylesheet as an inherited compatibility layer, and keeps the approved Facet identity byte-for-byte. The generated artifact—not the inherited template—is the Cloudflare publication output.
+The checked-in Design Center HTML directly targets V1.4. `build.py` copies that reviewed source into the publication artifact, adds the exact pinned V1.4 Stable CSS dependency closure, preserves `v1.3-site.css` only as an inherited repository-local compatibility/adaptation layer, and keeps the approved Facet identity byte-for-byte. V1.4 is the active shared Glaze publication identity; the inherited stylesheet is not represented as the current shared Glaze release.
 
 GLAZE UI V1.4 being Official Stable and consumer-eligible does not grant Design Center production conformance. A successful source build or Cloudflare provider deployment must never be treated as proof of downstream rendered or production acceptance.
 
@@ -42,7 +42,7 @@ python3 browser_header_smoke.py
 node --check site.js
 ```
 
-CI checks out the exact GLAZE UI V1.4 Stable revision and exposes it to the builder through `GLAZE_UI_SOURCE`. `validate.py` verifies the consumer lock, inherited source-template boundary, exact V1.4 entrypoint and dependency closure, synchronized Facet identity, required artifact closure, accessibility/adaptation markers, security-header source contract, and fail-closed consumer-state language.
+CI checks out the exact GLAZE UI V1.4 Stable revision and exposes it to the builder through `GLAZE_UI_SOURCE`. `validate.py` verifies the consumer lock, direct V1.4 source markers, exact V1.4 entrypoint and dependency closure, synchronized Facet identity, required artifact closure, inherited accessibility/adaptation markers, security-header source contract, and fail-closed consumer-state language.
 
 Repository CI additionally exercises the exact built `dist/` artifact in real Chrome at 1180, 768, 390, and 320 CSS pixels and verifies the full canonical `GoreeCloud · Design Center · GLAZE UI` identity at 1440 pixels without clipping or overlap.
 
