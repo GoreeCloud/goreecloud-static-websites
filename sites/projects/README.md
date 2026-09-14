@@ -6,8 +6,8 @@ Canonical static source for `projects.goreecloud.com`.
 
 - Canonical repository: `GoreeCloud/goreecloud-static-websites`
 - Site root: `sites/projects`
-- Build command: none
-- Build output directory: `.`
+- Build command: `python3 build.py`
+- Build output directory: `dist`
 - Production branch target: `main`
 - Custom domain: `projects.goreecloud.com`
 - Cloudflare Pages project: `goreecloud-projects`
@@ -15,9 +15,9 @@ Canonical static source for `projects.goreecloud.com`.
 - Migration source: `GoreeCloud/goreecloud-website` at `sites/projects`
 - Reviewed legacy source tree: `2f7f5d096707bcc001e0e0ae46eb718c5ea3ab3f`
 
-The Cloudflare project identity and Pages namespace are verified from legacy `GoreeCloud/goreecloud-website` deployment evidence. The desired central Pages source is `GoreeCloud/goreecloud-static-websites`, branch `main`, root `sites/projects`, with no build command and output `.`. Recording that target does not establish that the provider has already been reconnected or that production serves the reviewed central revision.
+The Cloudflare project identity and Pages namespace are verified from legacy `GoreeCloud/goreecloud-website` deployment evidence. The desired central Pages source is `GoreeCloud/goreecloud-static-websites`, branch `main`, root `sites/projects`, build command `python3 build.py`, and output `dist`. Recording that target does not establish that the provider has already been reconnected or that production serves the reviewed central revision.
 
-The site is static, dependency-free, tracking-free, and uses only local browser runtime code. `_headers` defines the public security-header baseline.
+The publication artifact is deterministic and generated from the reviewed Projects source plus the exact pinned GLAZE UI Stable source. `_headers` defines the public security-header baseline. The site remains dependency-minimized and uses local browser runtime code.
 
 ## Portfolio authority
 
@@ -31,15 +31,23 @@ The seven Integral Platform Systems are GoreeCloud Manager, GoreeCloud Identity,
 
 Portfolio membership does not establish Stable, production, security, privacy, recovery, platform-conformance, or deployment acceptance for a listed product. Detailed lifecycle truth remains controlled by each product's authoritative specification, repository, validation, and acceptance evidence.
 
-## Current Glaze UI consumer target
+## Current Glaze UI publication target
 
-- Required design-system version: **GLAZE UI V1.3 / `1.3.0`**.
-- Exact canonical Glaze revision used for this source migration: `8354308445da9ac35ced2b37a7f503a08a0aaf72`.
+- Required publication version: **GLAZE UI V1.4 / `1.4.0` Stable**.
+- Exact canonical Glaze revision: `84cb3db4884042f0fa25ed6d475a127fb110f596`.
+- Exact Stable entrypoint: `glaze-v1.4.0.css`.
+- Exact entrypoint Git blob: `d48a9bc317090d152799769271de0fb4325494c4`.
 - Canonical Glaze repository: `GoreeCloud/goreecloud-glaze-ui`.
-- Projects consumer layer: `assets/glaze-v1.3-consumer.css`.
-- Current consumer state: **source migrated; rendered/browser, accessibility, performance, rollback, and production acceptance pending**.
+- Consumer lock: `glaze.lock.json`.
+- Publication builder: `build.py`.
+- Built-artifact validator: `validate_v14_artifact.py`.
+- Built-artifact browser gate: `browser_v14_artifact_smoke.py`.
+- Exact deployment verifier: `verify_v14_deployment.py`.
+- Current consumer state: **source/build migrated; production deployment acceptance pending**.
 
-GLAZE UI V1.3 being Official Stable and consumer-eligible does not grant Projects conformance. This repository must independently validate the actual Projects surface and bind acceptance to the exact consumer revision before any production-complete V1.3 claim is made.
+Projects retains the reviewed V1.3 document and repository-local consumer adaptation as an inherited compatibility template. The builder projects that source deterministically into the current V1.4 publication identity, adds the exact V1.4 Stable stylesheet dependency closure, and preserves the V1.3 adaptation layer as an inherited consumer stylesheet rather than representing it as the active shared Glaze entrypoint. This follows the same controlled build-projection model used by the main GoreeCloud website.
+
+GLAZE UI V1.4 being Official Stable and consumer-eligible does not grant Projects production conformance. The generated artifact must independently pass exact source/build integrity and rendered-browser validation, then the deployed custom domain must match that exact artifact before production acceptance can be recorded.
 
 ## Branding authority
 
@@ -55,8 +63,8 @@ GLAZE UI V1.3 being Official Stable and consumer-eligible does not grant Project
 
 ## Production boundary
 
-Source validation does not itself authorize production claims. Branch-preview and production verification must confirm that the deployed Projects surface matches the reviewed source. Platform artwork identifies the relevant system but does not establish technical runtime acceptance, protection, privacy, recovery, identity, management, or coordination state.
+Source validation and successful V1.4 artifact generation do not themselves authorize production claims. Branch-preview and production verification must confirm that the deployed Projects surface matches the exact generated artifact. Platform artwork identifies the relevant system but does not establish technical runtime acceptance, protection, privacy, recovery, identity, management, or coordination state.
 
-The canonical production verifier must require byte equality for the reviewed static publication, a true reviewed 404 response, the complete committed security-header baseline, canonical HTTPS host behavior, mutable-asset revalidation, and Cloudflare delivery before production acceptance can be recorded. Desktop and representative-mobile browser gates remain separate rendered/interaction evidence.
+The canonical production verifier requires byte equality for the generated publication, a true reviewed 404 response, the complete committed security-header baseline, canonical HTTPS host behavior, and the exact V1.4 publication markers. Representative desktop/tablet/mobile browser acceptance remains a separate rendered evidence gate.
 
-Cloudflare Pages source cutover and legacy-source retirement remain separate migration gates after central validation.
+Cloudflare Pages source cutover and legacy-source retirement remain separate migration gates after central validation. Do not advance the manifest deployment state from `legacy-source` until the provider source/root/build/output contract is verified, the exact deployed artifact is accepted on `projects.goreecloud.com`, and rollback/legacy-source retirement requirements are satisfied.
