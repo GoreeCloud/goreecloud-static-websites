@@ -1,25 +1,25 @@
 /* GoreeCloud public website — optional, consent-first telemetry.
  *
- * IMPORTANT: This integration is intentionally staged and fail-closed.
- * POSTHOG_ACTIVATION must remain false until the PostHog project is independently
- * verified to discard client IP data and the matching CSP/privacy changes are approved.
- * While false, this file performs no PostHog network request and sends no telemetry.
+ * PostHog is never contacted until the visitor explicitly grants analytics consent.
+ * The integration is intentionally limited to one minimized `website opened` event.
  */
 
 (() => {
   'use strict';
 
-  const POSTHOG_ACTIVATION = false;
+  const POSTHOG_ACTIVATION = true;
   const CONSENT_STORAGE_KEY = 'goreecloud-analytics-consent';
   const WEBSITE_EVENT = 'website opened';
   const POSTHOG_TOKEN = 'phc_q6ASRxAkQW9mXnjJfNHeZAM6LzyYeiYQbtVuj4seiyEb';
   const POSTHOG_API_HOST = 'https://us.i.posthog.com';
   const POSTHOG_DEFAULTS = '2026-05-30';
+  const TELEMETRY_ENVIRONMENT = window.location.hostname === 'www.goreecloud.com' ? 'production' : 'preview';
 
   const TELEMETRY_STATUS = Object.freeze({
     staged: !POSTHOG_ACTIVATION,
     provider: 'PostHog US Cloud',
     schema: '0.1',
+    consentRequired: true,
   });
 
   window.GoreeCloudTelemetry = Object.freeze({
@@ -59,6 +59,7 @@
       $lib: source.$lib,
       $lib_version: source.$lib_version,
       $process_person_profile: false,
+      $geoip_disable: true,
       application: source.application,
       environment: source.environment,
       telemetry_schema: source.telemetry_schema,
@@ -135,7 +136,7 @@
         },
       });
 
-      o = 'capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group shutdown'.split(' ');
+      o = 'capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing clear_opt_in_out_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group shutdown'.split(' ');
       for (n = 0; n < o.length; n += 1) g(u, o[n]);
       e._i.push([i, s, a]);
     };
@@ -162,17 +163,16 @@
       disable_session_recording: true,
       disable_external_dependency_loading: true,
       advanced_disable_flags: true,
-      opt_out_capturing_by_default: true,
-      opt_out_persistence_by_default: true,
       before_send: scrubEvent,
     });
 
-    window.posthog.opt_in_capturing();
+    window.posthog.clear_opt_in_out_capturing();
     window.posthog.capture(WEBSITE_EVENT, {
       application: 'GoreeCloud Website',
-      environment: 'production',
+      environment: TELEMETRY_ENVIRONMENT,
       telemetry_schema: '0.1',
       $process_person_profile: false,
+      $geoip_disable: true,
     });
   }
 

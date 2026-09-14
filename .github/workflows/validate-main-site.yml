@@ -34,7 +34,7 @@ jobs:
           persist-credentials: false
       - name: Confirm generated artifact is not source authority
         run: test ! -e sites/main/dist
-      - name: Compile main-site build, browser, and verification tools
+      - name: Compile main-site build, browser, privacy, and verification tools
         run: |
           python -m py_compile \
             sites/main/scripts/glaze_v1_3.py \
@@ -44,6 +44,7 @@ jobs:
             sites/main/scripts/validate_glaze_ui.py \
             sites/main/scripts/validate_responsive_layout.py \
             sites/main/scripts/validate_public_surface.py \
+            sites/main/scripts/validate_privacy_policy.py \
             sites/main/scripts/verify_remote_deployment.py \
             sites/main/scripts/browser_responsive_smoke.py \
             sites/main/scripts/browser_artifact_smoke.py
@@ -53,6 +54,7 @@ jobs:
           python sites/main/scripts/validate_responsive_layout.py
           python sites/main/scripts/validate_public_surface.py
           python sites/main/scripts/validate_site.py
+          python sites/main/scripts/validate_privacy_policy.py
       - name: Build isolated public artifact from exact GLAZE UI source
         env:
           GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
@@ -67,6 +69,7 @@ jobs:
         run: |
           node --check sites/main/js/theme-init.js
           node --check sites/main/js/main.js
+          node --check sites/main/js/telemetry.js
       - name: Verify canonical production bytes and headers
         if: github.event_name == 'workflow_dispatch'
         run: python sites/main/scripts/verify_remote_deployment.py production
