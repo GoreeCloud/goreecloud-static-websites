@@ -1,0 +1,170 @@
+name: Validate Privacy Center publication contract
+
+on:
+  pull_request:
+    paths:
+      - 'sites/privacy/**'
+      - 'scripts/validate_v13_hygiene.py'
+      - '.github/workflows/validate-privacy-publication.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/privacy/**'
+      - 'scripts/validate_v13_hygiene.py'
+      - '.github/workflows/validate-privacy-publication.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  privacy-publication:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact Privacy Center revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Verify exact checked-out revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+
+      - name: Check out exact GLAZE UI V1.3 source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui-source
+          persist-credentials: false
+
+      - name: Validate Privacy Center source contract
+        shell: python
+        run: |
+          from pathlib import Path
+          import json
+
+          root = Path('sites/privacy')
+          website = root / 'website'
+          lock = json.loads((website / 'glaze.lock.json').read_text(encoding='utf-8'))
+
+          expected = {
+              'version': '1.3.0',
+              'lifecycle': 'Stable',
+              'repository': 'GoreeCloud/goreecloud-glaze-ui',
+              'stable_commit': '8354308445da9ac35ced2b37a7f503a08a0aaf72',
+              'entrypoint': 'glaze-v1.3.0.css',
+              'entrypoint_blob': '4c3ad293ba9196e2e5a32700b530ec67fd01cef6',
+              'consumer_state': 'source-migrated-rendered-acceptance-pending',
+          }
+          for key, value in expected.items():
+              if lock.get(key) != value:
+                  raise SystemExit(f'Privacy Center Glaze lock mismatch for {key}: {lock.get(key)!r}')
+
+          required = (
+              'index.html', '404.html', '_headers', 'build.py', 'glaze.lock.json',
+              'site.css', 'site-polish.css', 'v1.3-site.css', 'site.js',
+          )
+          for name in required:
+              path = website / name
+              if not path.is_file() or path.is_symlink():
+                  raise SystemExit(f'missing or unsafe Privacy Center publication source: {name}')
+
+          index = (website / 'index.html').read_text(encoding='utf-8')
+          error = (website / '404.html').read_text(encoding='utf-8')
+          headers = (website / '_headers').read_text(encoding='utf-8')
+          revision = expected['stable_commit']
+
+          for html_name, html in (('index.html', index), ('404.html', error)):
+              for marker in (
+                  'data-glaze-version="1.3.0"',
+                  'name="goreecloud-glaze-ui" content="1.3.0"',
+                  f'name="goreecloud-glaze-source-revision" content="{revision}"',
+              ):
+                  if marker not in html:
+                      raise SystemExit(f'{html_name} missing V1.3 publication marker: {marker}')
+
+          for marker in (
+              'Content-Security-Policy:',
+              'Cross-Origin-Opener-Policy: same-origin',
+              'Cross-Origin-Resource-Policy: same-origin',
+              'Referrer-Policy: strict-origin-when-cross-origin',
+              'X-Content-Type-Options: nosniff',
+              'X-Frame-Options: DENY',
+          ):
+              if marker not in headers:
+                  raise SystemExit(f'Privacy Center security header contract missing: {marker}')
+
+          if 'glaze-ui-2.1.0.css' in index or 'glaze-ui-2.1.0.css' in error:
+              raise SystemExit('Privacy Center publication must not reference superseded Glaze UI 2.1.0 runtime CSS')
+
+          print('Privacy Center source contract validated')
+
+      - name: Validate repository V1.3 consumer hygiene
+        run: python scripts/validate_v13_hygiene.py
+
+      - name: Build Privacy Center from exact local GLAZE UI source — pass 1
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui-source
+        run: python sites/privacy/website/build.py
+
+      - name: Hash first deterministic publication
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+
+          root = Path('sites/privacy/website/dist')
+          digest = hashlib.sha256()
+          for path in sorted(p for p in root.rglob('*') if p.is_file()):
+              relative = path.relative_to(root).as_posix().encode('utf-8')
+              data = path.read_bytes()
+              digest.update(len(relative).to_bytes(4, 'big'))
+              digest.update(relative)
+              digest.update(len(data).to_bytes(8, 'big'))
+              digest.update(data)
+          Path('/tmp/privacy-dist-pass1.sha256').write_text(digest.hexdigest(), encoding='ascii')
+
+      - name: Build Privacy Center from exact local GLAZE UI source — pass 2
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui-source
+        run: python sites/privacy/website/build.py
+
+      - name: Verify deterministic output and exact deployed Glaze entrypoint contract
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+
+          root = Path('sites/privacy/website/dist')
+          digest = hashlib.sha256()
+          for path in sorted(p for p in root.rglob('*') if p.is_file()):
+              relative = path.relative_to(root).as_posix().encode('utf-8')
+              data = path.read_bytes()
+              digest.update(len(relative).to_bytes(4, 'big'))
+              digest.update(relative)
+              digest.update(len(data).to_bytes(8, 'big'))
+              digest.update(data)
+          second = digest.hexdigest()
+          first = Path('/tmp/privacy-dist-pass1.sha256').read_text(encoding='ascii').strip()
+          if first != second:
+              raise SystemExit(f'Privacy Center build is not deterministic: {first} != {second}')
+
+          entrypoint = (root / 'assets' / 'glaze-v1.3.0.css').read_bytes()
+          prefix = b'blob ' + str(len(entrypoint)).encode('ascii') + b'\0'
+          blob = hashlib.sha1(prefix + entrypoint, usedforsecurity=False).hexdigest()
+          expected_blob = '4c3ad293ba9196e2e5a32700b530ec67fd01cef6'
+          if blob != expected_blob:
+              raise SystemExit(f'Privacy Center built Glaze entrypoint mismatch: {blob}')
+
+          print(f'Privacy Center deterministic publication verified: {second}')
+
+      - name: Syntax-check Privacy Center JavaScript
+        run: node --check sites/privacy/website/site.js
+
+      - name: Verify validation did not mutate tracked source
+        run: git diff --exit-code
