@@ -116,12 +116,19 @@ def render_v1_4_html(source: str) -> str:
     for old, new in replacements:
         rendered = rendered.replace(old, new)
 
-    polish_link = '<link rel="stylesheet" href="css/glaze-polish.css">'
     consumer_link = f'<link rel="stylesheet" href="{CONSUMER_STYLESHEET}">'
-    if consumer_link not in rendered:
-        if polish_link not in rendered:
+    root_consumer_link = f'<link rel="stylesheet" href="/{CONSUMER_STYLESHEET}">'
+    if consumer_link not in rendered and root_consumer_link not in rendered:
+        anchors = (
+            ('<link rel="stylesheet" href="css/glaze-polish.css">', consumer_link),
+            ('<link rel="stylesheet" href="/css/glaze-polish.css">', root_consumer_link),
+        )
+        for polish_link, inserted_link in anchors:
+            if polish_link in rendered:
+                rendered = rendered.replace(polish_link, f"{polish_link}\n  {inserted_link}", 1)
+                break
+        else:
             raise ValueError("Main page is missing the Glaze consumer stylesheet insertion anchor")
-        rendered = rendered.replace(polish_link, f"{polish_link}\n  {consumer_link}", 1)
 
     rendered = rendered.replace(
         '<header class="site-header glaze-material-soft">',
