@@ -1,11 +1,11 @@
 {
   "schema": "goreecloud.glaze.consumer-lock.v1",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "lifecycle": "Stable",
   "repository": "GoreeCloud/goreecloud-glaze-ui",
-  "stable_commit": "8354308445da9ac35ced2b37a7f503a08a0aaf72",
-  "entrypoint": "glaze-v1.3.0.css",
-  "entrypoint_blob": "4c3ad293ba9196e2e5a32700b530ec67fd01cef6",
-  "consumer_state": "source-migrated-rendered-acceptance-pending",
-  "notes": "The exact Stable source revision controls the vendored Glaze dependency closure. Historical .candidate filenames reached only through the official Stable entrypoint are provenance, not lifecycle authority."
+  "stable_commit": "84cb3db4884042f0fa25ed6d475a127fb110f596",
+  "entrypoint": "glaze-v1.4.0.css",
+  "entrypoint_blob": "d48a9bc317090d152799769271de0fb4325494c4",
+  "consumer_state": "build-migrated-rendered-acceptance-pending",
+  "notes": "The retained source template preserves V1.3 provenance. The exact V1.4 Stable source revision controls the current publication dependency closure; rendered and production acceptance remain separate."
 }
