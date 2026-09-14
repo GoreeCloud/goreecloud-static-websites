@@ -22,6 +22,9 @@ TIMEOUT_SECONDS = 15
 MAX_BODY_BYTES = 4_194_304
 NON_FETCHABLE = frozenset({"_headers"})
 BRANCH_NAME_RE = re.compile(r"[^a-z0-9-]+")
+EXPECTED_GLAZE_VERSION = "1.4.0"
+EXPECTED_GLAZE_REVISION = "84cb3db4884042f0fa25ed6d475a127fb110f596"
+EXPECTED_CONSUMER_STATE = "source-migrated-rendered-acceptance-pending"
 REQUIRED_HEADERS = {
     "content-security-policy": ("default-src 'self'", "frame-ancestors 'none'", "object-src 'none'"),
     "permissions-policy": ("camera=()", "geolocation=()", "microphone=()"),
@@ -60,9 +63,7 @@ def target_url(spec, target: str) -> str:
 
 def validate_url(spec, url: str) -> None:
     parsed = urlparse(url)
-    allowed = parsed.hostname == spec.canonical_host or bool(
-        parsed.hostname and parsed.hostname.endswith(f".{spec.pages_domain}")
-    )
+    allowed = parsed.hostname == spec.canonical_host or bool(parsed.hostname and parsed.hostname.endswith(f".{spec.pages_domain}"))
     if parsed.scheme != "https" or not allowed:
         raise ValueError(f"{spec.site_id} deployment verifier target is outside approved HTTPS hosts: {url}")
     if parsed.username or parsed.password or parsed.query or parsed.fragment:
@@ -71,9 +72,7 @@ def validate_url(spec, url: str) -> None:
 
 class SafeRedirects(HTTPRedirectHandler):
     def __init__(self, spec):
-        super().__init__()
-        self.spec = spec
-
+        super().__init__(); self.spec = spec
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         validate_url(self.spec, newurl)
         return super().redirect_request(req, fp, code, msg, headers, newurl)
@@ -81,16 +80,10 @@ class SafeRedirects(HTTPRedirectHandler):
 
 def fetch(spec, url: str) -> Response:
     validate_url(spec, url)
-    request = Request(
-        url,
-        headers={
-            "User-Agent": "GoreeCloud-Simple-Static-Deployment-Verifier/1.3",
-            "Accept-Encoding": "identity",
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-        },
-        method="GET",
-    )
+    request = Request(url, headers={
+        "User-Agent": "GoreeCloud-Simple-Static-Deployment-Verifier/1.4",
+        "Accept-Encoding": "identity", "Cache-Control": "no-cache", "Pragma": "no-cache",
+    }, method="GET")
     opener = build_opener(SafeRedirects(spec), HTTPSHandler(context=ssl.create_default_context()))
     try:
         with opener.open(request, timeout=TIMEOUT_SECONDS) as response:
@@ -134,42 +127,32 @@ def remote_path(relative: str) -> str:
 
 
 def verify(spec, target: str) -> list[str]:
-    base = target_url(spec, target)
-    validate_url(spec, base)
-    errors: list[str] = []
+    base = target_url(spec, target); validate_url(spec, base); errors: list[str] = []
     try:
         expected = candidate_files(spec)
     except (OSError, ValueError) as error:
         return [str(error)]
-
     for relative, expected_bytes in sorted(expected.items()):
         url = urljoin(base.rstrip("/") + "/", remote_path(relative).lstrip("/"))
-        try:
-            response = fetch(spec, url)
+        try: response = fetch(spec, url)
         except (RuntimeError, ValueError) as error:
-            errors.append(str(error))
-            continue
+            errors.append(str(error)); continue
         if response.status != 200:
-            errors.append(f"{remote_path(relative)} returned HTTP {response.status}; expected 200")
-            continue
+            errors.append(f"{remote_path(relative)} returned HTTP {response.status}; expected 200"); continue
         if response.body != expected_bytes:
-            errors.append(
-                f"candidate mismatch for {remote_path(relative)}: expected {sha256(expected_bytes).hexdigest()}, "
-                f"deployed {sha256(response.body).hexdigest()}"
-            )
-
+            errors.append(f"candidate mismatch for {remote_path(relative)}: expected {sha256(expected_bytes).hexdigest()}, deployed {sha256(response.body).hexdigest()}")
     try:
         root = fetch(spec, base.rstrip("/") + "/")
         if target == "production" and urlparse(root.final_url).hostname != spec.canonical_host:
             errors.append(f"canonical {spec.site_id} root redirected away from production host: {root.final_url}")
         text = root.body.decode("utf-8", errors="replace")
         for marker in (
-            'name="goreecloud-glaze-ui" content="1.3.0"',
-            'name="goreecloud-glaze-source-revision" content="8354308445da9ac35ced2b37a7f503a08a0aaf72"',
-            'name="goreecloud-glaze-consumer-state" content="source-migrated-rendered-acceptance-pending"',
+            f'name="goreecloud-glaze-ui" content="{EXPECTED_GLAZE_VERSION}"',
+            f'name="goreecloud-glaze-source-revision" content="{EXPECTED_GLAZE_REVISION}"',
+            f'name="goreecloud-glaze-consumer-state" content="{EXPECTED_CONSUMER_STATE}"',
         ):
             if marker not in text:
-                errors.append(f"{spec.site_id} root missing V1.3 publication marker: {marker}")
+                errors.append(f"{spec.site_id} root missing V1.4 publication marker: {marker}")
         for header, fragments in REQUIRED_HEADERS.items():
             value = root.headers.get(header, "")
             for fragment in fragments:
@@ -177,7 +160,6 @@ def verify(spec, target: str) -> list[str]:
                     errors.append(f"required {spec.site_id} response header missing {header}: {fragment}")
     except RuntimeError as error:
         errors.append(str(error))
-
     try:
         missing = fetch(spec, base.rstrip("/") + "/__goreecloud_publication_verifier__/missing/path")
         if missing.status != 404:
@@ -188,19 +170,13 @@ def verify(spec, target: str) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("site")
-    parser.add_argument("--target", choices=("branch-preview", "production"), required=True)
-    args = parser.parse_args()
-    spec = resolve_site(args.site)
-    errors = verify(spec, args.target)
-    base = target_url(spec, args.target)
+    parser = argparse.ArgumentParser(); parser.add_argument("site"); parser.add_argument("--target", choices=("branch-preview", "production"), required=True); args = parser.parse_args()
+    spec = resolve_site(args.site); errors = verify(spec, args.target); base = target_url(spec, args.target)
     if errors:
         print(f"{spec.site_id} remote deployment verification failed for {args.target}: {base}")
-        for error in errors:
-            print(f"- {error}")
+        for error in errors: print(f"- {error}")
         return 1
-    print(f"{spec.site_id} exact V1.3 remote deployment verification passed for {args.target}: {base}")
+    print(f"{spec.site_id} exact V1.4 remote deployment verification passed for {args.target}: {base}")
     return 0
 
 

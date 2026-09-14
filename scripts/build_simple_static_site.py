@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a simple GoreeCloud static-site package from exact GLAZE UI V1.3 source."""
+"""Build a simple GoreeCloud static-site package from exact GLAZE UI V1.4 source."""
 
 from __future__ import annotations
 
@@ -13,10 +13,12 @@ import shutil
 import urllib.error
 import urllib.request
 
-EXPECTED_VERSION = "1.3.0"
-EXPECTED_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
-EXPECTED_ENTRYPOINT = "glaze-v1.3.0.css"
-EXPECTED_ENTRYPOINT_BLOB = "4c3ad293ba9196e2e5a32700b530ec67fd01cef6"
+EXPECTED_VERSION = "1.4.0"
+EXPECTED_COMMIT = "84cb3db4884042f0fa25ed6d475a127fb110f596"
+EXPECTED_ENTRYPOINT = "glaze-v1.4.0.css"
+EXPECTED_ENTRYPOINT_BLOB = "d48a9bc317090d152799769271de0fb4325494c4"
+LEGACY_TEMPLATE_VERSION = "1.3.0"
+LEGACY_TEMPLATE_COMMIT = "8354308445da9ac35ced2b37a7f503a08a0aaf72"
 ROOT_PUBLIC_FILES = ("index.html", "404.html", "_headers")
 OPTIONAL_PUBLIC_FILES = ("robots.txt", "sitemap.xml")
 LOCAL_RUNTIME_FILES = ("site.css", "style.css", "site.js", "v1.3-site.css")
@@ -34,6 +36,30 @@ def require_file(path: Path, root: Path) -> Path:
     return path
 
 
+def render_v14(source: str, site_name: str) -> str:
+    """Project retained V1.3 source templates into the current V1.4 publication contract."""
+    rendered = source
+    replacements = (
+        ('data-glaze-version="1.3.0"', 'data-glaze-version="1.4.0"'),
+        ('name="goreecloud-glaze-ui" content="1.3.0"', 'name="goreecloud-glaze-ui" content="1.4.0"'),
+        (f'name="goreecloud-glaze-source-revision" content="{LEGACY_TEMPLATE_COMMIT}"', f'name="goreecloud-glaze-source-revision" content="{EXPECTED_COMMIT}"'),
+        ('/assets/glaze-v1.3.0.css', '/assets/glaze-v1.4.0.css'),
+        ('GLAZE UI V1.3 / 1.3.0', 'GLAZE UI V1.4 / 1.4.0'),
+        ('GLAZE UI V1.3', 'GLAZE UI V1.4'),
+        ('Glaze UI V1.3', 'Glaze UI V1.4'),
+        ('V1.3 / 1.3.0', 'V1.4 / 1.4.0'),
+        (LEGACY_TEMPLATE_COMMIT, EXPECTED_COMMIT),
+    )
+    for old, new in replacements:
+        rendered = rendered.replace(old, new)
+    if site_name == "archive":
+        rendered = rendered.replace(
+            "Glaze UI 1.4, 1.5.0, 2.0.0, 2.1.0, and 2.2.0 each represented real historical design-system states and migration work. They remain useful audit and rollback context, but none defines today’s consumer target.",
+            "Glaze UI 1.0, 1.1, 1.2, 1.3, 1.5.0, 2.0.0, 2.1.0, and 2.2.0 each represented real historical design-system states and migration work. They remain useful audit and rollback context, but none defines today’s consumer target.",
+        )
+    return rendered
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("site")
@@ -44,11 +70,11 @@ def main() -> None:
     lock = json.loads(lock_path.read_text(encoding="utf-8"))
 
     if lock.get("version") != EXPECTED_VERSION or lock.get("lifecycle") != "Stable":
-        raise SystemExit("simple-site Glaze lock must target 1.3.0 Stable")
+        raise SystemExit("simple-site Glaze lock must target 1.4.0 Stable")
     if lock.get("stable_commit") != EXPECTED_COMMIT:
-        raise SystemExit("unexpected GLAZE UI V1.3 source revision")
+        raise SystemExit("unexpected GLAZE UI V1.4 source revision")
     if lock.get("entrypoint") != EXPECTED_ENTRYPOINT or lock.get("entrypoint_blob") != EXPECTED_ENTRYPOINT_BLOB:
-        raise SystemExit("unexpected GLAZE UI V1.3 entrypoint contract")
+        raise SystemExit("unexpected GLAZE UI V1.4 entrypoint contract")
     if lock.get("consumer_state") != "source-migrated-rendered-acceptance-pending":
         raise SystemExit("simple-site Glaze consumer state must remain fail-closed")
 
@@ -64,16 +90,17 @@ def main() -> None:
                 data = path.read_bytes()
             else:
                 url = f"https://raw.githubusercontent.com/{lock['repository']}/{lock['stable_commit']}/css/{name}"
-                request = urllib.request.Request(url, headers={"User-Agent": "GoreeCloud-simple-static-site-builder/1"})
+                request = urllib.request.Request(url, headers={"User-Agent": "GoreeCloud-simple-static-site-builder/1.4"})
                 with urllib.request.urlopen(request, timeout=20) as response:
                     data = response.read()
         except urllib.error.URLError as exc:
             raise SystemExit(f"failed to fetch pinned Glaze dependency {name}: {exc}") from exc
         if name == EXPECTED_ENTRYPOINT and blob_sha(data) != EXPECTED_ENTRYPOINT_BLOB:
-            raise SystemExit("GLAZE UI V1.3 entrypoint integrity mismatch")
+            raise SystemExit("GLAZE UI V1.4 entrypoint integrity mismatch")
         return data
 
     collected: dict[str, bytes] = {}
+
     def collect(name: str) -> None:
         if name in collected:
             return
@@ -99,6 +126,9 @@ def main() -> None:
 
     for name in ROOT_PUBLIC_FILES:
         shutil.copy2(require_file(root / name, root), dist / name)
+    for page_name in ("index.html", "404.html"):
+        page = dist / page_name
+        page.write_text(render_v14(page.read_text(encoding="utf-8"), root.name), encoding="utf-8")
     for name in OPTIONAL_PUBLIC_FILES:
         path = root / name
         if path.exists():
