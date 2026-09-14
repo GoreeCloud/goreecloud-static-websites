@@ -1,0 +1,271 @@
+/* GoreeCloud Main — GLAZE UI V1.4 consumer refinement.
+ * Presentation-only: no new runtime context collection or telemetry authority.
+ */
+
+:root {
+  --goreecloud-v14-header-height: 72px;
+  --goreecloud-v14-nav-radius: 999px;
+  --goreecloud-v14-nav-gap: .18rem;
+  --goreecloud-v14-header-edge: clamp(.75rem, 1.6vw, 1.25rem);
+}
+
+.site-header {
+  padding-block: .42rem;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  box-shadow: 0 1px 0 rgba(255,255,255,.025), 0 12px 34px rgba(2, 8, 20, .10);
+}
+
+.site-header .nav-wrap {
+  min-height: var(--goreecloud-v14-header-height);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "brand navigation actions";
+  align-items: center;
+  gap: clamp(.8rem, 1.8vw, 1.35rem);
+}
+
+.site-header .brand {
+  grid-area: brand;
+  justify-self: start;
+  min-width: max-content;
+  padding: .34rem .2rem;
+}
+
+.site-header .brand-logo {
+  width: 38px;
+  height: 38px;
+}
+
+.site-header .brand-text {
+  font-size: 1.04rem;
+  line-height: 1;
+}
+
+.site-header .site-nav {
+  grid-area: navigation;
+  justify-self: end;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--goreecloud-v14-nav-gap);
+  margin: 0;
+  padding: .28rem;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: var(--goreecloud-v14-nav-radius);
+  background: color-mix(in srgb, var(--panel) 62%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 10px 28px rgba(0,0,0,.10);
+}
+
+.site-header .site-nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .56rem .78rem;
+  border: 1px solid transparent;
+  border-radius: var(--goreecloud-v14-nav-radius);
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color .16s ease, background-color .16s ease, border-color .16s ease, transform .16s ease;
+}
+
+.site-header .site-nav a:hover,
+.site-header .site-nav a:focus-visible,
+.site-header .site-nav a[aria-current="location"],
+.site-header .site-nav a[aria-current="page"] {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--border-strong) 55%, transparent);
+  background: color-mix(in srgb, var(--panel-strong) 80%, transparent);
+}
+
+.site-header .site-nav a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--cyan) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.site-header .site-nav .nav-cta {
+  color: color-mix(in srgb, var(--cyan) 82%, white);
+  border-color: color-mix(in srgb, var(--border-strong) 72%, transparent);
+  background: linear-gradient(135deg, rgba(22, 93, 255, .11), rgba(0, 194, 255, .08));
+}
+
+.site-header .nav-actions {
+  grid-area: actions;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: .38rem;
+}
+
+.site-header .theme-toggle,
+.site-header .nav-toggle {
+  width: 46px;
+  min-width: 46px;
+  height: 46px;
+  min-height: 46px;
+  border: 1px solid color-mix(in srgb, var(--border-strong) 58%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.site-header .theme-toggle:hover,
+.site-header .theme-toggle:focus-visible,
+.site-header .nav-toggle:hover,
+.site-header .nav-toggle:focus-visible {
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
+  border-color: var(--border-strong);
+}
+
+/* The consent surface is aligned to the same visual grid as the header and hero. */
+#goreecloud-analytics-consent {
+  width: min(calc(100% - 2rem), var(--container));
+  margin: 1rem auto 0;
+  padding: clamp(1rem, 2.2vw, 1.45rem) clamp(1rem, 2.6vw, 1.6rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem clamp(1.25rem, 3vw, 2.5rem);
+  border-radius: clamp(18px, 2vw, 24px);
+}
+
+#goreecloud-analytics-consent > div:first-child {
+  min-width: 0;
+}
+
+#goreecloud-analytics-consent h2 {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  line-height: 1.12;
+  margin: 0 0 .35rem;
+}
+
+#goreecloud-analytics-consent p {
+  max-width: 68ch;
+  margin: 0;
+}
+
+#goreecloud-analytics-consent .hero-actions {
+  margin: 0;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+@media (max-width: 1040px) {
+  .site-header .nav-wrap {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "brand actions";
+    position: relative;
+  }
+
+  .site-header .nav-toggle {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .site-header .site-nav {
+    position: absolute;
+    z-index: 80;
+    top: calc(100% + .5rem);
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .28rem;
+    padding: .55rem;
+    border-radius: 22px;
+    background: color-mix(in srgb, var(--panel-strong) 96%, transparent);
+    box-shadow: 0 22px 54px rgba(0,0,0,.26);
+  }
+
+  .site-header .site-nav.open {
+    display: flex;
+  }
+
+  .site-header .site-nav a {
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 48px;
+    padding-inline: .9rem;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --goreecloud-v14-header-height: 64px;
+  }
+
+  .site-header {
+    padding-block: .28rem;
+  }
+
+  .site-header .nav-wrap {
+    gap: .7rem;
+  }
+
+  .site-header .brand-logo {
+    width: 34px;
+    height: 34px;
+  }
+
+  .site-header .brand-text {
+    font-size: 1rem;
+  }
+
+  .site-header .theme-toggle,
+  .site-header .nav-toggle {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+
+  #goreecloud-analytics-consent {
+    grid-template-columns: 1fr;
+    margin-top: .75rem;
+  }
+
+  #goreecloud-analytics-consent .hero-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header .brand-text {
+    max-width: 9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #goreecloud-analytics-consent .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  #goreecloud-analytics-consent .button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header .site-nav a,
+  .site-header .theme-toggle,
+  .site-header .nav-toggle {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .site-header,
+  .site-header .site-nav,
+  .site-header .theme-toggle,
+  .site-header .nav-toggle,
+  #goreecloud-analytics-consent {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
