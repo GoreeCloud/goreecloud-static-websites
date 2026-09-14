@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Verify an approved GoreeCloud Main deployment against the exact V1.3 candidate.
+"""Verify an approved GoreeCloud Main deployment against the exact V1.4 build.
 
 Only the canonical production hostname and GoreeCloud's fixed Cloudflare Pages
 project namespace are accepted. Every fetchable public artifact file, including the
-complete pinned GLAZE UI V1.3 CSS dependency closure, must match byte-for-byte.
+complete pinned GLAZE UI V1.4 CSS dependency closure, must match byte-for-byte.
 """
 
 from __future__ import annotations
@@ -22,10 +22,9 @@ from urllib.parse import urljoin, urlparse
 from urllib.request import HTTPRedirectHandler, HTTPSHandler, Request, build_opener
 import sys
 
-from build_public_site import GENERATED_HTML, PUBLIC_FILES, ROOT
-from glaze_v1_3 import collect_glaze_css
-from normalize_homepage import normalize_homepage
-from render_repository_portfolio import load_manifest, render_public_file
+from build_public_site import PUBLIC_FILES, ROOT, render_public_html
+from glaze_v1_4 import collect_glaze_css
+from render_repository_portfolio import load_manifest
 
 PRODUCTION_URL = "https://www.goreecloud.com"
 PAGES_DOMAIN = "goreecloud-website.pages.dev"
@@ -38,7 +37,13 @@ MAX_BODY_BYTES = 2_097_152
 SECURITY_RENEWAL_BUFFER = timedelta(days=30)
 
 REQUIRED_HEADERS = {
-    "content-security-policy": ("default-src 'self'", "script-src 'self'", "style-src 'self'", "frame-ancestors 'none'", "connect-src 'none'"),
+    "content-security-policy": (
+        "default-src 'self'",
+        "script-src 'self' https://us-assets.i.posthog.com",
+        "style-src 'self'",
+        "connect-src 'self' https://us.i.posthog.com",
+        "frame-ancestors 'none'",
+    ),
     "permissions-policy": ("camera=()", "geolocation=()", "microphone=()"),
     "referrer-policy": ("no-referrer",),
     "x-content-type-options": ("nosniff",),
@@ -95,7 +100,11 @@ class SafeRedirects(HTTPRedirectHandler):
 
 def fetch(url: str) -> Response:
     validate_url(url)
-    request = Request(url, headers={"User-Agent": "GoreeCloud-Deployment-Verifier/1.3", "Accept-Encoding": "identity"}, method="GET")
+    request = Request(
+        url,
+        headers={"User-Agent": "GoreeCloud-Deployment-Verifier/1.4", "Accept-Encoding": "identity"},
+        method="GET",
+    )
     opener = build_opener(SafeRedirects(), HTTPSHandler(context=ssl.create_default_context()))
     try:
         with opener.open(request, timeout=TIMEOUT_SECONDS) as response:
@@ -111,6 +120,7 @@ def fetch(url: str) -> Response:
 
 
 def candidate_files() -> dict[str, bytes]:
+    """Build the verifier's expected bytes through the same V1.4 render path as dist/."""
     manifest = load_manifest(ROOT)
     files: dict[str, bytes] = {}
     for relative in PUBLIC_FILES:
@@ -120,11 +130,7 @@ def candidate_files() -> dict[str, bytes]:
         if source.is_symlink() or not source.is_file():
             raise ValueError(f"candidate source unavailable or unsafe: {relative}")
         if relative.endswith(".html"):
-            text = source.read_text(encoding="utf-8")
-            if relative in GENERATED_HTML:
-                text = render_public_file(relative, text, manifest)
-                if relative == "index.html":
-                    text = normalize_homepage(text)
+            text = render_public_html(relative, source.read_text(encoding="utf-8"), manifest)
             files[relative] = text.encode("utf-8")
         else:
             files[relative] = source.read_bytes()
@@ -224,7 +230,7 @@ def main() -> int:
         for error in errors:
             print(f"  - {error}")
         return 1
-    print(f"Remote deployment verification passed for exact GLAZE UI V1.3 candidate at {base}.")
+    print(f"Remote deployment verification passed for the exact GLAZE UI V1.4 build at {base}.")
     return 0
 
 
