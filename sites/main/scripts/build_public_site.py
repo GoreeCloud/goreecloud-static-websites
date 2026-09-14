@@ -129,6 +129,7 @@ PUBLIC_STYLE_FILES = (
 
 PUBLIC_SCRIPT_FILES = (
     "js/main.js",
+    "js/telemetry.js",
     "js/theme-init.js",
 )
 
