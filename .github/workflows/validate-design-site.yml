@@ -22,12 +22,19 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out exact candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned GLAZE UI V1.4 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
+          path: .glaze-ui
           persist-credentials: false
       - name: Compile Design Center tooling
         run: >-
@@ -36,29 +43,41 @@ jobs:
           sites/design/website/validate.py
           sites/design/website/browser_artifact_smoke.py
           sites/design/website/browser_header_smoke.py
-          sites/design/website/verify_remote.py
-          sites/design/website/browser_remote_smoke.py
-          sites/design/website/browser_header_remote_smoke.py
-      - name: Validate and build Design Center source
+          sites/design/website/build_v14.py
+          sites/design/website/validate_v14_artifact.py
+          sites/design/website/browser_v14_artifact_smoke.py
+          sites/design/website/verify_v14_deployment.py
+      - name: Validate retained Design Center V1.3 source/template
         working-directory: sites/design/website
         run: python3 validate.py
-      - name: Exercise built artifact in Chrome
+      - name: Exercise retained Design Center template artifact in Chrome
         working-directory: sites/design/website
         run: python3 browser_artifact_smoke.py
-      - name: Verify wide desktop branding in Chrome
+      - name: Verify retained wide desktop branding in Chrome
         working-directory: sites/design/website
         run: python3 browser_header_smoke.py
+      - name: Build exact Design Center V1.4 publication artifact
+        working-directory: sites/design/website
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python3 build_v14.py
+      - name: Validate exact Design Center V1.4 artifact
+        working-directory: sites/design/website
+        run: python3 validate_v14_artifact.py
+      - name: Exercise exact Design Center V1.4 artifact in Chrome
+        working-directory: sites/design/website
+        run: python3 browser_v14_artifact_smoke.py
       - name: Check Design Center JavaScript syntax
         run: node --check sites/design/website/site.js
-      - name: Verify canonical production bytes and headers
+      - name: Validate Design Center V1.4 deployment-verifier configuration
+        working-directory: sites/design/website
+        run: python3 verify_v14_deployment.py --check-config
+      - name: Verify canonical production V1.4 bytes and headers
         if: github.event_name == 'workflow_dispatch'
         working-directory: sites/design/website
-        run: python3 verify_remote.py --target production
-      - name: Exercise canonical production in Chrome
-        if: github.event_name == 'workflow_dispatch'
-        working-directory: sites/design/website
-        run: python3 browser_remote_smoke.py
-      - name: Verify canonical production wide desktop branding
-        if: github.event_name == 'workflow_dispatch'
-        working-directory: sites/design/website
-        run: python3 browser_header_remote_smoke.py
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: |
+          python3 build_v14.py
+          python3 validate_v14_artifact.py
+          python3 verify_v14_deployment.py --target production
