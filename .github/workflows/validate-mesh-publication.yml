@@ -18,7 +18,7 @@ permissions:
 jobs:
   mesh-publication:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out exact verification candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -26,11 +26,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
-      - name: Check out pinned GLAZE UI V1.3 Stable source
+      - name: Check out pinned GLAZE UI V1.4 Stable source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: GoreeCloud/goreecloud-glaze-ui
-          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
           path: .glaze-ui
           persist-credentials: false
 
@@ -39,30 +39,35 @@ jobs:
           python -m py_compile
           sites/mesh/scripts/build_public_site.py
           sites/mesh/scripts/validate_public_site.py
-          sites/mesh/scripts/verify_public_deployment.py
+          sites/mesh/scripts/verify_v14_public_deployment.py
           sites/mesh/scripts/browser_responsive_smoke.py
           sites/mesh/scripts/browser_production_smoke.py
 
-      - name: Validate Mesh source contract
+      - name: Validate retained Mesh source-template contract
         run: |
           python sites/mesh/scripts/validate_public_site.py
-          python sites/mesh/scripts/verify_public_deployment.py --check-config
+          python sites/mesh/scripts/verify_v14_public_deployment.py --check-config
           node --check sites/mesh/website/site.js
 
-      - name: Build reviewed Mesh artifact
+      - name: Build exact Mesh V1.4 publication artifact
         env:
           GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python sites/mesh/scripts/build_public_site.py
 
-      - name: Validate reviewed Mesh artifact
+      - name: Validate exact Mesh V1.4 publication artifact
         run: python sites/mesh/scripts/validate_public_site.py --dist
 
-      - name: Exercise exact candidate responsive rendering
+      - name: Exercise exact Mesh V1.4 candidate responsive rendering
         run: python sites/mesh/scripts/browser_responsive_smoke.py
 
-      - name: Verify canonical Mesh production publication
+      - name: Verify canonical Mesh V1.4 production publication
         if: github.event_name == 'workflow_dispatch'
-        run: python sites/mesh/scripts/verify_public_deployment.py
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: |
+          python sites/mesh/scripts/build_public_site.py
+          python sites/mesh/scripts/validate_public_site.py --dist
+          python sites/mesh/scripts/verify_v14_public_deployment.py --target production
 
       - name: Verify canonical Mesh production rendering
         if: github.event_name == 'workflow_dispatch'
