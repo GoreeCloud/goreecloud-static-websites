@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 OBSOLETE_CONSUMER_ASSETS = (
     "sites/identity/glaze-ui-2.1.0.css",
+    "sites/privacy/website/glaze-ui-2.1.0.css",
     "sites/projects/assets/glaze-ui-2.1.0.css",
     "sites/security/website/glaze-ui-v1.1.0.css",
 )
@@ -20,4 +21,4 @@ for relative in OBSOLETE_CONSUMER_ASSETS:
     if path.exists():
         raise SystemExit(f"obsolete Glaze consumer runtime asset must be absent: {relative}")
 
-print("GLAZE UI V1.3 consumer hygiene passed: obsolete Identity, Projects, and Security runtime bundles are absent")
+print("GLAZE UI V1.3 consumer hygiene passed: obsolete Identity, Privacy, Projects, and Security runtime bundles are absent")
