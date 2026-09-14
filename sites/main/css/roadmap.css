@@ -59,9 +59,37 @@
   border: 1px solid var(--border-strong);
   background: rgba(0, 194, 255, .07);
   color: #a9efff;
+  font-size: 0;
   font-weight: 900;
   letter-spacing: -.04em;
   box-shadow: inset 0 0 24px rgba(0, 194, 255, .04);
+}
+
+/*
+ * The square marker identifies the nine portfolio groups rather than repeating
+ * each group's product count. Product totals remain explicit in each card title.
+ * Keeping this marker ordinal gives every card one consistent single-digit cue.
+ */
+.roadmap-card:nth-child(1) { --roadmap-group-marker: "1"; }
+.roadmap-card:nth-child(2) { --roadmap-group-marker: "2"; }
+.roadmap-card:nth-child(3) { --roadmap-group-marker: "3"; }
+.roadmap-card:nth-child(4) { --roadmap-group-marker: "4"; }
+.roadmap-card:nth-child(5) { --roadmap-group-marker: "5"; }
+.roadmap-card:nth-child(6) { --roadmap-group-marker: "6"; }
+.roadmap-card:nth-child(7) { --roadmap-group-marker: "7"; }
+.roadmap-card:nth-child(8) { --roadmap-group-marker: "8"; }
+.roadmap-card:nth-child(9) { --roadmap-group-marker: "9"; }
+
+.roadmap-icon::after {
+  content: var(--roadmap-group-marker, "•");
+  font-size: .98rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.roadmap-icon.roadmap-art img {
+  display: none;
 }
 
 .roadmap-state {
