@@ -1,4 +1,4 @@
-# GoreeCloud Design Center — GLAZE UI V1.3
+# GoreeCloud Design Center — GLAZE UI V1.4
 
 Canonical centralized static source for `design.goreecloud.com`.
 
@@ -18,13 +18,18 @@ The Cloudflare project identity and Pages namespace are verified from current le
 
 ## Current Glaze UI authority
 
-- Current Official Stable consumer target: **GLAZE UI V1.3 / `1.3.0`**
-- Exact reviewed Glaze source revision: `8354308445da9ac35ced2b37a7f503a08a0aaf72`
+- Current Official Stable publication target: **GLAZE UI V1.4 / `1.4.0`**
+- Exact reviewed Glaze source revision: `84cb3db4884042f0fa25ed6d475a127fb110f596`
+- Exact Stable entrypoint: `glaze-v1.4.0.css`
+- Exact entrypoint Git blob: `d48a9bc317090d152799769271de0fb4325494c4`
 - Canonical Glaze repository: `GoreeCloud/goreecloud-glaze-ui`
-- Design Center consumer presentation layer: `v1.3-site.css`
-- Current consumer state: **source migrated; rendered/browser, accessibility, performance, rollback, Cloudflare cutover, exact deployed-revision, and production acceptance remain separate gates**
+- Consumer lock: `glaze.lock.json`
+- Inherited Design Center consumer adaptation: `v1.3-site.css`
+- Current consumer state: **build migrated; rendered/browser, accessibility, performance, rollback, Cloudflare cutover, exact deployed-revision, and production acceptance remain separate gates**
 
-The Design Center uses repository-local publication derivatives and consumer layers while identifying the exact canonical Stable source revision. A successful source build or Cloudflare provider deployment must never be treated as proof of downstream rendered or production acceptance.
+The checked-in Design Center HTML preserves the reviewed V1.3 layout/content template as migration input. `build.py` deterministically projects that template into a V1.4 publication artifact, replaces the old local shared-Glaze bundle with the exact pinned V1.4 Stable dependency closure, preserves the repository-local V1.3 adaptation stylesheet as an inherited compatibility layer, and keeps the approved Facet identity byte-for-byte. The generated artifact—not the inherited template—is the Cloudflare publication output.
+
+GLAZE UI V1.4 being Official Stable and consumer-eligible does not grant Design Center production conformance. A successful source build or Cloudflare provider deployment must never be treated as proof of downstream rendered or production acceptance.
 
 ## Build and validation
 
@@ -37,9 +42,9 @@ python3 browser_header_smoke.py
 node --check site.js
 ```
 
-`validate.py` rebuilds `dist/`, verifies the exact V1.3 source anchors, synchronized Facet identity, required artifact closure, accessibility/adaptation markers, security-header source contract, and fail-closed consumer-state language.
+CI checks out the exact GLAZE UI V1.4 Stable revision and exposes it to the builder through `GLAZE_UI_SOURCE`. `validate.py` verifies the consumer lock, inherited source-template boundary, exact V1.4 entrypoint and dependency closure, synchronized Facet identity, required artifact closure, accessibility/adaptation markers, security-header source contract, and fail-closed consumer-state language.
 
-Repository CI additionally exercises the built `dist/` artifact in real Chrome at 1180, 768, 390, and 320 CSS pixels and verifies the full canonical `GoreeCloud · Design Center · GLAZE UI` identity at 1440 pixels without clipping or overlap.
+Repository CI additionally exercises the exact built `dist/` artifact in real Chrome at 1180, 768, 390, and 320 CSS pixels and verifies the full canonical `GoreeCloud · Design Center · GLAZE UI` identity at 1440 pixels without clipping or overlap.
 
 ## Canonical production acceptance
 
@@ -52,12 +57,12 @@ python3 browser_remote_smoke.py
 python3 browser_header_remote_smoke.py
 ```
 
-`verify_remote.py` accepts only the canonical Design Center host and the verified `goreecloud-design.pages.dev` namespace. For production it compares every fetchable `dist/` artifact byte-for-byte with the canonical live deployment, requires the reviewed security headers and true HTTP 404 behavior, and checks the current V1.3/fail-closed consumer markers.
+`verify_remote.py` accepts only the canonical Design Center host and the verified `goreecloud-design.pages.dev` namespace. For production it compares every fetchable `dist/` artifact byte-for-byte with the canonical live deployment, requires the reviewed security headers and true HTTP 404 behavior, and checks the current V1.4/fail-closed consumer markers.
 
 `browser_remote_smoke.py` reruns the production-responsive and appearance-control checks at 1180, 768, 390, and 320 CSS pixels. `browser_header_remote_smoke.py` separately requires the live 1440-pixel header to show the complete canonical Design Center identity without ellipsis, clipping, document overflow, brand/navigation collision, or navigation/appearance-control collision.
 
-The dedicated GitHub workflow exposes those canonical-host checks only on `workflow_dispatch`; pull-request and push validation cannot silently become production acceptance.
+The dedicated GitHub workflow exposes canonical-host checks only on `workflow_dispatch`; pull-request and push validation cannot silently become production acceptance.
 
 ## Production boundary
 
-The central package is not production-authoritative merely because it is build-valid. Keep the migration registry fail-closed until Cloudflare Pages is verified to use `GoreeCloud/goreecloud-static-websites`, branch `main`, the Design Center site root/build contract, and the canonical domain passes exact deployed-content, responsive browser, and wide-header acceptance.
+The central package is not production-authoritative merely because it is build-valid. Keep the migration registry fail-closed until Cloudflare Pages is verified to use `GoreeCloud/goreecloud-static-websites`, branch `main`, root `sites/design/website`, build command `python3 build.py`, output `dist`, and the canonical domain passes exact deployed-content, responsive-browser, and wide-header acceptance.
