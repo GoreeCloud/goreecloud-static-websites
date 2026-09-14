@@ -26,7 +26,7 @@ The Cloudflare project identity and Pages namespace are verified from legacy-rep
 - Consumer lock: `glaze.lock.json`
 - Current consumer state: **build migrated; rendered/browser source acceptance is validated independently; Cloudflare cutover, exact deployed-revision verification, rollback, and production acceptance remain separate gates**
 
-The reviewed Design Center source still retains the V1.3 consumer adaptation layer (`v1.3-site.css`) as an inherited compatibility layer. `build_v14.py` deterministically projects that retained source into the current V1.4 publication identity and adds the exact V1.4 Stable stylesheet dependency closure. The inherited V1.3 layer is not represented as the active shared Glaze entrypoint.
+The reviewed Design Center source still retains the V1.3 / `1.3.0` consumer adaptation layer (`v1.3-site.css`) as an inherited compatibility layer. Its retained template/source anchor is `8354308445da9ac35ced2b37a7f503a08a0aaf72`. `build_v14.py` deterministically projects that retained source into the current V1.4 publication identity and adds the exact V1.4 Stable stylesheet dependency closure. The inherited V1.3 layer is not represented as the active shared Glaze entrypoint.
 
 ## Build and validation
 
