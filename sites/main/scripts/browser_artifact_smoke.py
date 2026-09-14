@@ -69,37 +69,35 @@ def validate_public_profiles(session_id: str) -> None:
     state = smoke.execute(
         session_id,
         r"""
-        const follow=[...document.querySelectorAll('#follow .social-card')];
+        const follow=[...document.querySelectorAll('#follow')];
+        const socialGrids=[...document.querySelectorAll('.social-grid')];
+        const socialAreas=[...document.querySelectorAll('.site-footer .footer-social')];
         const footer=[...document.querySelectorAll('.site-footer .footer-social-link')];
         const height=links=>links.length?Math.min(...links.map(link=>link.getBoundingClientRect().height)):0;
         return {
           followCount:follow.length,
-          followUrls:follow.map(link=>link.getAttribute('href')),
+          socialGridCount:socialGrids.length,
+          socialAreaCount:socialAreas.length,
           footerCount:footer.length,
           footerUrls:footer.map(link=>link.getAttribute('href')),
           footerMinHeight:height(footer),
-          scopeNote:(document.querySelector('#follow .social-scope-note')?.textContent||'').trim(),
           footerLabel:(document.querySelector('.site-footer .footer-social-label')?.textContent||'').trim(),
-          socialColumns:getComputedStyle(document.querySelector('#follow .social-grid')).gridTemplateColumns.split(/\s+/).filter(Boolean).length,
           width:window.innerWidth,
           scrollWidth:document.documentElement.scrollWidth,
         };
         """,
     )
     smoke.require(isinstance(state, dict), f"Could not read Main public-profile state: {state!r}")
-    follow_urls = set(state.get("followUrls") or [])
     footer_urls = set(state.get("footerUrls") or [])
-    smoke.require(int(state.get("followCount", 0)) == 8, f"Main Follow section must render eight public profiles: {state}")
+    smoke.require(int(state.get("followCount", -1)) == 0, f"Main must not duplicate social profiles in a standalone Follow section: {state}")
+    smoke.require(int(state.get("socialGridCount", -1)) == 0, f"Main must not render a duplicate social card grid: {state}")
+    smoke.require(int(state.get("socialAreaCount", 0)) == 1, f"Main must expose exactly one social-media area: {state}")
     smoke.require(int(state.get("footerCount", 0)) == 8, f"Main footer must expose eight direct public-profile links: {state}")
-    smoke.require(follow_urls == EXPECTED_PUBLIC_PROFILES, f"Main Follow profile inventory drifted: {state}")
     smoke.require(footer_urls == EXPECTED_PUBLIC_PROFILES, f"Main footer profile inventory drifted: {state}")
-    smoke.require("Six active GoreeCloud social-media accounts" in str(state.get("scopeNote", "")), f"Main social scope boundary missing: {state}")
     smoke.require(state.get("footerLabel") == "Follow GoreeCloud", f"Main footer social label missing: {state}")
     smoke.require(float(state.get("footerMinHeight", 0)) >= 47.5, f"Main footer public-profile target below 48px: {state}")
     width = int(state.get("width", 0))
     smoke.require(int(state.get("scrollWidth", width + 10)) <= width + 1, f"Main public-profile UI causes horizontal overflow: {state}")
-    if width <= 720:
-        smoke.require(int(state.get("socialColumns", 0)) == 1, f"Main social grid must collapse to one column at mobile width: {state}")
 
 
 def main() -> int:
@@ -130,7 +128,7 @@ def main() -> int:
         smoke.exercise(session_id, TARGET)
         validate_public_profiles(session_id)
         print(
-            "Main built-artifact responsive Chrome smoke passed at 1180×900, 768×900, 390×844, and 320×844, including bounded mobile navigation and complete public-profile discoverability."
+            "Main built-artifact responsive Chrome smoke passed at 1180×900, 768×900, 390×844, and 320×844, including bounded mobile navigation and footer-only public-profile discoverability."
         )
         return 0
     except Exception as error:
