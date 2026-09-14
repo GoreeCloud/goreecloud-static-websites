@@ -37,11 +37,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Check out pinned GLAZE UI V1.3 Stable source
+      - name: Check out pinned GLAZE UI V1.4 Stable source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: GoreeCloud/goreecloud-glaze-ui
-          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
           path: .glaze-ui
           persist-credentials: false
       - name: Compile Blog publication tools
@@ -56,9 +56,9 @@ jobs:
             scripts/browser_simple_static_remote.py
       - name: Validate Blog public truth contract
         run: python sites/blog/validate.py
-      - name: Validate Blog V1.3 source contract
+      - name: Validate Blog V1.4 build contract
         run: python scripts/validate_simple_static_site.py sites/blog
-      - name: Build exact Blog V1.3 artifact
+      - name: Build exact Blog V1.4 artifact
         env:
           GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
         run: python scripts/build_simple_static_site.py sites/blog
