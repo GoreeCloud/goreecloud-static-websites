@@ -25,11 +25,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Check out pinned GLAZE UI V1.3 Stable source
+      - name: Check out pinned GLAZE UI V1.4 Stable source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: GoreeCloud/goreecloud-glaze-ui
-          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
           path: .glaze-ui
           persist-credentials: false
       - name: Confirm generated artifact is not source authority
@@ -37,7 +37,7 @@ jobs:
       - name: Compile main-site build, browser, privacy, and verification tools
         run: |
           python -m py_compile \
-            sites/main/scripts/glaze_v1_3.py \
+            sites/main/scripts/glaze_v1_4.py \
             sites/main/scripts/build_public_site.py \
             sites/main/scripts/validate_build_artifact.py \
             sites/main/scripts/validate_site.py \
