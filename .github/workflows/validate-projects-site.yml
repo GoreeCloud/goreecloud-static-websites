@@ -18,12 +18,19 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out exact website candidate
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned GLAZE UI V1.4 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 84cb3db4884042f0fa25ed6d475a127fb110f596
+          path: .glaze-ui
           persist-credentials: false
       - name: Compile Projects verification tools
         run: |
@@ -32,21 +39,30 @@ jobs:
             sites/projects/browser_smoke.py \
             sites/projects/mobile_smoke.py \
             sites/projects/browser_source_smoke.py \
-            sites/projects/verify_remote.py
-      - name: Validate Projects source contract
+            sites/projects/build.py \
+            sites/projects/validate_v14_artifact.py \
+            sites/projects/browser_v14_artifact_smoke.py \
+            sites/projects/verify_v14_deployment.py
+      - name: Validate retained Projects source/content contract
         run: python sites/projects/validate.py
-      - name: Validate Projects production-verifier configuration
-        run: python sites/projects/verify_remote.py --check-config
-      - name: Exercise exact centralized Projects source in Chrome
+      - name: Exercise retained Projects source template in Chrome
         run: python sites/projects/browser_source_smoke.py
+      - name: Build exact Projects V1.4 publication artifact
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/projects/build.py
+      - name: Validate exact Projects V1.4 artifact
+        run: python sites/projects/validate_v14_artifact.py
+      - name: Exercise exact Projects V1.4 artifact in Chrome
+        run: python sites/projects/browser_v14_artifact_smoke.py
       - name: Validate Projects JavaScript syntax
         run: node --check sites/projects/assets/app.js && node --check sites/projects/assets/suite-portfolio.js && node --check sites/projects/assets/icon-refresh.js
-      - name: Verify canonical Projects production bytes and headers
+      - name: Validate Projects V1.4 deployment-verifier configuration
+        run: python sites/projects/verify_v14_deployment.py --check-config
+      - name: Verify canonical Projects production V1.4 bytes and headers
         if: github.event_name == 'workflow_dispatch'
-        run: python sites/projects/verify_remote.py --target production
-      - name: Verify canonical Projects production desktop runtime
-        if: github.event_name == 'workflow_dispatch'
-        run: python sites/projects/browser_smoke.py --target production --browser chrome
-      - name: Verify canonical Projects production mobile rendering
-        if: github.event_name == 'workflow_dispatch'
-        run: python sites/projects/mobile_smoke.py --target production --browser chrome
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: |
+          python sites/projects/build.py
+          python sites/projects/verify_v14_deployment.py --target production
