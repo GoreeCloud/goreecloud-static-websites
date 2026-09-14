@@ -2,7 +2,7 @@
 """Build the exact allowlisted static artifact for GoreeCloud's public website.
 
 Repository-only governance, validators, and documentation never enter the public
-artifact. GLAZE UI V1.3 is vendored from the exact canonical Stable revision at
+artifact. GLAZE UI V1.4 is vendored from the exact canonical Stable release at
 build time and remains subject to independent rendered/deployment acceptance.
 """
 
@@ -13,7 +13,7 @@ import re
 import shutil
 import sys
 
-from glaze_v1_3 import collect_glaze_css
+from glaze_v1_4 import collect_glaze_css, render_v1_4_html
 from normalize_homepage import normalize_homepage
 from render_repository_portfolio import load_manifest, render_public_file
 
@@ -72,7 +72,6 @@ PUBLIC_ASSET_FILES = (
     "assets/suite/dns.svg",
     "assets/suite/documents.svg",
     "assets/suite/drive.svg",
-    "assets/suite/feed.svg",
     "assets/suite/file-manager.svg",
     "assets/suite/gallery.svg",
     "assets/suite/gateway.svg",
@@ -113,8 +112,10 @@ PUBLIC_STYLE_FILES = (
     "css/development.css",
     "css/error.css",
     "css/glaze-polish.css",
+    "css/glaze-v1.4-main.css",
     "css/glaze.css",
     "css/glaze-v1.3.0.css",
+    "css/glaze-v1.4.0.css",
     "css/homepage-v6.css",
     "css/homepage-v7.css",
     "css/how-it-works.css",
@@ -151,6 +152,16 @@ def fail(message: str) -> int:
 def reject_symlink(path: Path) -> None:
     if path.is_symlink():
         raise ValueError(f"Deployable source must not be a symlink: {path.relative_to(ROOT)}")
+
+
+def render_public_html(relative: str, source_text: str, manifest: dict) -> str:
+    rendered = source_text
+    if relative in GENERATED_HTML:
+        rendered = render_public_file(relative, rendered, manifest)
+        if relative == "index.html":
+            rendered = normalize_homepage(rendered)
+        rendered = render_v1_4_html(rendered)
+    return rendered
 
 
 def verify_homepage_stylesheet_closure() -> None:
@@ -197,11 +208,7 @@ def main() -> int:
             destination = DIST / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             if relative.endswith(".html"):
-                rendered = source.read_text(encoding="utf-8")
-                if relative in GENERATED_HTML:
-                    rendered = render_public_file(relative, rendered, manifest)
-                    if relative == "index.html":
-                        rendered = normalize_homepage(rendered)
+                rendered = render_public_html(relative, source.read_text(encoding="utf-8"), manifest)
                 destination.write_text(rendered, encoding="utf-8")
             else:
                 shutil.copy2(source, destination)
@@ -218,7 +225,7 @@ def main() -> int:
 
     file_count = sum(1 for path in DIST.rglob("*") if path.is_file())
     total_bytes = sum(path.stat().st_size for path in DIST.rglob("*") if path.is_file())
-    print(f"Built isolated GLAZE UI V1.3 public artifact: {file_count} files, {total_bytes} bytes -> dist/")
+    print(f"Built isolated GLAZE UI V1.4 public artifact: {file_count} files, {total_bytes} bytes -> dist/")
     return 0
 
 
