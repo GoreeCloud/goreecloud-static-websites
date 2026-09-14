@@ -24,6 +24,18 @@ The corrected Suite publication remains accepted at exact central revision `807a
 
 Production verification is independent per site and per materially changed publication revision. A central source build, CI pass, another site's successful cutover, a deployment-provider success check, or an older accepted revision never establishes production acceptance for changed public bytes.
 
+## Current live-publication audit
+
+A read-only canonical-domain audit on September 12, 2026 confirms that provider-side source cutover remains materially necessary rather than administrative cleanup only:
+
+- `projects.goreecloud.com` still publishes a historical GLAZE UI `2.1.0` marker instead of the current centralized V1.3 publication.
+- `roadmap.goreecloud.com` still publishes a historical GLAZE UI `2.1.0` marker instead of the current centralized V1.3 publication.
+- `blog.goreecloud.com` still publishes the superseded 57-repository snapshot that current central validation deliberately rejects as current truth.
+- `labs.goreecloud.com` still serves the older six-product Labs publication rather than the current centralized Labs package.
+- `www.goreecloud.com`, `design.goreecloud.com`, `manage.goreecloud.com`, and `mesh.goreecloud.com` are reachable with materially newer publication content, but reachability/current-looking copy does not prove that Cloudflare is sourced from the canonical central repository or that the exact reviewed revision is deployed.
+
+`firefox.goreecloud.com` is also reachable from the centralized `sites/firefox` source family, but it is not currently one of the fourteen entries in `sites/manifest.json`. Its inventory/governance decision and any production-acceptance record remain separate from the fourteen-site migration registry and must not be inferred from live reachability.
+
 ## Mandatory consolidation rule
 
 Every GoreeCloud standalone static public website must be stored, maintained, and referenced from `GoreeCloud/goreecloud-static-websites` unless an explicit governed architectural exception is approved.
@@ -73,7 +85,7 @@ See `docs/production-verification-security-2026-09-10.md`.
 
 ### Privacy Center
 
-Privacy Center was verified after Cloudflare Pages was cut over to the central repository using `main`, root `sites/privacy`, build command `python3 website/build.py`, and output `website/dist`. The successful production deployment was tied to central revision `80379f6962a5ded6c01317542941a2c55aedd922`.
+Privacy Center was verified after Cloudflare Pages was cut over to the central repository using `main`, root `sites/privacy`, build command `python3 website/build.py`, and output `website/dist`. The successful Cloudflare Pages deployment was tied to central revision `80379f6962a5ded6c01317542941a2c55aedd922`.
 
 Live verification established canonical root/404 behavior, committed security headers, GLAZE UI `1.3.0`, exact Glaze source revision `8354308445da9ac35ced2b37a7f503a08a0aaf72`, exact production Git blob SHA `4c3ad293ba9196e2e5a32700b530ec67fd01cef6` for `/assets/glaze-v1.3.0.css`, and successful rendered review.
 
@@ -128,4 +140,8 @@ For each site or materially changed publication:
 
 ## Immediate next action
 
-Proceed next with **Mesh Center** production-cutover preparation. The central `sites/mesh` package already contains deterministic public build, source/artifact validation, an explicit `404.html`, and a read-only production deployment verifier. Before reconnecting Cloudflare, review and harden its rendered/browser production gate and reconfirm the exact Cloudflare root/build/output contract. Then cut over `mesh.goreecloud.com`, bind the provider deployment to the exact reviewed central revision, and independently verify the canonical live site before changing its deployment state.
+Proceed next with the **Mesh Center provider-side source cutover**. The repository-side preparation is already complete: `sites/mesh` has deterministic public build/source/artifact validation, explicit `404.html`, exact fixed-host production verification, responsive live Chrome acceptance, and the governed Cloudflare project/namespace/root/build/output contract. Those gates were hardened before this status update and no longer block the provider handoff.
+
+Reconnect the existing `goreecloud-mesh` Cloudflare Pages project to `GoreeCloud/goreecloud-static-websites`, production branch `main`, root `sites/mesh`, framework preset `None`, build command `python3 scripts/build_public_site.py`, and output directory `dist`, while preserving `mesh.goreecloud.com`. Bind the resulting provider deployment to the exact reviewed central revision and run the independent canonical-domain HTTP/browser acceptance gates. Only after those checks pass may Mesh move from `legacy-source` to `production-verified`.
+
+If the provider session is cancelled or unavailable before the source setting is saved, record no deployment-state change and do not infer a partial cutover from live reachability.
