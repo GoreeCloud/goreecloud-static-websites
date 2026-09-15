@@ -67,15 +67,19 @@ jobs:
               raise SystemExit(f'missing namespace artifact files: {missing}')
           print(f'Unified namespace entrypoints verified: {len(required)} required files')
 
-      - name: Preserve migration and Manager hostname boundaries
+      - name: Verify verified-cutover and Manager hostname boundaries
         shell: python
         run: |
           import json
           from pathlib import Path
 
           registry = json.loads(Path('sites/url-namespace.json').read_text())
-          if registry['state'] != 'migration-preparation':
-              raise SystemExit('production migration state may only change after all live acceptance gates are verified')
+          if registry['state'] != 'provider-cutover-verified':
+              raise SystemExit('unified namespace registry must retain the verified provider-cutover state')
+
+          redirected = [site for site in registry['sites'] if site.get('legacy_redirect')]
+          if len(redirected) != 13:
+              raise SystemExit(f'verified informational redirect inventory must remain 13 hosts, found {len(redirected)}')
 
           manager = next(site for site in registry['sites'] if site['id'] == 'manager')
           if manager.get('current_public_host') != 'manage.goreecloud.com':
@@ -94,4 +98,4 @@ jobs:
           if '<link rel="canonical" href="https://manage.goreecloud.com/">' in mounted:
               raise SystemExit('mounted Manager artifact still publishes the legacy informational canonical URL')
 
-          print('Migration remains evidence-gated; Manager informational and application hostname boundaries are preserved')
+          print('Provider cutover remains verified; final acceptance remains evidence-gated; Manager informational and application hostname boundaries are preserved')
