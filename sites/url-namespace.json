@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0",
+  "repository": "GoreeCloud/goreecloud-static-websites",
+  "canonical_origin": "https://www.goreecloud.com",
+  "state": "migration-preparation",
+  "sites": [
+    {
+      "id": "main",
+      "canonical_path": "/",
+      "current_public_host": "www.goreecloud.com",
+      "legacy_redirect": false,
+      "source_path": "sites/main",
+      "artifact_path": "sites/main/dist",
+      "build_command": ["python", "sites/main/scripts/build_public_site.py"]
+    },
+    {
+      "id": "projects",
+      "canonical_path": "/projects",
+      "current_public_host": "projects.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/projects",
+      "artifact_path": "sites/projects/dist",
+      "build_command": ["python", "sites/projects/build.py"]
+    },
+    {
+      "id": "roadmap",
+      "canonical_path": "/roadmap",
+      "current_public_host": "roadmap.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/roadmap",
+      "artifact_path": "sites/roadmap/dist",
+      "build_command": ["python", "scripts/build_simple_static_site.py", "sites/roadmap"]
+    },
+    {
+      "id": "blog",
+      "canonical_path": "/blog",
+      "current_public_host": "blog.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/blog",
+      "artifact_path": "sites/blog/dist",
+      "build_command": ["python", "scripts/build_simple_static_site.py", "sites/blog"]
+    },
+    {
+      "id": "archive",
+      "canonical_path": "/archive",
+      "current_public_host": "archive.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/archive",
+      "artifact_path": "sites/archive/dist",
+      "build_command": ["python", "scripts/build_simple_static_site.py", "sites/archive"]
+    },
+    {
+      "id": "suite",
+      "canonical_path": "/suite",
+      "current_public_host": "suite.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/suite",
+      "artifact_path": "sites/suite/dist",
+      "build_command": ["python", "sites/suite/scripts/build_public_site.py"]
+    },
+    {
+      "id": "design",
+      "canonical_path": "/glaze-ui",
+      "current_public_host": "design.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/design",
+      "artifact_path": "sites/design/website/dist",
+      "build_command": ["python", "sites/design/website/build.py"]
+    },
+    {
+      "id": "privacy",
+      "canonical_path": "/privacy-shield",
+      "current_public_host": "privacy.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/privacy",
+      "artifact_path": "sites/privacy/website/dist",
+      "build_command": ["python", "sites/privacy/website/build.py"]
+    },
+    {
+      "id": "security",
+      "canonical_path": "/wardveil",
+      "current_public_host": "security.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/security",
+      "artifact_path": "sites/security/website/dist",
+      "build_command": ["python", "sites/security/website/build.py"]
+    },
+    {
+      "id": "everkeep",
+      "canonical_path": "/everkeep",
+      "current_public_host": "everkeep.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/everkeep",
+      "artifact_path": "sites/everkeep/dist",
+      "build_command": ["python", "sites/everkeep/scripts/build_public_site.py"]
+    },
+    {
+      "id": "identity",
+      "canonical_path": "/identity",
+      "current_public_host": "id.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/identity",
+      "artifact_path": null,
+      "build_command": null,
+      "static_allowlist": [
+        "index.html",
+        "404.html",
+        "_headers",
+        "app.js",
+        "style.css",
+        "glaze-v1.3-consumer.css",
+        "robots.txt",
+        "sitemap.xml",
+        "assets"
+      ]
+    },
+    {
+      "id": "manager",
+      "canonical_path": "/manager",
+      "current_public_host": null,
+      "legacy_redirect": false,
+      "reserved_application_host": "manager.goreecloud.com",
+      "source_path": "sites/manager",
+      "artifact_path": "sites/manager/dist",
+      "build_command": ["python", "sites/manager/scripts/build_public_site.py"]
+    },
+    {
+      "id": "mesh",
+      "canonical_path": "/mesh",
+      "current_public_host": "mesh.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/mesh",
+      "artifact_path": "sites/mesh/dist",
+      "build_command": ["python", "sites/mesh/scripts/build_public_site.py"]
+    },
+    {
+      "id": "labs",
+      "canonical_path": "/labs",
+      "current_public_host": "labs.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/labs",
+      "artifact_path": "sites/labs/dist",
+      "build_command": ["python", "sites/labs/build.py"]
+    }
+  ]
+}
