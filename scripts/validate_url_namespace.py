@@ -63,6 +63,7 @@ def main() -> None:
 
     seen_paths: set[str] = set()
     seen_hosts: set[str] = set()
+    reserved_hosts: set[str] = set()
     for entry in sites:
         site_id = entry["id"]
         canonical_path = entry.get("canonical_path")
@@ -85,15 +86,19 @@ def main() -> None:
         if current_host is not None:
             if not isinstance(current_host, str) or not valid_host(current_host):
                 fail(f"{site_id} has invalid current_public_host")
-            if current_host in seen_hosts:
-                fail(f"duplicate current_public_host: {current_host}")
+            if current_host in seen_hosts or current_host in reserved_hosts:
+                fail(f"duplicate or reserved current_public_host: {current_host}")
             seen_hosts.add(current_host)
 
         reserved_app_host = entry.get("reserved_application_host")
-        if reserved_app_host is not None and (not isinstance(reserved_app_host, str) or not valid_host(reserved_app_host)):
-            fail(f"{site_id} has invalid reserved_application_host")
-        if reserved_app_host is not None and entry.get("legacy_redirect"):
-            fail(f"{site_id} cannot redirect a hostname reserved for a web application")
+        if reserved_app_host is not None:
+            if not isinstance(reserved_app_host, str) or not valid_host(reserved_app_host):
+                fail(f"{site_id} has invalid reserved_application_host")
+            if reserved_app_host == current_host:
+                fail(f"{site_id} current_public_host cannot be its reserved web-application host")
+            if reserved_app_host in seen_hosts or reserved_app_host in reserved_hosts:
+                fail(f"duplicate or conflicting reserved_application_host: {reserved_app_host}")
+            reserved_hosts.add(reserved_app_host)
 
         command = entry.get("build_command")
         artifact = entry.get("artifact_path")
@@ -110,8 +115,10 @@ def main() -> None:
                 fail(f"{site_id} has invalid artifact_path")
 
     manager = next(entry for entry in sites if entry["id"] == "manager")
-    if manager.get("current_public_host") is not None:
-        fail("Manager informational publication must not claim manager.goreecloud.com as its current public host")
+    if manager.get("current_public_host") != "manage.goreecloud.com":
+        fail("Manager informational publication legacy host must be manage.goreecloud.com")
+    if not manager.get("legacy_redirect"):
+        fail("manage.goreecloud.com must be marked for compatibility redirect to /manager")
     if manager.get("reserved_application_host") != "manager.goreecloud.com":
         fail("manager.goreecloud.com must remain reserved as the Manager web-application boundary")
 

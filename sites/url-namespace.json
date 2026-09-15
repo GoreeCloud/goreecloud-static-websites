@@ -117,8 +117,8 @@
     {
       "id": "manager",
       "canonical_path": "/manager",
-      "current_public_host": null,
-      "legacy_redirect": false,
+      "current_public_host": "manage.goreecloud.com",
+      "legacy_redirect": true,
       "reserved_application_host": "manager.goreecloud.com",
       "source_path": "sites/manager",
       "artifact_path": "sites/manager/dist",

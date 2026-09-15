@@ -67,15 +67,31 @@ jobs:
               raise SystemExit(f'missing namespace artifact files: {missing}')
           print(f'Unified namespace entrypoints verified: {len(required)} required files')
 
-      - name: Preserve migration boundary
+      - name: Preserve migration and Manager hostname boundaries
         shell: python
         run: |
           import json
           from pathlib import Path
-          registry=json.loads(Path('sites/url-namespace.json').read_text())
+
+          registry = json.loads(Path('sites/url-namespace.json').read_text())
           if registry['state'] != 'migration-preparation':
-              raise SystemExit('production migration state may only change after live provider and deployed-revision verification')
-          manager=next(site for site in registry['sites'] if site['id']=='manager')
-          if manager.get('reserved_application_host') != 'manager.goreecloud.com' or manager.get('legacy_redirect'):
-              raise SystemExit('Manager application hostname boundary was not preserved')
-          print('Migration remains preparation-only; application hostname boundary preserved')
+              raise SystemExit('production migration state may only change after all live acceptance gates are verified')
+
+          manager = next(site for site in registry['sites'] if site['id'] == 'manager')
+          if manager.get('current_public_host') != 'manage.goreecloud.com':
+              raise SystemExit('Manager informational legacy hostname must remain manage.goreecloud.com until redirect retirement')
+          if manager.get('reserved_application_host') != 'manager.goreecloud.com':
+              raise SystemExit('manager.goreecloud.com must remain reserved for the Manager web application')
+          if not manager.get('legacy_redirect'):
+              raise SystemExit('Manager informational legacy hostname must remain marked for compatibility redirect')
+          if manager['current_public_host'] == manager['reserved_application_host']:
+              raise SystemExit('Manager informational and application hostname boundaries collided')
+
+          mounted = Path('dist/manager/index.html').read_text(encoding='utf-8')
+          expected_canonical = '<link rel="canonical" href="https://www.goreecloud.com/manager/">'
+          if expected_canonical not in mounted:
+              raise SystemExit('mounted Manager artifact does not publish the governed www canonical URL')
+          if '<link rel="canonical" href="https://manage.goreecloud.com/">' in mounted:
+              raise SystemExit('mounted Manager artifact still publishes the legacy informational canonical URL')
+
+          print('Migration remains evidence-gated; Manager informational and application hostname boundaries are preserved')
