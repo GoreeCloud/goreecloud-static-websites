@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "repository": "GoreeCloud/goreecloud-static-websites",
   "canonical_origin": "https://www.goreecloud.com",
-  "state": "migration-preparation",
+  "state": "provider-cutover-verified",
   "sites": [
     {
       "id": "main",
@@ -65,7 +65,7 @@
       "legacy_redirect": true,
       "source_path": "sites/design",
       "artifact_path": "sites/design/website/dist",
-      "build_command": ["python", "sites/design/website/build.py"]
+      "build_command": ["python", "sites/design/website/build_v14.py"]
     },
     {
       "id": "privacy",
