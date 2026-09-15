@@ -1,6 +1,15 @@
 # GoreeCloud Firefox Extensions — Public Website
 
-Canonical centralized static source for `firefox.goreecloud.com`.
+Canonical centralized static source for the GoreeCloud Firefox Extensions informational website.
+
+## URL namespace
+
+- Current public compatibility host: `https://firefox.goreecloud.com/`
+- Governed unified canonical target: `https://www.goreecloud.com/firefox-extensions/`
+- Current cutover state: `migration-preparation`
+- Compatibility requirement: retain `firefox.goreecloud.com` as a redirect source after the unified path is published and production-verified.
+
+The unified URL must not be recorded as production-accepted until the exact deployed revision, canonical metadata, redirect behavior, responsive rendering, accessibility, and applicable security headers have been verified. Until that acceptance closes, the existing Firefox hostname remains the verified live destination.
 
 ## Publication contract
 
@@ -9,10 +18,11 @@ Canonical centralized static source for `firefox.goreecloud.com`.
 - Site root: `sites/firefox`
 - Build command: `python3 build.py`
 - Build output directory: `dist`
-- Intended custom domain: `firefox.goreecloud.com`
+- Unified publication builder: `scripts/build_www_namespace.py`
 - Extension source authority: `GoreeCloud/goreecloud-firefox-extensions`
 - Branding authority: `GoreeCloud/goreecloud-branding-assets`
-- Current design target: GLAZE UI V1.3 / 1.3.0
+- Historical standalone design target: GLAZE UI V1.3 / 1.3.0
+- Unified mounted publication target: current governed GLAZE UI Stable contract
 
 ## Content authority
 
@@ -47,4 +57,4 @@ python3 validate.py
 node --check site.js
 ```
 
-The source is not production-accepted until a Cloudflare Pages project is configured to this repository/branch/root/build/output contract, `firefox.goreecloud.com` is attached, and canonical-domain byte/header/browser verification passes.
+Unified-namespace validation additionally builds this site beneath `/firefox-extensions/`, rewrites the legacy hostname to the governed `www.goreecloud.com` path, and verifies the mounted canonical entrypoint. Production acceptance remains separate from source/build acceptance.
