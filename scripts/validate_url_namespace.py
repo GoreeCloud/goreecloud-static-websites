@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sites" / "url-namespace.json"
 MANIFEST = ROOT / "sites" / "manifest.json"
+EXPECTED_STATE = "provider-cutover-verified"
 EXPECTED_PATHS = {
     "main": "/",
     "projects": "/projects",
@@ -47,8 +48,8 @@ def main() -> None:
         fail("repository authority is incorrect")
     if registry.get("canonical_origin") != "https://www.goreecloud.com":
         fail("canonical origin must be https://www.goreecloud.com")
-    if registry.get("state") != "migration-preparation":
-        fail("registry must remain migration-preparation until production cutover is verified")
+    if registry.get("state") != EXPECTED_STATE:
+        fail(f"registry state must be {EXPECTED_STATE} after the verified provider cutover")
 
     sites = registry.get("sites")
     if not isinstance(sites, list):
@@ -64,6 +65,7 @@ def main() -> None:
     seen_paths: set[str] = set()
     seen_hosts: set[str] = set()
     reserved_hosts: set[str] = set()
+    redirect_count = 0
     for entry in sites:
         site_id = entry["id"]
         canonical_path = entry.get("canonical_path")
@@ -90,6 +92,9 @@ def main() -> None:
                 fail(f"duplicate or reserved current_public_host: {current_host}")
             seen_hosts.add(current_host)
 
+        if entry.get("legacy_redirect"):
+            redirect_count += 1
+
         reserved_app_host = entry.get("reserved_application_host")
         if reserved_app_host is not None:
             if not isinstance(reserved_app_host, str) or not valid_host(reserved_app_host):
@@ -114,6 +119,17 @@ def main() -> None:
             if not isinstance(artifact, str) or not artifact.startswith("sites/"):
                 fail(f"{site_id} has invalid artifact_path")
 
+    if redirect_count != 13:
+        fail(f"verified legacy informational redirect inventory must contain 13 hosts, found {redirect_count}")
+
+    main_site = next(entry for entry in sites if entry["id"] == "main")
+    if main_site.get("current_public_host") != "www.goreecloud.com" or main_site.get("legacy_redirect"):
+        fail("Main must remain the canonical www origin and must not be a legacy redirect source")
+
+    design = next(entry for entry in sites if entry["id"] == "design")
+    if design.get("build_command") != ["python", "sites/design/website/build_v14.py"]:
+        fail("Design Center unified publication must use its V1.4+ builder rather than the obsolete V1.3 builder")
+
     manager = next(entry for entry in sites if entry["id"] == "manager")
     if manager.get("current_public_host") != "manage.goreecloud.com":
         fail("Manager informational publication legacy host must be manage.goreecloud.com")
@@ -122,7 +138,10 @@ def main() -> None:
     if manager.get("reserved_application_host") != "manager.goreecloud.com":
         fail("manager.goreecloud.com must remain reserved as the Manager web-application boundary")
 
-    print(f"URL namespace registry valid: {len(sites)} informational websites -> https://www.goreecloud.com paths")
+    print(
+        f"URL namespace registry valid: {len(sites)} informational websites -> https://www.goreecloud.com paths; "
+        f"state={EXPECTED_STATE}; legacy redirects={redirect_count}"
+    )
 
 
 if __name__ == "__main__":
