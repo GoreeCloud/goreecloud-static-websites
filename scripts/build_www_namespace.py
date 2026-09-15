@@ -174,7 +174,7 @@ def replace_named_meta(text: str, name: str, content: str) -> str:
     if pattern.search(text):
         return pattern.sub(tag, text, count=1)
     if "</head>" not in text.lower():
-        fail(f"HTML page has no </head> insertion point for {name}")
+        return text
     return re.sub(r"</head>", f"  {tag}\n</head>", text, count=1, flags=re.IGNORECASE)
 
 
@@ -197,6 +197,9 @@ def normalize_current_glaze_claims(text: str) -> str:
 
 
 def normalize_html(text: str, entry: dict, origin: str, root_index: bool) -> str:
+    if "</head>" not in text.lower():
+        return text
+
     prefix = entry["canonical_path"]
     asset_href = "/assets/" + GLAZE_ENTRYPOINT if prefix == "/" else f"{prefix}/assets/{GLAZE_ENTRYPOINT}"
 
@@ -210,8 +213,7 @@ def normalize_html(text: str, entry: dict, origin: str, root_index: bool) -> str
         re.IGNORECASE,
     )
     stable_link = f'<link rel="stylesheet" href="{asset_href}" data-glaze-ui="{GLAZE_VERSION}">'
-    matches = list(stable_link_pattern.finditer(text))
-    if matches:
+    if stable_link_pattern.search(text):
         text = stable_link_pattern.sub("", text)
         first_stylesheet = re.search(r'<link\b(?=[^>]*\brel=["\']stylesheet["\'])[^>]*>', text, flags=re.IGNORECASE)
         if first_stylesheet:
@@ -370,8 +372,8 @@ def main() -> int:
                     copy_checked(child, destination / child.name)
             else:
                 copy_checked(artifact, destination)
-                rewrite_artifact(destination, entry, entries, origin)
 
+            rewrite_artifact(destination, entry, entries, origin)
             normalize_publication(destination, entry, origin, glaze_css)
             verify_publication(destination, entry, entries, origin)
 
