@@ -58,6 +58,7 @@ jobs:
               'manager/index.html',
               'mesh/index.html',
               'labs/index.html',
+              'firefox-extensions/index.html',
               '_headers',
               'robots.txt',
           )
@@ -67,7 +68,7 @@ jobs:
               raise SystemExit(f'missing namespace artifact files: {missing}')
           print(f'Unified namespace entrypoints verified: {len(required)} required files')
 
-      - name: Verify verified-cutover and Manager hostname boundaries
+      - name: Verify cutover state and application-host boundaries
         shell: python
         run: |
           import json
@@ -75,11 +76,13 @@ jobs:
 
           registry = json.loads(Path('sites/url-namespace.json').read_text())
           if registry['state'] != 'provider-cutover-verified':
-              raise SystemExit('unified namespace registry must retain the verified provider-cutover state')
+              raise SystemExit('existing unified namespace baseline must retain its verified provider-cutover state')
+          if registry.get('pending_cutovers') != ['firefox']:
+              raise SystemExit('Firefox must remain the only pending provider cutover until production verification closes it')
 
           redirected = [site for site in registry['sites'] if site.get('legacy_redirect')]
-          if len(redirected) != 13:
-              raise SystemExit(f'verified informational redirect inventory must remain 13 hosts, found {len(redirected)}')
+          if len(redirected) != 14:
+              raise SystemExit(f'legacy informational compatibility inventory must contain 14 hosts after adding Firefox, found {len(redirected)}')
 
           manager = next(site for site in registry['sites'] if site['id'] == 'manager')
           if manager.get('current_public_host') != 'manage.goreecloud.com':
@@ -91,11 +94,23 @@ jobs:
           if manager['current_public_host'] == manager['reserved_application_host']:
               raise SystemExit('Manager informational and application hostname boundaries collided')
 
-          mounted = Path('dist/manager/index.html').read_text(encoding='utf-8')
-          expected_canonical = '<link rel="canonical" href="https://www.goreecloud.com/manager/">'
-          if expected_canonical not in mounted:
+          mounted_manager = Path('dist/manager/index.html').read_text(encoding='utf-8')
+          expected_manager_canonical = '<link rel="canonical" href="https://www.goreecloud.com/manager/">'
+          if expected_manager_canonical not in mounted_manager:
               raise SystemExit('mounted Manager artifact does not publish the governed www canonical URL')
-          if '<link rel="canonical" href="https://manage.goreecloud.com/">' in mounted:
+          if '<link rel="canonical" href="https://manage.goreecloud.com/">' in mounted_manager:
               raise SystemExit('mounted Manager artifact still publishes the legacy informational canonical URL')
 
-          print('Provider cutover remains verified; final acceptance remains evidence-gated; Manager informational and application hostname boundaries are preserved')
+          firefox = next(site for site in registry['sites'] if site['id'] == 'firefox')
+          if firefox.get('current_public_host') != 'firefox.goreecloud.com' or not firefox.get('legacy_redirect'):
+              raise SystemExit('Firefox Extensions legacy hostname must remain a compatibility redirect source')
+          if firefox.get('cutover_state') != 'migration-preparation':
+              raise SystemExit('Firefox Extensions must remain migration-preparation until provider cutover verification')
+          mounted_firefox = Path('dist/firefox-extensions/index.html').read_text(encoding='utf-8')
+          expected_firefox_canonical = '<link rel="canonical" href="https://www.goreecloud.com/firefox-extensions/">'
+          if expected_firefox_canonical not in mounted_firefox:
+              raise SystemExit('mounted Firefox Extensions artifact does not publish the governed www canonical URL')
+          if '<link rel="canonical" href="https://firefox.goreecloud.com/">' in mounted_firefox:
+              raise SystemExit('mounted Firefox Extensions artifact still publishes the legacy informational canonical URL')
+
+          print('Existing provider cutover remains verified; Firefox Extensions is source-prepared and explicitly provider-cutover-pending; application-host boundaries are preserved')

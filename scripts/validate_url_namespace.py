@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sites" / "url-namespace.json"
 MANIFEST = ROOT / "sites" / "manifest.json"
 EXPECTED_STATE = "provider-cutover-verified"
+EXPECTED_PENDING_CUTOVERS = {"firefox"}
+CENTRAL_NATIVE_SITE_IDS = {"firefox"}
 EXPECTED_PATHS = {
     "main": "/",
     "projects": "/projects",
@@ -26,6 +28,7 @@ EXPECTED_PATHS = {
     "manager": "/manager",
     "mesh": "/mesh",
     "labs": "/labs",
+    "firefox": "/firefox-extensions",
 }
 
 
@@ -49,7 +52,11 @@ def main() -> None:
     if registry.get("canonical_origin") != "https://www.goreecloud.com":
         fail("canonical origin must be https://www.goreecloud.com")
     if registry.get("state") != EXPECTED_STATE:
-        fail(f"registry state must be {EXPECTED_STATE} after the verified provider cutover")
+        fail(f"registry baseline state must remain {EXPECTED_STATE}")
+
+    pending_cutovers = registry.get("pending_cutovers", [])
+    if not isinstance(pending_cutovers, list) or set(pending_cutovers) != EXPECTED_PENDING_CUTOVERS:
+        fail(f"pending cutover inventory must be exactly {sorted(EXPECTED_PENDING_CUTOVERS)} until Firefox provider cutover is verified")
 
     sites = registry.get("sites")
     if not isinstance(sites, list):
@@ -57,8 +64,14 @@ def main() -> None:
 
     manifest_ids = {entry["id"] for entry in manifest.get("sites", [])}
     registry_ids = {entry.get("id") for entry in sites}
-    if registry_ids != manifest_ids:
-        fail(f"registry IDs must exactly match manifest IDs: registry={sorted(registry_ids)} manifest={sorted(manifest_ids)}")
+    if not manifest_ids.issubset(registry_ids):
+        fail(f"legacy migration manifest contains sites missing from URL registry: {sorted(manifest_ids - registry_ids)}")
+    if registry_ids - manifest_ids != CENTRAL_NATIVE_SITE_IDS:
+        fail(
+            "URL registry sites outside the legacy migration manifest must exactly match "
+            f"the central-native inventory: extras={sorted(registry_ids - manifest_ids)} "
+            f"expected={sorted(CENTRAL_NATIVE_SITE_IDS)}"
+        )
     if registry_ids != set(EXPECTED_PATHS):
         fail("registry IDs drifted from the governed public-site inventory")
 
@@ -119,8 +132,8 @@ def main() -> None:
             if not isinstance(artifact, str) or not artifact.startswith("sites/"):
                 fail(f"{site_id} has invalid artifact_path")
 
-    if redirect_count != 13:
-        fail(f"verified legacy informational redirect inventory must contain 13 hosts, found {redirect_count}")
+    if redirect_count != 14:
+        fail(f"legacy informational compatibility inventory must contain 14 hosts after adding Firefox, found {redirect_count}")
 
     main_site = next(entry for entry in sites if entry["id"] == "main")
     if main_site.get("current_public_host") != "www.goreecloud.com" or main_site.get("legacy_redirect"):
@@ -138,9 +151,18 @@ def main() -> None:
     if manager.get("reserved_application_host") != "manager.goreecloud.com":
         fail("manager.goreecloud.com must remain reserved as the Manager web-application boundary")
 
+    firefox = next(entry for entry in sites if entry["id"] == "firefox")
+    if firefox.get("current_public_host") != "firefox.goreecloud.com":
+        fail("Firefox Extensions legacy informational host must remain firefox.goreecloud.com until redirect retirement")
+    if not firefox.get("legacy_redirect"):
+        fail("firefox.goreecloud.com must be marked for compatibility redirect to /firefox-extensions")
+    if firefox.get("cutover_state") != "migration-preparation":
+        fail("Firefox Extensions must remain explicitly migration-preparation until the provider cutover is verified")
+
     print(
         f"URL namespace registry valid: {len(sites)} informational websites -> https://www.goreecloud.com paths; "
-        f"state={EXPECTED_STATE}; legacy redirects={redirect_count}"
+        f"baseline_state={EXPECTED_STATE}; pending_cutovers={sorted(EXPECTED_PENDING_CUTOVERS)}; "
+        f"central_native={sorted(CENTRAL_NATIVE_SITE_IDS)}; legacy compatibility hosts={redirect_count}"
     )
 
 
