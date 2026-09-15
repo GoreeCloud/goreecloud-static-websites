@@ -26,6 +26,7 @@ EXPECTED_PATHS = {
     "manager": "/manager",
     "mesh": "/mesh",
     "labs": "/labs",
+    "firefox": "/firefox-extensions",
 }
 
 
@@ -119,8 +120,8 @@ def main() -> None:
             if not isinstance(artifact, str) or not artifact.startswith("sites/"):
                 fail(f"{site_id} has invalid artifact_path")
 
-    if redirect_count != 13:
-        fail(f"verified legacy informational redirect inventory must contain 13 hosts, found {redirect_count}")
+    if redirect_count != 14:
+        fail(f"verified legacy informational redirect inventory must contain 14 hosts, found {redirect_count}")
 
     main_site = next(entry for entry in sites if entry["id"] == "main")
     if main_site.get("current_public_host") != "www.goreecloud.com" or main_site.get("legacy_redirect"):
@@ -137,6 +138,12 @@ def main() -> None:
         fail("manage.goreecloud.com must be marked for compatibility redirect to /manager")
     if manager.get("reserved_application_host") != "manager.goreecloud.com":
         fail("manager.goreecloud.com must remain reserved as the Manager web-application boundary")
+
+    firefox = next(entry for entry in sites if entry["id"] == "firefox")
+    if firefox.get("current_public_host") != "firefox.goreecloud.com":
+        fail("Firefox Extensions legacy informational host must remain firefox.goreecloud.com until redirect retirement")
+    if not firefox.get("legacy_redirect"):
+        fail("firefox.goreecloud.com must be marked for compatibility redirect to /firefox-extensions")
 
     print(
         f"URL namespace registry valid: {len(sites)} informational websites -> https://www.goreecloud.com paths; "
