@@ -100,8 +100,8 @@ def rewrite_artifact(root: Path, entry: dict, entries: list[dict], origin: str) 
             continue
         try:
             text = path.read_text(encoding="utf-8")
-        except UnicodeDecodeError as exc:
-            fail(f"text publication file is not UTF-8: {path}") from exc
+        except UnicodeDecodeError:
+            fail(f"text publication file is not UTF-8: {path}")
         text = rewrite_legacy_origins(text, entries, origin)
         text = prefix_root_relative_strings(text, entry["canonical_path"])
         path.write_text(text, encoding="utf-8")
