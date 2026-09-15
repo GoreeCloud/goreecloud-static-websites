@@ -65,7 +65,16 @@ jobs:
           missing = [name for name in required if not (root / name).is_file()]
           if missing:
               raise SystemExit(f'missing namespace artifact files: {missing}')
-          print(f'Unified namespace entrypoints verified: {len(required)} required files')
+
+          robots = (root / 'robots.txt').read_text(encoding='utf-8')
+          if 'Disallow: /labs/' not in robots:
+              raise SystemExit('unified root robots.txt must preserve the Labs no-crawl boundary at /labs/')
+          if 'https://labs.goreecloud.com/' in robots:
+              raise SystemExit('unified root robots.txt still references the legacy Labs hostname')
+          if 'Sitemap: https://www.goreecloud.com/labs/sitemap.xml' not in robots:
+              raise SystemExit('unified root robots.txt must publish the rebased Labs sitemap URL')
+
+          print(f'Unified namespace entrypoints verified: {len(required)} required files; Labs crawl boundary preserved at /labs/')
 
       - name: Verify verified-cutover and Manager hostname boundaries
         shell: python
