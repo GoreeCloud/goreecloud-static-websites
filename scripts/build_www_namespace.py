@@ -195,12 +195,18 @@ def normalize_current_glaze_claims(text: str) -> str:
         ("GLAZE UI V1.3 consumer acceptance", "GLAZE UI V1.4.1 consumer acceptance"),
         ("This source targets GLAZE UI 1.3.0 at canonical revision <code>8354308445da9ac35ced2b37a7f503a08a0aaf72</code>.", "This mounted publication targets GLAZE UI 1.4.1 at canonical revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
         ("Projects source targets GLAZE UI 1.3.0 at exact Glaze revision <code>8354308445da9ac35ced2b37a7f503a08a0aaf72</code>.", "Projects mounted publication targets GLAZE UI 1.4.1 at canonical Glaze revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
+        ("Projects source targets GLAZE UI 1.3.0 at exact Glaze revision <code>84cb3db4884042f0fa25ed6d475a127fb110f596</code>.", "Projects mounted publication targets GLAZE UI 1.4.1 at canonical Glaze revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
         ("<strong>Glaze UI V1.3</strong><span>Current Official Stable</span>", "<strong>Glaze UI V1.4.1</strong><span>Current Official Stable</span>"),
+        ("<strong>Glaze UI V1.4</strong><span>Current Official Stable</span>", "<strong>Glaze UI V1.4.1</strong><span>Current Official Stable</span>"),
         ("current GLAZE UI V1.3, Privacy Shield", "current GLAZE UI V1.4.1, Privacy Shield"),
+        ("current GLAZE UI V1.4, Privacy Shield", "current GLAZE UI V1.4.1, Privacy Shield"),
         ("This is the public informational website at <strong>manage.goreecloud.com</strong>, not the private Manager application.", "This is the public informational website at <strong>www.goreecloud.com/manager/</strong>; <strong>manage.goreecloud.com</strong> is retained only as a compatibility redirect. The private Manager application remains a separate application boundary."),
         ("Current GLAZE UI V1.3 source reconciliation under review in the application repository", "Current GLAZE UI V1.4.1 publication target with rendered acceptance still pending"),
+        ("Current GLAZE UI V1.4 source reconciliation under review in the application repository", "Current GLAZE UI V1.4.1 publication target with rendered acceptance still pending"),
         ("Current rendered/accessibility/adaptive GLAZE UI V1.3 acceptance", "Current rendered/accessibility/adaptive GLAZE UI V1.4.1 acceptance"),
+        ("Current rendered/accessibility/adaptive GLAZE UI V1.4 acceptance", "Current rendered/accessibility/adaptive GLAZE UI V1.4.1 acceptance"),
         ("This public-site branch pins the official Stable 1.3.0 source revision.", "This canonical mounted publication pins the official Stable 1.4.1 release revision."),
+        ("This public-site branch pins the official Stable 1.4.0 source revision.", "This canonical mounted publication pins the official Stable 1.4.1 release revision."),
     )
     for old, new in replacements:
         text = text.replace(old, new)
