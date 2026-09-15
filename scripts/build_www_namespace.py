@@ -194,6 +194,7 @@ def normalize_current_glaze_claims(text: str) -> str:
         ("<dt>Design target</dt><dd>GLAZE UI V1.3</dd>", "<dt>Design target</dt><dd>GLAZE UI V1.4.1</dd>"),
         ("GLAZE UI V1.3 consumer acceptance", "GLAZE UI V1.4.1 consumer acceptance"),
         ("This source targets GLAZE UI 1.3.0 at canonical revision <code>8354308445da9ac35ced2b37a7f503a08a0aaf72</code>.", "This mounted publication targets GLAZE UI 1.4.1 at canonical revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
+        ("This source targets GLAZE UI 1.3.0 at canonical revision <code>84cb3db4884042f0fa25ed6d475a127fb110f596</code>.", "This mounted publication targets GLAZE UI 1.4.1 at canonical revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
         ("Projects source targets GLAZE UI 1.3.0 at exact Glaze revision <code>8354308445da9ac35ced2b37a7f503a08a0aaf72</code>.", "Projects mounted publication targets GLAZE UI 1.4.1 at canonical Glaze revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
         ("Projects source targets GLAZE UI 1.3.0 at exact Glaze revision <code>84cb3db4884042f0fa25ed6d475a127fb110f596</code>.", "Projects mounted publication targets GLAZE UI 1.4.1 at canonical Glaze revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
         ("<strong>Glaze UI V1.3</strong><span>Current Official Stable</span>", "<strong>Glaze UI V1.4.1</strong><span>Current Official Stable</span>"),
