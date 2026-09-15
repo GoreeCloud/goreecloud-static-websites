@@ -18,11 +18,13 @@ This file is the repository-side feature roadmap control for GoreeCloud Public W
 | PW-002 | Complete the provider-side Labs deployment cutover from the accepted central source and exact production acceptance. | High | Source accepted / deployment cutover pending |
 | PW-003 | Complete the Manager public informational website deployment cutover while preserving the separate `manager.goreecloud.com` authenticated application boundary. | High | Source accepted / deployment cutover pending |
 | PW-004 | Require reviewed source/build, rendered-accessibility, deployment, and exact deployed-revision evidence before recording new production acceptance. | High | Ongoing release gate |
-| PW-005 | Migrate public informational/static websites to `https://www.goreecloud.com/<website-slug>`, including `/glaze-ui`, `/wardveil`, `/suite`, `/labs`, and `/identity`; reserve `https://<application>.goreecloud.com/` for the actual web application. Preserve required compatibility and require per-site production verification before acceptance. | High | Planned / migration required |
+| PW-005 | Migrate public informational/static websites to `https://www.goreecloud.com/<website-slug>`, including `/glaze-ui`, `/wardveil`, `/suite`, `/labs`, and `/identity`; reserve `https://<application>.goreecloud.com/` for the actual web application. Preserve required compatibility and require per-site production verification before acceptance. | High | In progress / source namespace build verified; provider cutover and live verification pending |
 
 ## Current evidence baseline
 
-Authoritative `main` currently registers fourteen centralized static website packages. The live Glaze UI lifecycle registry identifies 1.4.1 as the current Official Stable and consumer-eligible release. Existing website hostnames remain the current deployment locations until each URL migration is separately implemented and verified; this roadmap does not represent the future `www.goreecloud.com/<website-slug>` paths as already live.
+Authoritative `main` registers fourteen centralized static website packages. The live Glaze UI lifecycle registry identifies 1.4.1 as the current Official Stable and consumer-eligible release. Source-side URL namespace preparation is implemented on authoritative `main` through PR #96 at merge revision `6a5c70292857ea3ccbc922585f7a905195cd92bb`: the fail-closed registry and unified builder successfully validate and assemble all fourteen informational website packages beneath `https://www.goreecloud.com` paths, including `/glaze-ui`, `/wardveil`, `/suite`, `/labs`, and `/identity`, while preserving `manager.goreecloud.com` as the Manager application boundary.
+
+Existing website hostnames remain the current production locations. Provider-side preview/cutover, legacy-host redirects, routing and DNS/TLS verification, rendered/accessibility checks, indexing and canonical-metadata verification, current Glaze UI 1.4.1 per-site conformance, and exact deployed-revision acceptance remain pending. The new path URLs must not be recorded as production accepted until those live gates pass.
 
 ## Maintenance and synchronization
 
