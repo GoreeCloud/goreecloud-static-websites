@@ -190,6 +190,14 @@ def normalize_current_glaze_claims(text: str) -> str:
         ("GLAZE UI 1.4.0 is the current Official Stable", "GLAZE UI 1.4.1 is the current Official Stable"),
         ("GLAZE UI V1.3 / 1.3.0", "GLAZE UI V1.4 / 1.4.1"),
         ("GLAZE UI V1.4 / 1.4.0", "GLAZE UI V1.4 / 1.4.1"),
+        ("This Identity Center revision targets GLAZE UI `1.3.0` at canonical Glaze revision <code>8354308445da9ac35ced2b37a7f503a08a0aaf72</code>.", "This Identity Center publication targets GLAZE UI `1.4.1` at canonical Glaze revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
+        ("<dt>Design target</dt><dd>GLAZE UI V1.3</dd>", "<dt>Design target</dt><dd>GLAZE UI V1.4.1</dd>"),
+        ("GLAZE UI V1.3 consumer acceptance", "GLAZE UI V1.4.1 consumer acceptance"),
+        ("This source targets GLAZE UI 1.3.0 at canonical revision <code>8354308445da9ac35ced2b37a7f503a08a0aaf72</code>.", "This mounted publication targets GLAZE UI 1.4.1 at canonical revision <code>4fab9da0fad2e5c974e0e66ec88632c61745751c</code>."),
+        ("This is the public informational website at <strong>manage.goreecloud.com</strong>, not the private Manager application.", "This is the public informational website at <strong>www.goreecloud.com/manager/</strong>; <strong>manage.goreecloud.com</strong> is retained only as a compatibility redirect. The private Manager application remains a separate application boundary."),
+        ("Current GLAZE UI V1.3 source reconciliation under review in the application repository", "Current GLAZE UI V1.4.1 publication target with rendered acceptance still pending"),
+        ("Current rendered/accessibility/adaptive GLAZE UI V1.3 acceptance", "Current rendered/accessibility/adaptive GLAZE UI V1.4.1 acceptance"),
+        ("This public-site branch pins the official Stable 1.3.0 source revision.", "This canonical mounted publication pins the official Stable 1.4.1 release revision."),
     )
     for old, new in replacements:
         text = text.replace(old, new)
@@ -307,6 +315,13 @@ def verify_publication(root: Path, entry: dict, entries: list[dict], origin: str
         "1.4.0 current Official Stable",
         "GLAZE UI 1.3.0 is the current Official Stable",
         "GLAZE UI 1.4.0 is the current Official Stable",
+        "targets GLAZE UI `1.3.0`",
+        "targets GLAZE UI 1.3.0",
+        "<dt>Design target</dt><dd>GLAZE UI V1.3</dd>",
+        "Current GLAZE UI V1.3",
+        "GLAZE UI V1.3 consumer acceptance",
+        "Current rendered/accessibility/adaptive GLAZE UI V1.3 acceptance",
+        "public informational website at <strong>manage.goreecloud.com</strong>",
     )
     for marker in stale_current_markers:
         if marker in index_text:
