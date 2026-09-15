@@ -12,6 +12,7 @@ REGISTRY = ROOT / "sites" / "url-namespace.json"
 MANIFEST = ROOT / "sites" / "manifest.json"
 EXPECTED_STATE = "provider-cutover-verified"
 EXPECTED_PENDING_CUTOVERS = {"firefox"}
+CENTRAL_NATIVE_SITE_IDS = {"firefox"}
 EXPECTED_PATHS = {
     "main": "/",
     "projects": "/projects",
@@ -63,8 +64,14 @@ def main() -> None:
 
     manifest_ids = {entry["id"] for entry in manifest.get("sites", [])}
     registry_ids = {entry.get("id") for entry in sites}
-    if registry_ids != manifest_ids:
-        fail(f"registry IDs must exactly match manifest IDs: registry={sorted(registry_ids)} manifest={sorted(manifest_ids)}")
+    if not manifest_ids.issubset(registry_ids):
+        fail(f"legacy migration manifest contains sites missing from URL registry: {sorted(manifest_ids - registry_ids)}")
+    if registry_ids - manifest_ids != CENTRAL_NATIVE_SITE_IDS:
+        fail(
+            "URL registry sites outside the legacy migration manifest must exactly match "
+            f"the central-native inventory: extras={sorted(registry_ids - manifest_ids)} "
+            f"expected={sorted(CENTRAL_NATIVE_SITE_IDS)}"
+        )
     if registry_ids != set(EXPECTED_PATHS):
         fail("registry IDs drifted from the governed public-site inventory")
 
@@ -155,7 +162,7 @@ def main() -> None:
     print(
         f"URL namespace registry valid: {len(sites)} informational websites -> https://www.goreecloud.com paths; "
         f"baseline_state={EXPECTED_STATE}; pending_cutovers={sorted(EXPECTED_PENDING_CUTOVERS)}; "
-        f"legacy compatibility hosts={redirect_count}"
+        f"central_native={sorted(CENTRAL_NATIVE_SITE_IDS)}; legacy compatibility hosts={redirect_count}"
     )
 
 
