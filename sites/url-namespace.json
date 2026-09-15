@@ -141,6 +141,15 @@
       "source_path": "sites/labs",
       "artifact_path": "sites/labs/dist",
       "build_command": ["python", "sites/labs/build.py"]
+    },
+    {
+      "id": "firefox",
+      "canonical_path": "/firefox-extensions",
+      "current_public_host": "firefox.goreecloud.com",
+      "legacy_redirect": true,
+      "source_path": "sites/firefox",
+      "artifact_path": "sites/firefox/dist",
+      "build_command": ["python", "sites/firefox/build.py"]
     }
   ]
 }
