@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sites" / "url-namespace.json"
 MANIFEST = ROOT / "sites" / "manifest.json"
 EXPECTED_STATE = "provider-cutover-verified"
+EXPECTED_PENDING_CUTOVERS = {"firefox"}
 EXPECTED_PATHS = {
     "main": "/",
     "projects": "/projects",
@@ -50,7 +51,11 @@ def main() -> None:
     if registry.get("canonical_origin") != "https://www.goreecloud.com":
         fail("canonical origin must be https://www.goreecloud.com")
     if registry.get("state") != EXPECTED_STATE:
-        fail(f"registry state must be {EXPECTED_STATE} after the verified provider cutover")
+        fail(f"registry baseline state must remain {EXPECTED_STATE}")
+
+    pending_cutovers = registry.get("pending_cutovers", [])
+    if not isinstance(pending_cutovers, list) or set(pending_cutovers) != EXPECTED_PENDING_CUTOVERS:
+        fail(f"pending cutover inventory must be exactly {sorted(EXPECTED_PENDING_CUTOVERS)} until Firefox provider cutover is verified")
 
     sites = registry.get("sites")
     if not isinstance(sites, list):
@@ -121,7 +126,7 @@ def main() -> None:
                 fail(f"{site_id} has invalid artifact_path")
 
     if redirect_count != 14:
-        fail(f"verified legacy informational redirect inventory must contain 14 hosts, found {redirect_count}")
+        fail(f"legacy informational compatibility inventory must contain 14 hosts after adding Firefox, found {redirect_count}")
 
     main_site = next(entry for entry in sites if entry["id"] == "main")
     if main_site.get("current_public_host") != "www.goreecloud.com" or main_site.get("legacy_redirect"):
@@ -144,10 +149,13 @@ def main() -> None:
         fail("Firefox Extensions legacy informational host must remain firefox.goreecloud.com until redirect retirement")
     if not firefox.get("legacy_redirect"):
         fail("firefox.goreecloud.com must be marked for compatibility redirect to /firefox-extensions")
+    if firefox.get("cutover_state") != "migration-preparation":
+        fail("Firefox Extensions must remain explicitly migration-preparation until the provider cutover is verified")
 
     print(
         f"URL namespace registry valid: {len(sites)} informational websites -> https://www.goreecloud.com paths; "
-        f"state={EXPECTED_STATE}; legacy redirects={redirect_count}"
+        f"baseline_state={EXPECTED_STATE}; pending_cutovers={sorted(EXPECTED_PENDING_CUTOVERS)}; "
+        f"legacy compatibility hosts={redirect_count}"
     )
 
 
