@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Exercise the live unified Firefox Extensions publication in headless Chrome."""
+"""Exercise the selected unified Firefox Extensions publication in headless Chrome."""
 
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -13,8 +14,9 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-TARGET = "https://www.goreecloud.com/firefox-extensions/"
-CANONICAL = TARGET
+CANONICAL = "https://www.goreecloud.com/firefox-extensions/"
+VERIFY_ORIGIN = os.environ.get("FIREFOX_VERIFY_ORIGIN", "https://www.goreecloud.com").rstrip("/")
+TARGET = VERIFY_ORIGIN + "/firefox-extensions/"
 VIEWPORTS = ((1180, 900), (768, 900), (390, 844), (320, 844))
 DRIVER_PORT = 9540
 DRIVER_BASE = f"http://127.0.0.1:{DRIVER_PORT}"
@@ -147,35 +149,25 @@ def verify_image_decode(session_id: str) -> None:
             const r = img.getBoundingClientRect();
             const s = getComputedStyle(img);
             return {
-              src: img.getAttribute('src'),
-              currentSrc: img.currentSrc,
-              complete: img.complete,
-              decoded: true,
-              width: r.width,
-              height: r.height,
-              display: s.display,
-              visibility: s.visibility,
-              naturalWidth: img.naturalWidth,
-              naturalHeight: img.naturalHeight,
+              src: img.getAttribute('src'), currentSrc: img.currentSrc,
+              complete: img.complete, decoded: true,
+              width: r.width, height: r.height,
+              display: s.display, visibility: s.visibility,
+              naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight,
             };
           } catch (error) {
             const r = img.getBoundingClientRect();
             return {
-              src: img.getAttribute('src'),
-              currentSrc: img.currentSrc,
-              complete: img.complete,
-              decoded: false,
-              width: r.width,
-              height: r.height,
-              error: String(error),
-              naturalWidth: img.naturalWidth,
-              naturalHeight: img.naturalHeight,
+              src: img.getAttribute('src'), currentSrc: img.currentSrc,
+              complete: img.complete, decoded: false,
+              width: r.width, height: r.height,
+              error: String(error), naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight,
             };
           }
         })).then(done).catch(error => done({fatal: String(error)}));
         """,
     )
-    require(isinstance(value, list) and value, f"Could not decode Firefox production images: {value!r}")
+    require(isinstance(value, list) and value, f"Could not decode Firefox publication images: {value!r}")
     failures = [
         item
         for item in value
@@ -186,7 +178,7 @@ def verify_image_decode(session_id: str) -> None:
         or item.get("display") == "none"
         or item.get("visibility") == "hidden"
     ]
-    require(not failures, f"Firefox production image decode/render failure: {failures}")
+    require(not failures, f"Firefox publication image decode/render failure at {VERIFY_ORIGIN}: {failures}")
 
 
 def state(session_id: str) -> dict[str, Any]:
@@ -205,18 +197,12 @@ def state(session_id: str) -> dict[str, Any]:
         const imageBoxes=images.map(img=>{const r=img.getBoundingClientRect(),s=getComputedStyle(img);return {src:img.getAttribute('src'),currentSrc:img.currentSrc,complete:img.complete,left:r.left,right:r.right,width:r.width,height:r.height,display:s.display,visibility:s.visibility};});
         const columns=el=>getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
         return {
-          ready:document.readyState,
-          title:document.title,
-          url:location.href,
-          width:innerWidth,
-          height:innerHeight,
-          scrollWidth:document.documentElement.scrollWidth,
-          bodyScrollWidth:document.body.scrollWidth,
+          ready:document.readyState,title:document.title,url:location.href,width:innerWidth,height:innerHeight,
+          scrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body.scrollWidth,
           glaze:document.querySelector('meta[name="goreecloud-glaze-ui"]')?.content||'',
           revision:document.querySelector('meta[name="goreecloud-glaze-source-revision"]')?.content||'',
           schema:document.querySelector('meta[name="goreecloud-extension-inventory-schema"]')?.content||'',
-          canonical:document.querySelector('link[rel="canonical"]')?.href||'',
-          cards:cards.length,
+          canonical:document.querySelector('link[rel="canonical"]')?.href||'',cards:cards.length,
           stableCards:cards.filter(card=>card.querySelector('.status.stable')).length,
           cardColumns:cards.length?columns(document.querySelector('#extensions .grid')):0,
           principleColumns:columns(document.querySelector('.principles')),
@@ -232,7 +218,7 @@ def state(session_id: str) -> dict[str, Any]:
         };
         """,
     )
-    require(isinstance(value, dict), f"Could not read Firefox production browser state: {value!r}")
+    require(isinstance(value, dict), f"Could not read Firefox publication browser state: {value!r}")
     return value
 
 
@@ -294,29 +280,28 @@ def exercise(session_id: str) -> None:
         current = state(session_id)
         width = int(current.get("width", 0))
         height = int(current.get("height", 0))
-        require(abs(width - requested_width) <= 1 and abs(height - requested_height) <= 1, f"Unexpected Firefox viewport at {requested_width}px: {current}")
-        require(current.get("ready") == "complete" and current.get("url") == TARGET, f"Firefox production navigation/load drift at {width}px: {current}")
+        require(abs(width-requested_width)<=1 and abs(height-requested_height)<=1, f"Unexpected Firefox viewport at {requested_width}px: {current}")
+        require(current.get("ready") == "complete" and current.get("url") == TARGET, f"Firefox publication navigation/load drift at {width}px: {current}")
         require(current.get("title") == "GoreeCloud Firefox Extensions" and current.get("canonical") == CANONICAL, f"Firefox identity/canonical drift at {width}px: {current}")
         require(current.get("glaze") == GLAZE_VERSION and current.get("revision") == GLAZE_REVISION, f"Firefox Glaze publication drift at {width}px: {current}")
         require(current.get("schema") == "2", f"Firefox extension inventory schema drift at {width}px: {current}")
-        require(int(current.get("scrollWidth", width + 10)) <= width + 1 and int(current.get("bodyScrollWidth", width + 10)) <= width + 1, f"Firefox production overflows horizontally at {width}px: {current}")
+        require(int(current.get("scrollWidth", width+10)) <= width+1 and int(current.get("bodyScrollWidth", width+10)) <= width+1, f"Firefox publication overflows horizontally at {width}px: {current}")
         require(int(current.get("cards", 0)) == 5 and int(current.get("stableCards", 0)) == 2, f"Firefox inventory/state count drift at {width}px: {current}")
         image_failures = [
-            item
-            for item in current.get("imageBoxes") or []
+            item for item in current.get("imageBoxes") or []
             if not item.get("complete")
             or float(item.get("width", 0)) <= 0
             or float(item.get("height", 0)) <= 0
             or item.get("display") == "none"
             or item.get("visibility") == "hidden"
         ]
-        require(not image_failures, f"Firefox production contains non-rendered image elements at {width}px: {image_failures}")
-        require(not (current.get("unnamedInteractive") or []), f"Firefox production contains unnamed interactive controls at {width}px: {current}")
+        require(not image_failures, f"Firefox publication contains non-rendered image elements at {width}px: {image_failures}")
+        require(not (current.get("unnamedInteractive") or []), f"Firefox publication contains unnamed interactive controls at {width}px: {current}")
         require(int(current.get("mainCount", 0)) == 1 and int(current.get("primaryNavCount", 0)) == 1 and int(current.get("h1Count", 0)) == 1, f"Firefox semantic structure drift at {width}px: {current}")
         require(current.get("skipLinkExists") is True, f"Firefox skip link is missing at {width}px: {current}")
         require(float(current.get("minButtonHeight", 0)) >= 47.5, f"Firefox primary action target below 48px at {width}px: {current}")
         for item in current.get("geometry") or []:
-            require(float(item.get("left", -999)) >= -1 and float(item.get("right", 99999)) <= width + 1, f"Firefox layout region escapes viewport at {width}px: {item}")
+            require(float(item.get("left", -999)) >= -1 and float(item.get("right", 99999)) <= width+1, f"Firefox layout region escapes viewport at {width}px: {item}")
         if width <= 640:
             require(float(current.get("minNavHeight", 0)) >= 47.5, f"Firefox mobile navigation target below 48px at {width}px: {current}")
             require(int(current.get("cardColumns", 0)) == 1 and int(current.get("principleColumns", 0)) == 1, f"Firefox mobile layout did not collapse to one column at {width}px: {current}")
@@ -332,7 +317,7 @@ def main() -> int:
     session_id: str | None = None
     log_path: Path | None = None
     try:
-        with tempfile.NamedTemporaryFile(prefix="goreecloud-firefox-unified-production-chromedriver-", suffix=".log", delete=False) as log_file:
+        with tempfile.NamedTemporaryFile(prefix="goreecloud-firefox-unified-chromedriver-", suffix=".log", delete=False) as log_file:
             log_path = Path(log_file.name)
             driver = subprocess.Popen(
                 [chromedriver(), f"--port={DRIVER_PORT}", "--allowed-ips=127.0.0.1"],
@@ -342,10 +327,13 @@ def main() -> int:
         wait_for_driver()
         session_id = create_session()
         exercise(session_id)
-        print("Unified Firefox production Chrome acceptance passed at 1180×900, 768×900, 390×844, and 320×844 with decoded-image, semantic, and accessibility checks.")
+        print(
+            f"Unified Firefox Chrome acceptance passed for {TARGET} at 1180×900, 768×900, 390×844, "
+            "and 320×844 with decoded-image, semantic, and accessibility checks."
+        )
         return 0
     except Exception as error:
-        print(f"Unified Firefox production Chrome acceptance failed: {error}")
+        print(f"Unified Firefox Chrome acceptance failed for {TARGET}: {error}")
         if log_path:
             try:
                 text = log_path.read_text(encoding="utf-8", errors="replace")
