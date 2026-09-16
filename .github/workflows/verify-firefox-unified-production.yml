@@ -8,6 +8,7 @@ on:
       - 'scripts/build_www_namespace.py'
       - 'scripts/validate_url_namespace.py'
       - 'scripts/verify_firefox_unified_production.py'
+      - 'scripts/diagnose_firefox_svg_decode.py'
       - 'scripts/browser_firefox_unified_production.py'
       - '.github/workflows/verify-firefox-unified-production.yml'
   push:
@@ -18,6 +19,7 @@ on:
       - 'scripts/build_www_namespace.py'
       - 'scripts/validate_url_namespace.py'
       - 'scripts/verify_firefox_unified_production.py'
+      - 'scripts/diagnose_firefox_svg_decode.py'
       - 'scripts/browser_firefox_unified_production.py'
       - '.github/workflows/verify-firefox-unified-production.yml'
   workflow_dispatch:
@@ -42,6 +44,7 @@ jobs:
             scripts/build_www_namespace.py \
             scripts/validate_url_namespace.py \
             scripts/verify_firefox_unified_production.py \
+            scripts/diagnose_firefox_svg_decode.py \
             scripts/browser_firefox_unified_production.py
 
       - name: Validate governed URL namespace registry
@@ -84,6 +87,9 @@ jobs:
             echo "Firefox publication has not converged yet; retrying in 20 seconds ($attempt/$attempts): ${FIREFOX_VERIFY_ORIGIN}"
             sleep 20
           done
+
+      - name: Diagnose SVG decode path
+        run: python scripts/diagnose_firefox_svg_decode.py
 
       - name: Exercise selected Firefox publication in Chrome
         run: python scripts/browser_firefox_unified_production.py
