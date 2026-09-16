@@ -96,9 +96,7 @@ def expected_files() -> dict[str, bytes]:
 
 
 def production_url(relative: str) -> str:
-    if relative == "index.html":
-        return CANONICAL
-    return urljoin(CANONICAL, relative)
+    return CANONICAL if relative == "index.html" else urljoin(CANONICAL, relative)
 
 
 def require(condition: bool, message: str, errors: list[str]) -> None:
@@ -118,6 +116,20 @@ def verify_exact_bytes(errors: list[str]) -> None:
                 f"deployed byte mismatch for {relative}: expected {sha256(expected).hexdigest()}, "
                 f"deployed {sha256(response.body).hexdigest()}"
             )
+        content_type = response.headers.get("content-type", "")
+        disposition = response.headers.get("content-disposition", "")
+        if relative.endswith(".svg"):
+            require(
+                content_type.lower().startswith("image/svg+xml"),
+                f"SVG media type is not render-safe for {relative}: content-type={content_type!r}, content-disposition={disposition!r}",
+                errors,
+            )
+        if relative.endswith(".css"):
+            require(
+                content_type.lower().startswith("text/css"),
+                f"CSS media type drift for {relative}: content-type={content_type!r}",
+                errors,
+            )
 
 
 def verify_root(errors: list[str]) -> None:
@@ -125,21 +137,9 @@ def verify_root(errors: list[str]) -> None:
     require(response.status == 200, f"canonical Firefox root returned HTTP {response.status}; expected 200", errors)
     require(response.final_url == CANONICAL, f"canonical Firefox root redirected unexpectedly: {response.final_url}", errors)
     text = response.body.decode("utf-8", errors="replace")
-    require(
-        '<link rel="canonical" href="https://www.goreecloud.com/firefox-extensions/">' in text,
-        "canonical Firefox root does not publish the governed canonical URL",
-        errors,
-    )
-    require(
-        f'name="goreecloud-glaze-ui" content="{GLAZE_VERSION}"' in text,
-        f"canonical Firefox root does not publish Glaze UI {GLAZE_VERSION}",
-        errors,
-    )
-    require(
-        f'name="goreecloud-glaze-source-revision" content="{GLAZE_REVISION}"' in text,
-        "canonical Firefox root does not publish the accepted Glaze source revision",
-        errors,
-    )
+    require('<link rel="canonical" href="https://www.goreecloud.com/firefox-extensions/">' in text, "canonical Firefox root does not publish the governed canonical URL", errors)
+    require(f'name="goreecloud-glaze-ui" content="{GLAZE_VERSION}"' in text, f"canonical Firefox root does not publish Glaze UI {GLAZE_VERSION}", errors)
+    require(f'name="goreecloud-glaze-source-revision" content="{GLAZE_REVISION}"' in text, "canonical Firefox root does not publish the accepted Glaze source revision", errors)
     require("GoreeCloud Firefox Extensions" in text, "canonical Firefox identity is missing", errors)
     require("goreecloud-extension-inventory-schema" in text and 'content="2"' in text, "Firefox schema-v2 inventory marker is missing", errors)
     for header, fragments in REQUIRED_HEADERS.items():
@@ -157,25 +157,17 @@ def verify_redirect(errors: list[str]) -> None:
     root = fetch(LEGACY, follow=False)
     require(root.status == 301, f"legacy Firefox root returned HTTP {root.status}; expected 301", errors)
     require(root.headers.get("location") == CANONICAL, f"legacy Firefox root redirect target drifted: {root.headers.get('location')}", errors)
-
     suffix_source = LEGACY + "__goreecloud_firefox_verifier__/missing?migration=1"
     suffix_target = CANONICAL + "__goreecloud_firefox_verifier__/missing?migration=1"
     suffix = fetch(suffix_source, follow=False)
     require(suffix.status == 301, f"legacy Firefox suffix redirect returned HTTP {suffix.status}; expected 301", errors)
-    require(
-        suffix.headers.get("location") == suffix_target,
-        f"legacy Firefox suffix/query preservation drifted: {suffix.headers.get('location')}",
-        errors,
-    )
+    require(suffix.headers.get("location") == suffix_target, f"legacy Firefox suffix/query preservation drifted: {suffix.headers.get('location')}", errors)
 
 
 def main() -> int:
     errors: list[str] = []
     try:
-        verify_exact_bytes(errors)
-        verify_root(errors)
-        verify_missing_path(errors)
-        verify_redirect(errors)
+        verify_exact_bytes(errors); verify_root(errors); verify_missing_path(errors); verify_redirect(errors)
     except (RuntimeError, ValueError) as error:
         errors.append(str(error))
     if errors:
@@ -183,10 +175,7 @@ def main() -> int:
         for error in errors:
             print(f"- {error}")
         return 1
-    print(
-        "Unified Firefox production verification passed: exact deployed bytes, canonical URL, Glaze UI 1.4.1, "
-        "security headers, explicit 404, and 301 legacy redirect with suffix/query preservation are verified."
-    )
+    print("Unified Firefox production verification passed: exact deployed bytes, render-safe asset media types, canonical URL, Glaze UI 1.4.1, security headers, explicit 404, and 301 legacy redirect with suffix/query preservation are verified.")
     return 0
 
 
