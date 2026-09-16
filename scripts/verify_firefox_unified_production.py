@@ -52,16 +52,10 @@ def _allowed(url: str) -> bool:
 def fetch(url: str, *, follow: bool = True) -> Response:
     if not _allowed(url):
         raise ValueError(f"verification URL is outside the approved GoreeCloud hosts: {url}")
-    request = Request(
-        url,
-        method="GET",
-        headers={
-            "User-Agent": "GoreeCloud-Firefox-Unified-Production-Verifier/1.0",
-            "Accept-Encoding": "identity",
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-        },
-    )
+    request = Request(url, method="GET", headers={
+        "User-Agent": "GoreeCloud-Firefox-Unified-Production-Verifier/1.0",
+        "Accept-Encoding": "identity", "Cache-Control": "no-cache", "Pragma": "no-cache",
+    })
     handlers = [HTTPSHandler(context=ssl.create_default_context())]
     if not follow:
         handlers.insert(0, NoRedirect())
@@ -89,9 +83,8 @@ def expected_files() -> dict[str, bytes]:
         if path.is_symlink():
             raise RuntimeError(f"symlink is not allowed in unified Firefox artifact: {path}")
         relative = path.relative_to(MOUNTED).as_posix()
-        if relative == "_headers":
-            continue
-        result[relative] = path.read_bytes()
+        if relative != "_headers":
+            result[relative] = path.read_bytes()
     return result
 
 
@@ -106,30 +99,25 @@ def require(condition: bool, message: str, errors: list[str]) -> None:
 
 def verify_exact_bytes(errors: list[str]) -> None:
     for relative, expected in expected_files().items():
-        url = production_url(relative)
-        response = fetch(url)
+        response = fetch(production_url(relative))
         if response.status != 200:
             errors.append(f"{relative} returned HTTP {response.status}; expected 200")
             continue
         if response.body != expected:
-            errors.append(
-                f"deployed byte mismatch for {relative}: expected {sha256(expected).hexdigest()}, "
-                f"deployed {sha256(response.body).hexdigest()}"
-            )
+            errors.append(f"deployed byte mismatch for {relative}: expected {sha256(expected).hexdigest()}, deployed {sha256(response.body).hexdigest()}")
         content_type = response.headers.get("content-type", "")
         disposition = response.headers.get("content-disposition", "")
         if relative.endswith(".svg"):
-            require(
-                content_type.lower().startswith("image/svg+xml"),
-                f"SVG media type is not render-safe for {relative}: content-type={content_type!r}, content-disposition={disposition!r}",
-                errors,
+            print(
+                f"SVG response {relative}: content-type={content_type!r}; content-disposition={disposition!r}; "
+                f"x-content-type-options={response.headers.get('x-content-type-options', '')!r}; "
+                f"cross-origin-resource-policy={response.headers.get('cross-origin-resource-policy', '')!r}; "
+                f"content-security-policy={response.headers.get('content-security-policy', '')!r}"
             )
+            require(content_type.lower().startswith("image/svg+xml"), f"SVG media type is not render-safe for {relative}: content-type={content_type!r}, content-disposition={disposition!r}", errors)
+            require("attachment" not in disposition.lower(), f"SVG is forced to download for {relative}: content-disposition={disposition!r}", errors)
         if relative.endswith(".css"):
-            require(
-                content_type.lower().startswith("text/css"),
-                f"CSS media type drift for {relative}: content-type={content_type!r}",
-                errors,
-            )
+            require(content_type.lower().startswith("text/css"), f"CSS media type drift for {relative}: content-type={content_type!r}", errors)
 
 
 def verify_root(errors: list[str]) -> None:
