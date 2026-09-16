@@ -18,10 +18,4 @@
   Cache-Control: public, max-age=3600
 
 /assets/*
-  ! Content-Security-Policy
-  ! Referrer-Policy
-  ! Permissions-Policy
-  ! X-Frame-Options
-  ! Cross-Origin-Opener-Policy
-  ! Cross-Origin-Resource-Policy
   Cache-Control: public, max-age=86400
