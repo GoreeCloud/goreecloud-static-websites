@@ -1,0 +1,72 @@
+name: Verify Firefox unified production
+
+on:
+  pull_request:
+    paths:
+      - 'sites/url-namespace.json'
+      - 'scripts/build_www_namespace.py'
+      - 'scripts/validate_url_namespace.py'
+      - 'scripts/verify_firefox_unified_production.py'
+      - 'scripts/browser_firefox_unified_production.py'
+      - '.github/workflows/verify-firefox-unified-production.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sites/url-namespace.json'
+      - 'scripts/build_www_namespace.py'
+      - 'scripts/validate_url_namespace.py'
+      - 'scripts/verify_firefox_unified_production.py'
+      - 'scripts/browser_firefox_unified_production.py'
+      - '.github/workflows/verify-firefox-unified-production.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Compile acceptance tooling
+        run: |
+          python -m py_compile \
+            scripts/build_www_namespace.py \
+            scripts/validate_url_namespace.py \
+            scripts/verify_firefox_unified_production.py \
+            scripts/browser_firefox_unified_production.py
+
+      - name: Validate governed URL namespace registry
+        run: python scripts/validate_url_namespace.py
+
+      - name: Build exact unified namespace artifact
+        run: python scripts/build_www_namespace.py
+
+      - name: Verify exact Firefox production publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          attempts=1
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            attempts=15
+          fi
+          for attempt in $(seq 1 "$attempts"); do
+            if python scripts/verify_firefox_unified_production.py; then
+              exit 0
+            fi
+            if [[ "$attempt" -eq "$attempts" ]]; then
+              echo "Firefox production did not converge to the exact candidate within the verification window." >&2
+              exit 1
+            fi
+            echo "Firefox production has not converged yet; retrying in 20 seconds ($attempt/$attempts)."
+            sleep 20
+          done
+
+      - name: Exercise live Firefox publication in Chrome
+        run: python scripts/browser_firefox_unified_production.py
