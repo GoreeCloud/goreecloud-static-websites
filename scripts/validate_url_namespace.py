@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sites" / "url-namespace.json"
 MANIFEST = ROOT / "sites" / "manifest.json"
 EXPECTED_STATE = "provider-cutover-verified"
-EXPECTED_PENDING_CUTOVERS = {"firefox"}
+EXPECTED_PENDING_CUTOVERS: set[str] = set()
 CENTRAL_NATIVE_SITE_IDS = {"firefox"}
 EXPECTED_PATHS = {
     "main": "/",
@@ -56,7 +56,7 @@ def main() -> None:
 
     pending_cutovers = registry.get("pending_cutovers", [])
     if not isinstance(pending_cutovers, list) or set(pending_cutovers) != EXPECTED_PENDING_CUTOVERS:
-        fail(f"pending cutover inventory must be exactly {sorted(EXPECTED_PENDING_CUTOVERS)} until Firefox provider cutover is verified")
+        fail(f"pending cutover inventory must be exactly {sorted(EXPECTED_PENDING_CUTOVERS)} after verified provider cutover")
 
     sites = registry.get("sites")
     if not isinstance(sites, list):
@@ -155,13 +155,13 @@ def main() -> None:
     if firefox.get("current_public_host") != "firefox.goreecloud.com":
         fail("Firefox Extensions legacy informational host must remain firefox.goreecloud.com until redirect retirement")
     if not firefox.get("legacy_redirect"):
-        fail("firefox.goreecloud.com must be marked for compatibility redirect to /firefox-extensions")
-    if firefox.get("cutover_state") != "migration-preparation":
-        fail("Firefox Extensions must remain explicitly migration-preparation until the provider cutover is verified")
+        fail("firefox.goreecloud.com must remain marked for compatibility redirect to /firefox-extensions")
+    if firefox.get("cutover_state") != EXPECTED_STATE:
+        fail(f"Firefox Extensions cutover state must be {EXPECTED_STATE} after verified provider cutover")
 
     print(
         f"URL namespace registry valid: {len(sites)} informational websites -> https://www.goreecloud.com paths; "
-        f"baseline_state={EXPECTED_STATE}; pending_cutovers={sorted(EXPECTED_PENDING_CUTOVERS)}; "
+        f"state={EXPECTED_STATE}; pending_cutovers={sorted(EXPECTED_PENDING_CUTOVERS)}; "
         f"central_native={sorted(CENTRAL_NATIVE_SITE_IDS)}; legacy compatibility hosts={redirect_count}"
     )
 
