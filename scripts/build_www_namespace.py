@@ -98,7 +98,7 @@ def prefix_root_relative_strings(text: str, path_prefix: str) -> str:
         return text
     escaped = re.escape(path_prefix.lstrip("/"))
 
-    quoted = re.compile(rf"(?P<quote>['\"])/(?!/|{escaped}(?:/|['\"]))")
+    quoted = re.compile(rf"(?P<quote>['\"])/(?!/|>|{escaped}(?:/|['\"]))")
     text = quoted.sub(lambda match: f"{match.group('quote')}{path_prefix}/", text)
 
     css_url = re.compile(rf"url\(\s*/(?!/|{escaped}(?:/|\)))", re.IGNORECASE)
@@ -356,7 +356,7 @@ def verify_publication(root: Path, entry: dict, entries: list[dict], origin: str
 
     legacy_hosts = [item.get("current_public_host") for item in entries if item.get("current_public_host") not in {None, "www.goreecloud.com"}]
     escaped = re.escape(prefix.lstrip("/"))
-    bad_root_ref = None if prefix == "/" else re.compile(rf"['\"]/(?!/|{escaped}(?:/|['\"]))")
+    bad_root_ref = None if prefix == "/" else re.compile(rf"['\"]/(?!/|>|{escaped}(?:/|['\"]))")
     problems: list[str] = []
     for path in root.rglob("*"):
         if not path.is_file() or path.name == "_headers":

@@ -4,12 +4,14 @@ Canonical centralized static source for the GoreeCloud Firefox Extensions inform
 
 ## URL namespace
 
-- Current public compatibility host: `https://firefox.goreecloud.com/`
-- Governed unified canonical target: `https://www.goreecloud.com/firefox-extensions/`
-- Current cutover state: `migration-preparation`
-- Compatibility requirement: retain `firefox.goreecloud.com` as a redirect source after the unified path is published and production-verified.
+- Canonical public URL: `https://www.goreecloud.com/firefox-extensions/`
+- Legacy compatibility host: `https://firefox.goreecloud.com/`
+- Current cutover state: `provider-cutover-verified`
+- Compatibility requirement: retain `firefox.goreecloud.com` as a permanent-redirect source while legacy links remain operationally relevant.
 
-The unified URL must not be recorded as production-accepted until the exact deployed revision, canonical metadata, redirect behavior, responsive rendering, accessibility, and applicable security headers have been verified. Until that acceptance closes, the existing Firefox hostname remains the verified live destination.
+The unified path is the canonical Firefox Extensions informational destination. The legacy hostname is not a second publication authority; it redirects to the governed `www.goreecloud.com` path using the shared GoreeCloud compatibility-redirect layer.
+
+Production acceptance is fail-closed and revision-specific. The unified publication must continue to pass exact deployed-byte comparison, canonical metadata, GLAZE UI Stable metadata, required security headers, explicit 404 behavior, the legacy 301 redirect contract, responsive rendering, keyboard/focus checks, and automated accessibility-semantic checks. A later material source or publication change requires fresh acceptance evidence.
 
 ## Publication contract
 
@@ -19,6 +21,8 @@ The unified URL must not be recorded as production-accepted until the exact depl
 - Build command: `python3 build.py`
 - Build output directory: `dist`
 - Unified publication builder: `scripts/build_www_namespace.py`
+- Unified production verifier: `scripts/verify_firefox_unified_production.py`
+- Unified production browser gate: `scripts/browser_firefox_unified_production.py`
 - Extension source authority: `GoreeCloud/goreecloud-firefox-extensions`
 - Branding authority: `GoreeCloud/goreecloud-branding-assets`
 - Historical standalone design target: GLAZE UI V1.3 / 1.3.0
@@ -57,4 +61,14 @@ python3 validate.py
 node --check site.js
 ```
 
-Unified-namespace validation additionally builds this site beneath `/firefox-extensions/`, rewrites the legacy hostname to the governed `www.goreecloud.com` path, and verifies the mounted canonical entrypoint. Production acceptance remains separate from source/build acceptance.
+Unified-namespace validation builds this site beneath `/firefox-extensions/`, rewrites the legacy hostname to the governed `www.goreecloud.com` path, normalizes the mounted artifact to the current GLAZE UI Stable publication contract, and verifies the mounted canonical entrypoint.
+
+For production acceptance from the repository root:
+
+```bash
+python scripts/build_www_namespace.py
+python scripts/verify_firefox_unified_production.py
+python scripts/browser_firefox_unified_production.py
+```
+
+Provider deployment success alone is not production acceptance; the live-verification gates above must pass against the deployed publication.
