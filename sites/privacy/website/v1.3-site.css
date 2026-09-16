@@ -6,6 +6,8 @@
 :root{--privacy-v13-control:48px;--privacy-v13-control-assisted:56px}
 :is(a,button,[tabindex]):focus-visible{outline:3px solid var(--glaze-accent,currentColor);outline-offset:3px}
 .site-header a,.site-header button,.chips span{min-height:var(--privacy-v13-control)}
+.hero>*,.section,.section-heading,.card-grid>*,.split>*,.principle-list>*,.status-card{min-width:0}
+code{overflow-wrap:anywhere;word-break:break-word}
 @media(pointer:coarse){.site-header a,.site-header button{min-height:var(--privacy-v13-control-assisted);min-width:var(--privacy-v13-control-assisted)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 @media(prefers-reduced-transparency:reduce){.site-header,.glass-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--glaze-surface-strong)!important}}

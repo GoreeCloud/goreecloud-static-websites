@@ -6,6 +6,7 @@ on:
       - 'sites/design/**'
       - 'sites/identity/**'
       - 'sites/mesh/**'
+      - 'sites/privacy/**'
       - 'sites/security/**'
       - 'sites/suite/**'
       - '.github/workflows/validate-public-system-sites.yml'
@@ -15,6 +16,7 @@ on:
       - 'sites/design/**'
       - 'sites/identity/**'
       - 'sites/mesh/**'
+      - 'sites/privacy/**'
       - 'sites/security/**'
       - 'sites/suite/**'
       - '.github/workflows/validate-public-system-sites.yml'
@@ -95,6 +97,34 @@ jobs:
               if forbidden in html.lower(): raise SystemExit(f'forbidden/upstream Identity Center dependency: {forbidden}')
           print('Identity Center GLAZE UI V1.3 source boundary validated; rendered/production acceptance remains separate')
       - run: node --check sites/identity/app.js
+
+  privacy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check out pinned GLAZE UI V1.3 Stable source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: GoreeCloud/goreecloud-glaze-ui
+          ref: 8354308445da9ac35ced2b37a7f503a08a0aaf72
+          path: .glaze-ui
+          persist-credentials: false
+      - name: Compile Privacy Center build and validation tools
+        run: python -m py_compile sites/privacy/website/build.py sites/privacy/website/validate.py
+      - name: Validate Privacy Center V1.3 source boundary
+        run: python sites/privacy/website/validate.py
+      - name: Build Privacy Center from exact pinned Glaze source
+        env:
+          GLAZE_UI_SOURCE: ${{ github.workspace }}/.glaze-ui
+        run: python sites/privacy/website/build.py
+      - name: Validate exact Privacy Center built artifact
+        run: python sites/privacy/website/validate.py --dist
+      - name: Validate Privacy Center JavaScript syntax
+        run: node --check sites/privacy/website/site.js
 
   security:
     runs-on: ubuntu-24.04
